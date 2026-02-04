@@ -4,3 +4,9 @@
  Template:     generatepress
  Version:      1.0.0
 */
+
+/* Erster Test für Hasimuener Journal */
+body {
+    background-color: #f0f2f5; /* Ein elegantes, helles Journal-Grau */
+    color: #333;
+}
