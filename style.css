@@ -5,8 +5,48 @@
  Version:      1.0.0
 */
 
-/* Erster Test für Hasimuener Journal */
-body {
-    background-color: #f0f2f5; /* Ein elegantes, helles Journal-Grau */
-    color: #333;
+/* =========================================
+   TYPOGRAFIE & DESIGN SYSTEM (NZZ / ZEIT STIL)
+   ========================================= */
+
+/* 1. Schriftart Merriweather lokal laden */
+@font-face {
+    font-family: 'Merriweather';
+    font-style: normal;
+    font-weight: 400;
+    src: url('fonts/merriweather-v30-latin-regular.woff2') format('woff2');
+    font-display: swap;
 }
+
+@font-face {
+    font-family: 'Merriweather';
+    font-style: normal;
+    font-weight: 700;
+    src: url('fonts/merriweather-v30-latin-700.woff2') format('woff2');
+    font-display: swap;
+}
+
+/* 2. Basis-Layout */
+body {
+    background-color: #f4f5f7; /* Seriöses Zeitungs-Grau */
+    color: #222; 
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    font-size: 18px;
+}
+
+/* 3. Überschriften (Seriös mit Serifen) */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Merriweather', serif;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 0.6em;
+    line-height: 1.3;
+}
+
+h1 { font-size: 2.8rem; letter-spacing: -1px; }
+h2 { font-size: 2.2rem; border-bottom: 2px solid #e0e0e0; padding-bottom: 10px; }
+
+/* 4. Links */
+a { color: #b12a2a; text-decoration: none; }
+a:hover { text-decoration: underline; }
