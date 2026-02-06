@@ -10,6 +10,8 @@
    ========================================= */
 
 /* 1. Schriftart Merriweather lokal laden (Version 33) */
+/* Hinweis: Keine font-weight 400 (regular) Dateien verfügbar.
+   Browser werden automatisch auf weight 300 (Light) zurückgreifen für normale Texte. */
 /* Light (300) */
 @font-face {
     font-family: 'Merriweather';
