@@ -9,12 +9,14 @@
    TYPOGRAFIE & DESIGN SYSTEM (NZZ / ZEIT STIL)
    ========================================= */
 
-/* 1. Schriftart Merriweather lokal laden (Version 33) */
+/* ... oben bleibt alles gleich ... */
+
 @font-face {
     font-family: 'Merriweather';
     font-style: normal;
     font-weight: 400;
-    src: url('fonts/merriweather-v33-latin-regular.woff2') format('woff2'); /* Achtung: v33 */
+    /* Wir nehmen die Anführungszeichen bei url() weg, das ist oft robuster */
+    src: url(fonts/merriweather-v33-latin-regular.woff2) format('woff2'); 
     font-display: swap;
 }
 
@@ -22,9 +24,11 @@
     font-family: 'Merriweather';
     font-style: normal;
     font-weight: 700;
-    src: url('fonts/merriweather-v33-latin-700.woff2') format('woff2'); /* Achtung: v33 */
+    src: url(fonts/merriweather-v33-latin-700.woff2) format('woff2');
     font-display: swap;
 }
+
+/* ... restlicher CSS Code bleibt ... */
 
 /* 2. Basis-Layout */
 body {
