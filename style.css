@@ -9,14 +9,23 @@
    TYPOGRAFIE & DESIGN SYSTEM (NZZ / ZEIT STIL)
    ========================================= */
 
-/* ... oben bleibt alles gleich ... */
+/* @font-face: Merriweather (lokal gehostet) */
 
 @font-face {
     font-family: 'Merriweather';
     font-style: normal;
-    font-weight: 400;
-    /* Wir nehmen die Anführungszeichen bei url() weg, das ist oft robuster */
-    src: url(fonts/merriweather-v33-latin-regular.woff2) format('woff2'); 
+    font-weight: 300;
+    src: url('fonts/merriweather-v33-latin-300.woff2') format('woff2'),
+         url('fonts/merriweather-v33-latin-300.woff') format('woff');
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Merriweather';
+    font-style: italic;
+    font-weight: 300;
+    src: url('fonts/merriweather-v33-latin-300italic.woff2') format('woff2'),
+         url('fonts/merriweather-v33-latin-300italic.woff') format('woff');
     font-display: swap;
 }
 
@@ -24,17 +33,44 @@
     font-family: 'Merriweather';
     font-style: normal;
     font-weight: 700;
-    src: url(fonts/merriweather-v33-latin-700.woff2) format('woff2');
+    src: url('fonts/merriweather-v33-latin-700.woff2') format('woff2'),
+         url('fonts/merriweather-v33-latin-700.woff') format('woff');
     font-display: swap;
 }
 
-/* ... restlicher CSS Code bleibt ... */
+@font-face {
+    font-family: 'Merriweather';
+    font-style: italic;
+    font-weight: 700;
+    src: url('fonts/merriweather-v33-latin-700italic.woff2') format('woff2'),
+         url('fonts/merriweather-v33-latin-700italic.woff') format('woff');
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Merriweather';
+    font-style: normal;
+    font-weight: 900;
+    src: url('fonts/merriweather-v33-latin-900.woff2') format('woff2'),
+         url('fonts/merriweather-v33-latin-900.woff') format('woff');
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Merriweather';
+    font-style: italic;
+    font-weight: 900;
+    src: url('fonts/merriweather-v33-latin-900italic.woff2') format('woff2'),
+         url('fonts/merriweather-v33-latin-900italic.woff') format('woff');
+    font-display: swap;
+}
 
 /* 2. Basis-Layout */
 body {
     background-color: #f4f5f7; /* Seriöses Zeitungs-Grau */
     color: #222; 
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: 'Merriweather', Georgia, serif;
+    font-weight: 300;
     line-height: 1.6;
     font-size: 18px;
 }
