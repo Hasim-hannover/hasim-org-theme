@@ -2,7 +2,7 @@
  Theme Name:   Hasimuener Journal
  Description:  High-Performance Child Theme für GeneratePress — Editorial Design System
  Template:     generatepress
- Version:      2.0.0
+ Version:      3.0.0
 */
 
 /* =========================================
@@ -547,107 +547,88 @@ a.footnote-backref:hover {
    FRONT PAGE — Sektionen
    ========================================= */
 
-/* --- 1. Masthead --- */
+/* --- 1. Editorial Hero --- */
 
-.masthead {
-    padding: var(--hj-space-2xl) 0 calc(var(--hj-space-2xl) - 1rem);
-    text-align: left;
+.editorial-hero {
+    padding: var(--hj-space-2xl) 0;
 }
 
-.masthead__inner {
+.editorial-hero__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
     max-width: 780px;
 }
 
-.masthead__headline {
+/* Overline: ESSAY · DATUM · LESEZEIT */
+.hp-overline {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--hj-sans);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    color: var(--hj-text-muted);
+    margin-bottom: var(--hj-space-md);
+}
+
+.hp-overline__sep::before {
+    content: '·';
+    color: var(--hj-rule-light);
+}
+
+/* Titel: Dominantes Element */
+.editorial-hero__title {
     font-family: var(--hj-serif);
     font-weight: 900;
-    font-size: var(--hj-fs-3xl);
-    line-height: 1.08;
+    font-size: clamp(2.4rem, 5.5vw, 4.2rem);
+    line-height: 1.06;
     letter-spacing: -2px;
     color: var(--hj-rule);
-    margin-bottom: 0.35em;
+    margin-bottom: 0.45em;
     border-bottom: none;
     padding-bottom: 0;
 }
 
-.masthead__subline {
-    font-family: var(--hj-serif);
-    font-weight: 300;
-    font-style: italic;
-    font-size: var(--hj-fs-lg);
-    color: var(--hj-text-secondary);
-    line-height: 1.6;
-    margin-bottom: 1.8rem;
-    max-width: 600px;
+.editorial-hero__title a {
+    color: inherit;
+    text-decoration: none;
 }
 
-.masthead__link {
+.editorial-hero__title a:hover {
+    color: var(--hj-accent);
+    text-decoration: none;
+}
+
+/* Teaser / Excerpt */
+.editorial-hero__excerpt {
+    font-family: var(--hj-serif);
+    font-weight: 300;
+    font-size: clamp(1.05rem, 1.6vw, 1.2rem);
+    line-height: 1.7;
+    color: var(--hj-text-secondary);
+    max-width: 620px;
+    margin-bottom: var(--hj-space-lg);
+}
+
+/* CTA-Link */
+.editorial-hero__cta {
     font-family: var(--hj-sans);
     font-weight: 700;
-    font-size: var(--hj-fs-md);
-    color: var(--hj-rule);
+    font-size: var(--hj-fs-sm);
     text-transform: uppercase;
-    letter-spacing: 1.5px;
+    letter-spacing: 2px;
+    color: var(--hj-rule);
     border-bottom: 1px solid var(--hj-rule);
     padding-bottom: 2px;
     transition: color 0.2s ease, border-color 0.2s ease;
 }
 
-.masthead__link:hover {
+.editorial-hero__cta:hover {
     color: var(--hj-accent);
     border-color: var(--hj-accent);
-    text-decoration: none;
-}
-
-/* --- 2. Featured Essay --- */
-
-.featured-essay {
-    padding: var(--hj-space-sm) 0;
-}
-
-.featured-essay__header {
-    margin-bottom: var(--hj-space-lg);
-}
-
-.featured-essay__title {
-    font-family: var(--hj-serif);
-    font-weight: 900;
-    font-size: var(--hj-fs-2xl);
-    line-height: 1.2;
-    color: var(--hj-rule);
-    border-bottom: none;
-    padding-bottom: 0;
-}
-
-.featured-essay__title a {
-    color: var(--hj-rule);
-}
-
-.featured-essay__title a:hover {
-    color: var(--hj-accent);
-    text-decoration: none;
-}
-
-.featured-essay__excerpt {
-    max-width: var(--hj-measure);
-    font-weight: 300;
-    font-size: 1.05rem;
-    line-height: 1.75;
-    color: var(--hj-text);
-    margin-bottom: var(--hj-space-md);
-}
-
-.featured-essay__continue {
-    font-family: var(--hj-sans);
-    font-weight: 700;
-    font-size: var(--hj-fs-sm);
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: var(--hj-rule);
-}
-
-.featured-essay__continue:hover {
-    color: var(--hj-accent);
     text-decoration: none;
 }
 
@@ -711,19 +692,119 @@ a.footnote-backref:hover {
     margin-top: var(--hj-space-md);
 }
 
-/* --- 5. Colophon --- */
+/* --- 5. Kolophon-Footer --- */
 
-.journal-colophon {
-    padding: var(--hj-space-lg) 0 calc(var(--hj-space-2xl) - 1rem);
-    text-align: center;
+.hp-colophon {
+    border-top: 2px solid var(--hj-rule);
+    background: var(--hj-bg);
+    padding: var(--hj-space-xl) 0 var(--hj-space-2xl);
+    margin-top: var(--hj-space-xl);
 }
 
-.journal-colophon__text {
+.hp-colophon__inner {
+    max-width: var(--hj-content-width);
+    margin: 0 auto;
+    padding: 0 var(--hj-gutter);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--hj-space-lg);
+}
+
+@media (min-width: 768px) {
+    .hp-colophon__inner {
+        grid-template-columns: 2fr 1fr 1fr;
+        gap: var(--hj-space-xl);
+    }
+}
+
+.hp-colophon__label {
+    display: block;
     font-family: var(--hj-sans);
-    font-weight: 400;
-    font-size: var(--hj-fs-sm);
-    letter-spacing: 1.5px;
+    font-size: 0.65rem;
+    font-weight: 700;
     text-transform: uppercase;
+    letter-spacing: 2.5px;
+    color: var(--hj-text-muted);
+    margin-bottom: var(--hj-space-sm);
+}
+
+.hp-colophon__mission p {
+    font-family: var(--hj-serif);
+    font-weight: 300;
+    font-style: italic;
+    font-size: var(--hj-fs-md);
+    line-height: 1.65;
+    color: var(--hj-text-secondary);
+    max-width: 360px;
+}
+
+.hp-colophon__topic-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.hp-colophon__topic-list li {
+    padding: 0.25em 0;
+    border-bottom: 1px solid var(--hj-border);
+}
+
+.hp-colophon__topic-list li:last-child {
+    border-bottom: none;
+}
+
+.hp-colophon__topic-list a {
+    font-family: var(--hj-sans);
+    font-size: var(--hj-fs-sm);
+    font-weight: 400;
+    color: var(--hj-text);
+    text-decoration: none;
+}
+
+.hp-colophon__topic-list a:hover {
+    color: var(--hj-accent);
+}
+
+.hp-colophon__meta p {
+    font-family: var(--hj-sans);
+    font-size: var(--hj-fs-sm);
+    color: var(--hj-text-secondary);
+    margin-bottom: 0.4em;
+}
+
+.hp-colophon__legal {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 0.6em;
+    display: flex;
+    gap: 1rem;
+}
+
+.hp-colophon__legal a {
+    font-family: var(--hj-sans);
+    font-size: var(--hj-fs-sm);
+    color: var(--hj-text-secondary);
+    text-decoration: none;
+    border-bottom: 1px solid var(--hj-border);
+    padding-bottom: 1px;
+}
+
+.hp-colophon__legal a:hover {
+    color: var(--hj-accent);
+    border-color: var(--hj-accent);
+}
+
+.hp-colophon__version {
+    font-family: var(--hj-mono);
+    font-size: 0.7rem;
+    color: var(--hj-text-muted);
+    letter-spacing: 0.5px;
+}
+
+.hp-colophon__empty {
+    font-family: var(--hj-serif);
+    font-style: italic;
+    font-size: var(--hj-fs-sm);
     color: var(--hj-text-muted);
 }
 

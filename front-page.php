@@ -1,16 +1,12 @@
 <?php
 /**
  * Template: Front Page — Hasimuener Journal
- * 
- * Sektionen:
- * 1. Masthead (Hero / Mission)
- * 2. Featured Essay (neuester Essay)
- * 3. Aktuelle Notizen (3 neueste)
- * 4. Themenfelder (Taxonomie: topic)
- * 5. Kolophon
+ *
+ * Editoriales Layout: Hero (Latest Essay) → Notizen → Themenfelder.
+ * Kein Slider, kein Carousel — statisch-redaktionell.
  *
  * @package Hasimuener_Journal
- * @version 2.1.0
+ * @version 3.0.0
  */
 
 get_header(); ?>
@@ -18,76 +14,62 @@ get_header(); ?>
 <main id="journal-front" class="journal-front" role="main">
 
     <!-- ==========================================
-         1. MASTHEAD
-         ========================================== -->
-    <section class="masthead" aria-label="Masthead">
-        <div class="masthead__inner">
-            <h1 class="masthead__headline">Verstehen, was sich&nbsp;verändert.</h1>
-            <p class="masthead__subline">Essays und Analysen zu Gesellschaft, Wissenschaft und den Strukturen, die unser Denken&nbsp;formen.</p>
-            <a href="/ueber" class="masthead__link">Über dieses Journal &rarr;</a>
-        </div>
-    </section>
-
-    <hr class="journal-rule" aria-hidden="true">
-
-    <!-- ==========================================
-         2. FEATURED ESSAY
+         1. EDITORIAL HERO — Neuester Essay
          ========================================== -->
     <?php
-    $hp_featured = new WP_Query( array(
+    $hp_hero = new WP_Query( [
         'post_type'      => 'essay',
         'posts_per_page' => 1,
         'post_status'    => 'publish',
-    ) );
+    ] );
 
-    if ( $hp_featured->have_posts() ) :
-        while ( $hp_featured->have_posts() ) : $hp_featured->the_post(); ?>
+    if ( $hp_hero->have_posts() ) :
+        while ( $hp_hero->have_posts() ) : $hp_hero->the_post(); ?>
 
-    <article class="featured-essay" aria-label="Featured Essay">
-        <header class="featured-essay__header">
-            <span class="hp-kicker">Essay</span>
-            <h2 class="featured-essay__title">
-                <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-            </h2>
-            <div class="hp-meta">
+    <section class="editorial-hero" aria-label="Aktueller Essay">
+        <div class="editorial-hero__grid">
+
+            <div class="editorial-hero__meta hp-overline">
+                <span>Essay</span>
+                <span class="hp-overline__sep" aria-hidden="true"></span>
                 <time datetime="<?php echo esc_attr( get_the_date( 'c' ) ); ?>">
                     <?php echo esc_html( get_the_date( 'j. F Y' ) ); ?>
                 </time>
-                <span class="hp-meta__separator"></span>
-                <span class="hp-reading-time"><?php echo esc_html( hp_reading_time() ); ?></span>
+                <span class="hp-overline__sep" aria-hidden="true"></span>
+                <span><?php echo esc_html( hp_reading_time() ); ?></span>
             </div>
-        </header>
 
-        <?php if ( has_excerpt() ) : ?>
-            <p class="featured-essay__excerpt"><?php echo esc_html( get_the_excerpt() ); ?></p>
-        <?php endif; ?>
+            <h1 class="editorial-hero__title">
+                <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+            </h1>
 
-        <?php
-        $topics = get_the_terms( get_the_ID(), 'topic' );
-        if ( $topics && ! is_wp_error( $topics ) ) : ?>
-            <ul class="hp-topics" aria-label="Themenfelder">
-                <?php foreach ( $topics as $topic ) : ?>
-                    <li><a class="hp-topic-pill" href="<?php echo esc_url( get_term_link( $topic ) ); ?>"><?php echo esc_html( $topic->name ); ?></a></li>
-                <?php endforeach; ?>
-            </ul>
-        <?php endif; ?>
+            <?php if ( has_excerpt() ) : ?>
+                <p class="editorial-hero__excerpt"><?php echo esc_html( get_the_excerpt() ); ?></p>
+            <?php endif; ?>
 
-        <a href="<?php the_permalink(); ?>" class="featured-essay__continue">Weiterlesen &rarr;</a>
-    </article>
+            <a href="<?php the_permalink(); ?>" class="editorial-hero__cta" aria-label="<?php the_title_attribute(); ?> — Ganzen Essay lesen">Ganzen Essay lesen &rarr;</a>
+        </div>
+    </section>
 
         <?php endwhile;
     else : ?>
-        <section class="featured-essay" aria-label="Featured Essay">
-            <span class="hp-kicker">Essay</span>
-            <p class="hp-empty">Noch keine Essays veröffentlicht. Der erste Essay erscheint hier.</p>
-        </section>
+
+    <!-- Fallback: Kein Essay vorhanden -->
+    <section class="editorial-hero editorial-hero--empty" aria-label="Aktueller Essay">
+        <div class="editorial-hero__grid">
+            <div class="editorial-hero__meta hp-overline"><span>Journal</span></div>
+            <h1 class="editorial-hero__title">Verstehen, was sich&nbsp;verändert.</h1>
+            <p class="editorial-hero__excerpt">Essays und Analysen zu Gesellschaft, Wissenschaft und den Strukturen, die unser Denken formen.</p>
+        </div>
+    </section>
+
     <?php endif;
     wp_reset_postdata(); ?>
 
     <hr class="journal-rule" aria-hidden="true">
 
     <!-- ==========================================
-         3. AKTUELLE NOTIZEN
+         2. AKTUELLE NOTIZEN
          ========================================== -->
     <section class="notes-section" aria-label="Aktuelle Notizen">
         <header>
@@ -95,11 +77,11 @@ get_header(); ?>
         </header>
 
         <?php
-        $hp_notes = new WP_Query( array(
+        $hp_notes = new WP_Query( [
             'post_type'      => 'note',
             'posts_per_page' => 3,
             'post_status'    => 'publish',
-        ) );
+        ] );
 
         if ( $hp_notes->have_posts() ) : ?>
             <div class="notes-list">
@@ -134,13 +116,13 @@ get_header(); ?>
     <hr class="journal-rule" aria-hidden="true">
 
     <!-- ==========================================
-         4. THEMENFELDER (Taxonomie)
+         3. THEMENFELDER (Taxonomie)
          ========================================== -->
     <?php
-    $hp_topics = get_terms( array(
+    $hp_topics = get_terms( [
         'taxonomy'   => 'topic',
         'hide_empty' => false,
-    ) );
+    ] );
 
     if ( $hp_topics && ! is_wp_error( $hp_topics ) ) : ?>
     <section class="topics-section" aria-label="Themenfelder">
@@ -161,15 +143,6 @@ get_header(); ?>
 
     <hr class="journal-rule" aria-hidden="true">
     <?php endif; ?>
-
-    <!-- ==========================================
-         5. KOLOPHON
-         ========================================== -->
-    <section class="journal-colophon" aria-label="Kolophon">
-        <p class="journal-colophon__text">
-            Hasimuener Journal &middot; Gesellschaft &amp; Wissenschaft &middot; Hannover
-        </p>
-    </section>
 
 </main>
 

@@ -120,11 +120,6 @@ get_header(); ?>
             <!-- Artikel-Fußzeile -->
             <footer class="essay-footer">
                 <hr class="journal-rule" aria-hidden="true">
-                <div class="hp-meta">
-                    <span>Veröffentlicht am <?php echo esc_html( get_the_date( 'j. F Y' ) ); ?></span>
-                    <span class="hp-meta__separator"></span>
-                    <span><?php echo esc_html( hp_reading_time() ); ?></span>
-                </div>
                 <?php
                 $topics_footer = get_the_terms( get_the_ID(), 'topic' );
                 if ( $topics_footer && ! is_wp_error( $topics_footer ) ) : ?>

@@ -3,10 +3,11 @@
  * Hasimuener Journal — functions.php
  * 
  * GeneratePress Child Theme.
- * Custom Post Types, Taxonomie, Lesedauer, Body-Klassen, Enqueues.
+ * Custom Post Types, Taxonomie, Lesedauer, Body-Klassen,
+ * Social-Teaser Meta, JSON-LD Schema, Enqueues.
  *
  * @package Hasimuener_Journal
- * @version 2.0.0
+ * @version 3.0.0
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -189,4 +190,149 @@ function hp_flush_rewrite_rules() {
     hp_register_post_types();
     hp_register_taxonomies();
     flush_rewrite_rules();
+}
+
+/* =========================================
+   7. SOCIAL TEASER META FIELD
+   ========================================= */
+
+/**
+ * Registriert das Custom Meta Field `_hp_social_teaser`
+ * für den Post Type `essay`.
+ *
+ * - Im Block-Editor als Classic Meta Box sichtbar.
+ * - Via REST API lesbar/beschreibbar (für Automatisierungs-Tools).
+ * - Nicht im Frontend ausgegeben.
+ */
+add_action( 'init', 'hp_register_social_meta' );
+function hp_register_social_meta(): void {
+    register_post_meta( 'essay', '_hp_social_teaser', [
+        'type'              => 'string',
+        'single'            => true,
+        'sanitize_callback' => 'sanitize_textarea_field',
+        'auth_callback'     => static fn(): bool => current_user_can( 'edit_posts' ),
+        'show_in_rest'      => true,
+        'default'           => '',
+    ] );
+}
+
+/**
+ * Meta Box im Editor — Social Teaser.
+ */
+add_action( 'add_meta_boxes', 'hp_add_social_teaser_metabox' );
+function hp_add_social_teaser_metabox(): void {
+    add_meta_box(
+        'hp_social_teaser',
+        'Social-Media Teaser (X / Twitter)',
+        'hp_render_social_teaser_metabox',
+        'essay',
+        'side',
+        'default'
+    );
+}
+
+function hp_render_social_teaser_metabox( WP_Post $post ): void {
+    $value = get_post_meta( $post->ID, '_hp_social_teaser', true );
+    wp_nonce_field( 'hp_social_teaser_save', 'hp_social_teaser_nonce' );
+    ?>
+    <label for="hp-social-teaser" class="screen-reader-text">Social-Media Hook-Satz</label>
+    <textarea
+        id="hp-social-teaser"
+        name="_hp_social_teaser"
+        rows="3"
+        style="width:100%"
+        placeholder="Hook-Satz für X / Social Media …"
+    ><?php echo esc_textarea( $value ); ?></textarea>
+    <p class="description" style="margin-top:6px">Wird <strong>nicht</strong> im Frontend angezeigt. Nur für Social-Automation via REST&nbsp;API.</p>
+    <?php
+}
+
+add_action( 'save_post_essay', 'hp_save_social_teaser_meta' );
+function hp_save_social_teaser_meta( int $post_id ): void {
+    if (
+        ! isset( $_POST['hp_social_teaser_nonce'] ) ||
+        ! wp_verify_nonce( $_POST['hp_social_teaser_nonce'], 'hp_social_teaser_save' )
+    ) {
+        return;
+    }
+
+    if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+        return;
+    }
+
+    if ( ! current_user_can( 'edit_post', $post_id ) ) {
+        return;
+    }
+
+    $teaser = isset( $_POST['_hp_social_teaser'] )
+        ? sanitize_textarea_field( wp_unslash( $_POST['_hp_social_teaser'] ) )
+        : '';
+
+    update_post_meta( $post_id, '_hp_social_teaser', $teaser );
+}
+
+/* =========================================
+   8. JSON-LD SCHEMA — ScholarlyArticle
+   ========================================= */
+
+/**
+ * Injiziert strukturierte Daten (Schema.org) als JSON-LD
+ * in den <head> von Single-Essay-Seiten.
+ *
+ * Typ: ScholarlyArticle (https://schema.org/ScholarlyArticle).
+ */
+add_action( 'wp_head', 'hp_essay_jsonld_schema', 5 );
+function hp_essay_jsonld_schema(): void {
+    if ( ! is_singular( 'essay' ) ) {
+        return;
+    }
+
+    $post    = get_queried_object();
+    $author  = get_the_author_meta( 'display_name', $post->post_author );
+    $excerpt = has_excerpt( $post->ID )
+        ? wp_strip_all_tags( get_the_excerpt( $post ) )
+        : wp_trim_words( wp_strip_all_tags( $post->post_content ), 40, ' …' );
+
+    $schema = [
+        '@context'      => 'https://schema.org',
+        '@type'         => 'ScholarlyArticle',
+        'headline'      => get_the_title( $post ),
+        'datePublished' => get_the_date( 'c', $post ),
+        'dateModified'  => get_the_modified_date( 'c', $post ),
+        'abstract'      => $excerpt,
+        'author'        => [
+            '@type' => 'Person',
+            'name'  => $author,
+        ],
+        'publisher'     => [
+            '@type' => 'Organization',
+            'name'  => get_bloginfo( 'name' ),
+            'url'   => home_url( '/' ),
+        ],
+        'mainEntityOfPage' => [
+            '@type' => 'WebPage',
+            '@id'   => get_permalink( $post ),
+        ],
+        'url'           => get_permalink( $post ),
+        'inLanguage'    => get_locale(),
+    ];
+
+    // Beitragsbild als image
+    if ( has_post_thumbnail( $post->ID ) ) {
+        $img_url = get_the_post_thumbnail_url( $post->ID, 'full' );
+        if ( $img_url ) {
+            $schema['image'] = $img_url;
+        }
+    }
+
+    // Wortanzahl
+    $word_count = str_word_count( wp_strip_all_tags( $post->post_content ) );
+    if ( $word_count > 0 ) {
+        $schema['wordCount'] = $word_count;
+    }
+
+    echo "\n<!-- Hasimuener Journal: JSON-LD -->\n";
+    echo '<script type="application/ld+json">';
+    echo wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT );
+    echo "</script>\n";
 }
