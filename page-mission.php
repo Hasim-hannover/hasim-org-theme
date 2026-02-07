@@ -38,17 +38,20 @@ get_header(); ?>
             <p>Ich bin mit sieben Jahren aus der Türkei nach Deutschland gekommen, kurdische Familie. Wer so aufwächst, sucht sich Politik nicht aus — sie ist einfach da. Man lernt früh, zwischen den Zeilen zu lesen. Man merkt, dass Regeln nicht für alle gleich gelten. Und man stellt Fragen, die andere nicht stellen müssen.</p>
             <p>Das hat mich geprägt, mehr als jedes Studium.</p>
 
-            <h3>Was ich gelernt habe</h3>
-            <p>Ich habe Medienwissenschaft studiert und arbeite als Entwickler und Digitalstratege. Das eine hilft mir zu verstehen, wie Strukturen funktionieren — in Medien, in Technologie, in Gesellschaft. Das andere hilft mir, selbst etwas zu bauen.</p>
-            <p>Beides zusammen hat mir gezeigt: Die wichtigsten Entscheidungen unserer Zeit werden in Code geschrieben, nicht in Parlamenten. Wer das ignoriert, wird gestaltet statt zu gestalten.</p>
+            <h3>Was ich mache</h3>
+            <p>Ich arbeite als Entwickler und Digitalstratege. Ich baue Systeme — und ich sehe, wie Systeme gebaut werden. Wer die Infrastruktur einer Gesellschaft versteht, versteht auch ihre Machtverhältnisse. Algorithmen entscheiden, wer sichtbar wird. Plattformen bestimmen, wie wir kommunizieren. Code ist kein neutrales Werkzeug — er formt, wie wir leben.</p>
+            <p>Genau dort setze ich an.</p>
 
-            <h3>Was mich antreibt</h3>
-            <p>Ich glaube, dass wir bessere Formen des Zusammenlebens finden können. Partizipativer, kommunaler, weniger abhängig von Nationalstaaten und Marktlogik. Denker wie Öcalan, Bookchin und auch Nietzsche haben mir dabei Türen geöffnet — aber ich folge keiner Lehre blind. Ich versuche, eigene Gedanken zu entwickeln, auch wenn die nicht immer fertig sind.</p>
-            <p>Dieses Journal ist der Ort, an dem ich das tue. Keine fertigen Antworten, sondern Versuche. Essays, Notizen, Fragen.</p>
-
-            <h3>Was das hier ist</h3>
-            <p>Das Hasimuener Journal ist kein Nachrichtenportal und kein Aktivismus-Blog. Es ist ein Ort zum Nachdenken — über digitale Macht, über Gesellschaft, über die Frage, wie wir leben wollen. Manchmal analytisch, manchmal persönlich, immer im Werden.</p>
-            <p>Wer mitlesen oder mitdenken will, ist willkommen.</p>
+            <h3>Was du hier findest</h3>
+            <p>Dieses Journal dreht sich um eine Frage: <strong>Wer gestaltet die digitale Gesellschaft — und nach wessen Regeln?</strong></p>
+            <p>Ich schreibe über Technologie, die politisch ist. Über Machtstrukturen, die im Code stecken. Über Alternativen zum Status quo — nicht als Theorie, sondern aus der Praxis von jemandem, der diese Systeme selbst baut.</p>
+            <p>Konkret heißt das:</p>
+            <ul>
+                <li><strong>Essays</strong> — Analysen zu digitaler Macht, Plattformökonomie und gesellschaftlichem Wandel</li>
+                <li><strong>Notizen</strong> — Kürzere Gedanken, Beobachtungen, Fragen im Werden</li>
+            </ul>
+            <p>Keine fertigen Antworten. Kein Aktivismus. Kein Nachrichtenportal. Nachdenken mit offenem Ausgang — von jemandem, der lieber baut als belehrt.</p>
+            <p>Wer mitlesen will, ist willkommen.</p>
 
         </div>
     </div>

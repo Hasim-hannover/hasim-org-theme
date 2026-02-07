@@ -240,6 +240,60 @@ function hp_flush_rewrite_rules() {
     hp_register_post_types();
     hp_register_taxonomies();
     flush_rewrite_rules();
+
+    // Standard-Themenfelder anlegen (einmalig bei Theme-Aktivierung)
+    hp_create_default_topics();
+}
+
+/**
+ * Legt Standard-Themenfelder auch an, wenn das Theme bereits aktiv ist.
+ * Prüft per Option, ob es schon gelaufen ist — läuft also nur einmal.
+ */
+add_action( 'init', 'hp_maybe_create_default_topics', 20 );
+function hp_maybe_create_default_topics(): void {
+    if ( get_option( 'hp_default_topics_created' ) ) {
+        return;
+    }
+    hp_create_default_topics();
+    update_option( 'hp_default_topics_created', true );
+}
+
+/**
+ * Legt die Standard-Themenfelder an, falls sie noch nicht existieren.
+ * Kann auch manuell aufgerufen werden.
+ */
+function hp_create_default_topics(): void {
+    $defaults = [
+        'digitale-macht' => [
+            'name'        => 'Digitale Macht',
+            'description' => 'Algorithmen, Plattformen, Überwachung — wer kontrolliert die Technologie, die uns kontrolliert?',
+        ],
+        'code-und-politik' => [
+            'name'        => 'Code & Politik',
+            'description' => 'Wenn Infrastruktur politisch wird: Software, Systeme und ihre gesellschaftlichen Folgen.',
+        ],
+        'gesellschaft-und-wandel' => [
+            'name'        => 'Gesellschaft & Wandel',
+            'description' => 'Wie wir zusammenleben — und wie es anders ginge.',
+        ],
+        'medien-und-narrative' => [
+            'name'        => 'Medien & Narrative',
+            'description' => 'Welche Geschichten erzählt werden, welche nicht — und warum das wichtig ist.',
+        ],
+        'identitaet-und-zugehoerigkeit' => [
+            'name'        => 'Identität & Zugehörigkeit',
+            'description' => 'Erfahrungen zwischen Kulturen, Sprachen und Systemen.',
+        ],
+    ];
+
+    foreach ( $defaults as $slug => $data ) {
+        if ( ! term_exists( $slug, 'topic' ) ) {
+            wp_insert_term( $data['name'], 'topic', [
+                'slug'        => $slug,
+                'description' => $data['description'],
+            ] );
+        }
+    }
 }
 
 /* =========================================
