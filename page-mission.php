@@ -16,7 +16,7 @@ get_header(); ?>
 <article class="hp-mission" aria-label="<?php the_title_attribute(); ?>">
 
     <header class="hp-mission__header">
-        <span class="hp-kicker">Journal</span>
+        <span class="hp-kicker">Zwischenräume</span>
         <h1 class="hp-mission__title"><?php the_title(); ?></h1>
     </header>
 

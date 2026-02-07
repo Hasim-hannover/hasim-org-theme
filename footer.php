@@ -54,7 +54,7 @@ $hp_year    = gmdate( 'Y' );
             <!-- Spalte 3: Meta / Legal -->
             <div class="hp-colophon__col hp-colophon__meta">
                 <span class="hp-colophon__label">Meta</span>
-                <p>&copy; <?php echo esc_html( $hp_year ); ?> Hasimuener Journal</p>
+                <p>&copy; <?php echo esc_html( $hp_year ); ?> Zwischenräume — Hasim Üner</p>
                 <ul class="hp-colophon__legal">
                     <li><a href="<?php echo esc_url( home_url( '/impressum/' ) ); ?>">Impressum</a></li>
                     <li><a href="<?php echo esc_url( home_url( '/datenschutz/' ) ); ?>">Datenschutz</a></li>

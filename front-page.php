@@ -57,7 +57,7 @@ get_header(); ?>
     <!-- Fallback: Kein Essay vorhanden -->
     <section class="editorial-hero editorial-hero--empty" aria-label="Aktueller Essay">
         <div class="editorial-hero__grid">
-            <div class="editorial-hero__meta hp-overline"><span>Journal</span></div>
+            <div class="editorial-hero__meta hp-overline"><span>Zwischenräume</span></div>
             <h1 class="editorial-hero__title">Verstehen, was sich&nbsp;verändert.</h1>
             <p class="editorial-hero__excerpt">Essays und Analysen zu Gesellschaft, Wissenschaft und den Strukturen, die unser Denken formen.</p>
         </div>

@@ -446,7 +446,7 @@ function hp_essay_jsonld_schema(): void {
         $schema['wordCount'] = $word_count;
     }
 
-    echo "\n<!-- Hasimuener Journal: JSON-LD -->\n";
+    echo "\n<!-- Zwischenräume: JSON-LD -->\n";
     echo '<script type="application/ld+json">';
     echo wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT );
     echo "</script>\n";
