@@ -1,12 +1,12 @@
 <?php
 /**
- * Template Name: Mission / Über das Journal
+ * Template Name: Warum ich schreibe
  *
- * Statische Seite „Über das Journal" — elegante Typografie,
- * keine Sidebar, max. Lesezeilenbreite.
+ * Persönliche Seite — wer ich bin, was mich bewegt,
+ * warum dieses Journal existiert.
  *
  * @package Hasimuener_Journal
- * @version 3.0.0
+ * @version 3.1.0
  */
 
 get_header(); ?>
@@ -34,24 +34,26 @@ get_header(); ?>
 
         <div class="hp-mission__prose prose">
 
-            <h3>Woher ich komme</h3>
-            <p>Ich bin mit sieben Jahren aus der Türkei nach Deutschland gekommen, kurdische Familie. Wer so aufwächst, sucht sich Politik nicht aus — sie ist einfach da. Man lernt früh, zwischen den Zeilen zu lesen. Man merkt, dass Regeln nicht für alle gleich gelten. Und man stellt Fragen, die andere nicht stellen müssen.</p>
-            <p>Das hat mich geprägt, mehr als jedes Studium.</p>
+            <h3>Die Rose weiß es</h3>
+            <p>Ich bin jemand, der glaubt, dass eine Rose weiß, dass sie schön ist. Dass der Regen weiß, warum er fällt. Dass nichts auf dieser Welt selbstverständlich ist — nicht der Morgen, nicht das Gespräch mit einem Fremden, nicht die Tatsache, dass wir hier sind und einander lesen können.</p>
+            <p>Das klingt vielleicht groß. Ist es aber nicht. Es ist das Gegenteil: Wer merkt, dass nichts selbstverständlich ist, wird leiser. Wird aufmerksamer. Schaut genauer hin.</p>
 
-            <h3>Was ich mache</h3>
-            <p>Ich arbeite als Entwickler und Digitalstratege. Ich baue Systeme — und ich sehe, wie Systeme gebaut werden. Wer die Infrastruktur einer Gesellschaft versteht, versteht auch ihre Machtverhältnisse. Algorithmen entscheiden, wer sichtbar wird. Plattformen bestimmen, wie wir kommunizieren. Code ist kein neutrales Werkzeug — er formt, wie wir leben.</p>
-            <p>Genau dort setze ich an.</p>
+            <h3>Zwischen zwei Welten</h3>
+            <p>Ich bin mit sieben Jahren aus der Türkei nach Deutschland gekommen, kurdische Familie. Wenn du zwischen zwei Sprachen aufwächst, zwischen zwei Arten, die Welt zu verstehen, lernst du etwas, das dir niemand beibringen kann: Es gibt immer noch eine andere Seite.</p>
+            <p>Das hat mich nicht klüger gemacht. Aber es hat mich gelehrt, zuzuhören, bevor ich spreche. Fragen zu stellen, bevor ich antworte. Und damit zu leben, dass ich nicht alles weiß — und dass das in Ordnung ist.</p>
+
+            <h3>Wahrhaftigkeit, nicht Wahrheit</h3>
+            <p>Ich suche hier nicht die große Wahrheit. Dafür bin ich der Falsche. Was ich suche, ist etwas anderes: <strong>Wahrhaftigkeit</strong>. Ehrlich sein mit dem, was ich sehe. Ehrlich sein mit dem, was ich nicht verstehe. Keine fertigen Thesen, kein Belehren, kein erhobener Zeigefinger.</p>
+            <p>Ich arbeite als Entwickler, ich baue digitale Systeme. Aber dieses Journal ist kein Tech-Blog. Es geht um die Fragen, die übrig bleiben, wenn man aufhört, alles für gegeben zu halten: <em>Wie wollen wir leben? Was übersehen wir? Was könnten wir anders machen?</em></p>
 
             <h3>Was du hier findest</h3>
-            <p>Dieses Journal dreht sich um eine Frage: <strong>Wer gestaltet die digitale Gesellschaft — und nach wessen Regeln?</strong></p>
-            <p>Ich schreibe über Technologie, die politisch ist. Über Machtstrukturen, die im Code stecken. Über Alternativen zum Status quo — nicht als Theorie, sondern aus der Praxis von jemandem, der diese Systeme selbst baut.</p>
-            <p>Konkret heißt das:</p>
+            <p>Dieses Journal ist ein offener Raum:</p>
             <ul>
-                <li><strong>Essays</strong> — Analysen zu digitaler Macht, Plattformökonomie und gesellschaftlichem Wandel</li>
-                <li><strong>Notizen</strong> — Kürzere Gedanken, Beobachtungen, Fragen im Werden</li>
+                <li><strong>Essays</strong> — längere Gedanken über Gesellschaft, Technologie und das, was dazwischen liegt</li>
+                <li><strong>Notizen</strong> — kürzere Beobachtungen, Fragen, Ideen im Werden</li>
             </ul>
-            <p>Keine fertigen Antworten. Kein Aktivismus. Kein Nachrichtenportal. Nachdenken mit offenem Ausgang — von jemandem, der lieber baut als belehrt.</p>
-            <p>Wer mitlesen will, ist willkommen.</p>
+            <p>Keine Antworten, die so tun, als wären sie fertig. Einfach jemand, der hinschaut und aufschreibt, was er sieht — in der Hoffnung, dass es anderen auch etwas gibt.</p>
+            <p>Wer mitlesen will, ist willkommen. Wirklich.</p>
 
         </div>
     </div>
