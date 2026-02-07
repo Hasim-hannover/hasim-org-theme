@@ -13,6 +13,32 @@
 defined( 'ABSPATH' ) || exit;
 
 /* =========================================
+   0. GENERATEPRESS — Standard-Meta deaktivieren
+   ========================================= */
+
+/**
+ * Entfernt die GeneratePress-eigene Ausgabe von Datum, Autor
+ * und Post-Meta auf unseren Custom Post Types,
+ * damit keine Dopplung mit unserem eigenen Template entsteht.
+ */
+add_action( 'wp', 'hp_disable_gp_post_meta' );
+function hp_disable_gp_post_meta(): void {
+    if ( ! is_singular( [ 'essay', 'note' ] ) ) {
+        return;
+    }
+
+    // Entry-Header-Meta (Datum, Autor, Kategorien)
+    remove_action( 'generate_after_entry_title', 'generate_post_meta' );
+    // Entry-Footer-Meta (Tags, Kategorien)
+    remove_action( 'generate_after_entry_content', 'generate_footer_meta' );
+
+    // Falls GeneratePress Premium aktiv ist
+    if ( function_exists( 'generate_entry_meta_header' ) ) {
+        remove_action( 'generate_after_entry_title', 'generate_entry_meta_header' );
+    }
+}
+
+/* =========================================
    1. ENQUEUES — Styles & Scripts
    ========================================= */
 
