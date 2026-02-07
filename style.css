@@ -1,15 +1,62 @@
 /*
  Theme Name:   Hasimuener Journal
- Description:  High-Performance Child Theme für GeneratePress
+ Description:  High-Performance Child Theme für GeneratePress — Editorial Design System
  Template:     generatepress
- Version:      1.1.0
+ Version:      2.0.0
 */
 
 /* =========================================
-   TYPOGRAFIE & DESIGN SYSTEM (NZZ / ZEIT STIL)
+   DESIGN TOKENS (CSS Custom Properties)
    ========================================= */
 
-/* @font-face: Merriweather (lokal gehostet) */
+:root {
+    /* Farben */
+    --hj-bg:            #f4f5f7;
+    --hj-bg-surface:    #ffffff;
+    --hj-text:          #222222;
+    --hj-text-secondary:#555555;
+    --hj-text-muted:    #888888;
+    --hj-accent:        #b12a2a;
+    --hj-rule:          #111111;
+    --hj-rule-light:    #d0d0d0;
+    --hj-border:        #e0e0e0;
+    --hj-callout-bg:    #faf8f5;
+    --hj-callout-border:#c9b99a;
+    --hj-topic-bg:      #eee;
+    --hj-topic-text:    #333;
+
+    /* Typografie */
+    --hj-serif:         'Merriweather', Georgia, 'Times New Roman', serif;
+    --hj-sans:          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    --hj-mono:          'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+
+    /* Schriftgrößen */
+    --hj-fs-xs:         0.7rem;
+    --hj-fs-sm:         0.8rem;
+    --hj-fs-base:       1.125rem;   /* 18px */
+    --hj-fs-md:         0.95rem;
+    --hj-fs-lg:         1.25rem;
+    --hj-fs-xl:         1.4rem;
+    --hj-fs-2xl:        clamp(1.8rem, 3.5vw, 2.6rem);
+    --hj-fs-3xl:        clamp(2.8rem, 6vw, 5.2rem);
+
+    /* Abstände */
+    --hj-space-xs:      0.5rem;
+    --hj-space-sm:      1rem;
+    --hj-space-md:      1.5rem;
+    --hj-space-lg:      2.5rem;
+    --hj-space-xl:      3.5rem;
+    --hj-space-2xl:     5rem;
+
+    /* Layout */
+    --hj-measure:       72ch;       /* optimale Lesezeilenbreite */
+    --hj-content-width:  1140px;
+    --hj-gutter:        2rem;
+}
+
+/* =========================================
+   @FONT-FACE — Merriweather (lokal)
+   ========================================= */
 
 @font-face {
     font-family: 'Merriweather';
@@ -19,7 +66,6 @@
          url('fonts/merriweather-v33-latin-300.woff') format('woff');
     font-display: swap;
 }
-
 @font-face {
     font-family: 'Merriweather';
     font-style: italic;
@@ -28,7 +74,6 @@
          url('fonts/merriweather-v33-latin-300italic.woff') format('woff');
     font-display: swap;
 }
-
 @font-face {
     font-family: 'Merriweather';
     font-style: normal;
@@ -37,7 +82,6 @@
          url('fonts/merriweather-v33-latin-700.woff') format('woff');
     font-display: swap;
 }
-
 @font-face {
     font-family: 'Merriweather';
     font-style: italic;
@@ -46,7 +90,6 @@
          url('fonts/merriweather-v33-latin-700italic.woff') format('woff');
     font-display: swap;
 }
-
 @font-face {
     font-family: 'Merriweather';
     font-style: normal;
@@ -55,7 +98,6 @@
          url('fonts/merriweather-v33-latin-900.woff') format('woff');
     font-display: swap;
 }
-
 @font-face {
     font-family: 'Merriweather';
     font-style: italic;
@@ -65,54 +107,387 @@
     font-display: swap;
 }
 
-/* 2. Basis-Layout */
-body {
-    background-color: #f4f5f7; /* Seriöses Zeitungs-Grau */
-    color: #222; 
-    font-family: 'Merriweather', Georgia, serif;
-    font-weight: 300;
-    line-height: 1.6;
-    font-size: 18px;
-}
-
-/* 3. Überschriften (Seriös mit Serifen) */
-h1, h2, h3, h4, h5, h6 {
-    font-family: 'Merriweather', serif;
-    font-weight: 700;
-    color: #111;
-    margin-bottom: 0.6em;
-    line-height: 1.3;
-}
-
-h1 { font-size: 2.8rem; letter-spacing: -1px; }
-h2 { font-size: 2.2rem; border-bottom: 2px solid #e0e0e0; padding-bottom: 10px; }
-
-/* 4. Links */
-a { color: #b12a2a; text-decoration: none; }
-a:hover { text-decoration: underline; }
-
 /* =========================================
-   FRONT PAGE — DIGITAL PUBLICATION LAYOUT
+   BASIS — Typografie & Layout
    ========================================= */
 
-/* ---------- General Rules ---------- */
+body {
+    background-color: var(--hj-bg);
+    color: var(--hj-text);
+    font-family: var(--hj-serif);
+    font-weight: 300;
+    font-size: var(--hj-fs-base);
+    line-height: 1.7;
+}
+
+/* --- Überschriften-Hierarchie --- */
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--hj-serif);
+    font-weight: 700;
+    color: var(--hj-rule);
+    line-height: 1.25;
+    margin-top: 0;
+    margin-bottom: 0.6em;
+}
+
+h1 {
+    font-weight: 900;
+    font-size: 2.4rem;
+    letter-spacing: -1px;
+    line-height: 1.15;
+}
+
+h2 {
+    font-size: 1.7rem;
+    padding-bottom: 0.4em;
+    border-bottom: 1px solid var(--hj-border);
+}
+
+h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+h4 {
+    font-family: var(--hj-sans);
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--hj-text-secondary);
+}
+
+/* --- Links --- */
+
+a {
+    color: var(--hj-accent);
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+/* --- Prose (Fließtext in Artikeln) --- */
+
+.prose {
+    max-width: var(--hj-measure);
+}
+
+.prose p {
+    margin-bottom: 1.4em;
+    text-align: justify;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+}
+
+.prose > p:first-of-type::first-letter {
+    font-weight: 900;
+    font-size: 3.4rem;
+    float: left;
+    line-height: 1;
+    margin-right: 0.06em;
+    margin-top: 0.05em;
+    color: var(--hj-rule);
+}
+
+/* --- Blockquote --- */
+
+blockquote,
+.prose blockquote {
+    margin: var(--hj-space-lg) 0;
+    padding: var(--hj-space-md) var(--hj-space-lg);
+    border-left: 3px solid var(--hj-rule);
+    background: transparent;
+    font-style: italic;
+    font-weight: 300;
+    font-size: var(--hj-fs-lg);
+    line-height: 1.6;
+    color: var(--hj-text-secondary);
+}
+
+blockquote cite,
+.prose blockquote cite {
+    display: block;
+    margin-top: var(--hj-space-sm);
+    font-family: var(--hj-sans);
+    font-style: normal;
+    font-size: var(--hj-fs-sm);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--hj-text-muted);
+}
+
+/* --- Fußnoten --- */
+
+.footnotes,
+.hp-footnotes {
+    margin-top: var(--hj-space-xl);
+    padding-top: var(--hj-space-md);
+    border-top: 1px solid var(--hj-rule);
+    font-size: var(--hj-fs-md);
+    line-height: 1.6;
+    color: var(--hj-text-secondary);
+}
+
+.footnotes ol,
+.hp-footnotes ol {
+    padding-left: 1.5em;
+}
+
+.footnotes li,
+.hp-footnotes li {
+    margin-bottom: 0.6em;
+}
+
+sup.footnote-ref a,
+a.footnote-backref {
+    font-family: var(--hj-sans);
+    font-size: 0.75em;
+    font-weight: 700;
+    color: var(--hj-accent);
+    text-decoration: none;
+    padding: 0 0.15em;
+}
+
+sup.footnote-ref a:hover,
+a.footnote-backref:hover {
+    text-decoration: underline;
+}
+
+/* --- Quellen --- */
+
+.hp-sources {
+    margin-top: var(--hj-space-lg);
+    padding: var(--hj-space-md);
+    background: var(--hj-callout-bg);
+    border: 1px solid var(--hj-border);
+    font-size: var(--hj-fs-md);
+}
+
+.hp-sources__title {
+    font-family: var(--hj-sans);
+    font-size: var(--hj-fs-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--hj-text-muted);
+    margin-bottom: var(--hj-space-sm);
+}
+
+.hp-sources ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.hp-sources li {
+    padding: 0.4em 0;
+    border-bottom: 1px solid var(--hj-border);
+    line-height: 1.5;
+}
+
+.hp-sources li:last-child {
+    border-bottom: none;
+}
+
+/* --- Callout-Box --- */
+
+.hp-callout {
+    margin: var(--hj-space-lg) 0;
+    padding: var(--hj-space-md) var(--hj-space-lg);
+    background: var(--hj-callout-bg);
+    border-left: 3px solid var(--hj-callout-border);
+    font-size: var(--hj-fs-md);
+    line-height: 1.65;
+}
+
+.hp-callout__label {
+    display: block;
+    font-family: var(--hj-sans);
+    font-size: var(--hj-fs-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--hj-callout-border);
+    margin-bottom: 0.5em;
+}
+
+/* --- Topic Pills --- */
+
+.hp-topics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.hp-topic-pill {
+    display: inline-block;
+    font-family: var(--hj-sans);
+    font-size: var(--hj-fs-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 0.3em 0.8em;
+    background: var(--hj-topic-bg);
+    color: var(--hj-topic-text);
+    border-radius: 2px;
+    text-decoration: none;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.hp-topic-pill:hover {
+    background: var(--hj-rule);
+    color: #fff;
+    text-decoration: none;
+}
+
+/* --- Inhaltsverzeichnis (TOC) --- */
+
+.hp-toc {
+    margin: var(--hj-space-lg) 0;
+    padding: var(--hj-space-md);
+    border: 1px solid var(--hj-border);
+    background: var(--hj-bg);
+}
+
+.hp-toc__title {
+    font-family: var(--hj-sans);
+    font-size: var(--hj-fs-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--hj-text-muted);
+    margin-bottom: var(--hj-space-sm);
+}
+
+.hp-toc ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    counter-reset: toc;
+}
+
+.hp-toc li {
+    counter-increment: toc;
+    padding: 0.35em 0;
+    border-bottom: 1px solid var(--hj-border);
+    font-family: var(--hj-sans);
+    font-size: var(--hj-fs-md);
+}
+
+.hp-toc li:last-child {
+    border-bottom: none;
+}
+
+.hp-toc li::before {
+    content: counter(toc, decimal-leading-zero) " ";
+    font-weight: 300;
+    color: var(--hj-text-muted);
+    margin-right: 0.4em;
+}
+
+.hp-toc a {
+    color: var(--hj-text);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.hp-toc a:hover {
+    color: var(--hj-accent);
+    text-decoration: none;
+}
+
+.hp-toc li.toc-h3 {
+    padding-left: 1.5em;
+    font-weight: 400;
+}
+
+/* --- Section-Kicker (Label über Überschriften) --- */
+
+.hp-kicker {
+    display: block;
+    font-family: var(--hj-sans);
+    font-weight: 700;
+    font-size: var(--hj-fs-xs);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--hj-accent);
+    margin-bottom: 0.5rem;
+}
+
+/* --- Section-Title (Sektionsüberschrift) --- */
+
+.hp-section-title {
+    font-family: var(--hj-serif);
+    font-weight: 700;
+    font-size: var(--hj-fs-sm);
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    color: var(--hj-rule);
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+/* --- Meta (Datum, Lesezeit) --- */
+
+.hp-meta {
+    font-family: var(--hj-sans);
+    font-size: var(--hj-fs-sm);
+    font-weight: 400;
+    color: var(--hj-text-muted);
+    letter-spacing: 0.3px;
+}
+
+.hp-meta time {
+    font-style: normal;
+}
+
+.hp-meta__separator::before {
+    content: '·';
+    margin: 0 0.4em;
+}
+
+/* --- Reading Time Badge --- */
+
+.hp-reading-time {
+    font-family: var(--hj-sans);
+    font-size: var(--hj-fs-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--hj-text-muted);
+}
+
+/* =========================================
+   LAYOUT — Horizontale Linien & Container
+   ========================================= */
 
 .journal-front {
-    max-width: 1140px;
+    max-width: var(--hj-content-width);
     margin: 0 auto;
-    padding: 0 2rem;
+    padding: 0 var(--hj-gutter);
 }
 
 .journal-rule {
     border: none;
-    border-top: 1px solid #111;
-    margin: 3.5rem 0;
+    border-top: 1px solid var(--hj-rule);
+    margin: var(--hj-space-xl) 0;
 }
 
-/* ---------- 1. Masthead ---------- */
+/* =========================================
+   FRONT PAGE — Sektionen
+   ========================================= */
+
+/* --- 1. Masthead --- */
 
 .masthead {
-    padding: 6rem 0 4rem;
+    padding: var(--hj-space-2xl) 0 calc(var(--hj-space-2xl) - 1rem);
     text-align: left;
 }
 
@@ -121,123 +496,175 @@ a:hover { text-decoration: underline; }
 }
 
 .masthead__headline {
-    font-family: 'Merriweather', Georgia, serif;
+    font-family: var(--hj-serif);
     font-weight: 900;
-    font-size: clamp(2.8rem, 6vw, 5.2rem);
+    font-size: var(--hj-fs-3xl);
     line-height: 1.08;
     letter-spacing: -2px;
-    color: #111;
+    color: var(--hj-rule);
     margin-bottom: 0.35em;
     border-bottom: none;
     padding-bottom: 0;
 }
 
 .masthead__subline {
-    font-family: 'Merriweather', Georgia, serif;
+    font-family: var(--hj-serif);
     font-weight: 300;
     font-style: italic;
-    font-size: 1.25rem;
-    color: #555;
+    font-size: var(--hj-fs-lg);
+    color: var(--hj-text-secondary);
     line-height: 1.6;
     margin-bottom: 1.8rem;
     max-width: 600px;
 }
 
 .masthead__link {
-    font-family: 'Merriweather', Georgia, serif;
+    font-family: var(--hj-sans);
     font-weight: 700;
-    font-size: 0.95rem;
-    color: #111;
+    font-size: var(--hj-fs-md);
+    color: var(--hj-rule);
     text-transform: uppercase;
     letter-spacing: 1.5px;
-    border-bottom: 1px solid #111;
+    border-bottom: 1px solid var(--hj-rule);
     padding-bottom: 2px;
     transition: color 0.2s ease, border-color 0.2s ease;
 }
 
 .masthead__link:hover {
-    color: #b12a2a;
-    border-color: #b12a2a;
+    color: var(--hj-accent);
+    border-color: var(--hj-accent);
     text-decoration: none;
 }
 
-/* ---------- 2. Lead Editorial ---------- */
+/* --- 2. Featured Essay --- */
 
-.lead-editorial {
-    padding: 1rem 0;
+.featured-essay {
+    padding: var(--hj-space-sm) 0;
 }
 
-.lead-editorial__header {
-    margin-bottom: 2rem;
+.featured-essay__header {
+    margin-bottom: var(--hj-space-lg);
 }
 
-.lead-editorial__kicker {
-    display: block;
-    font-family: 'Merriweather', Georgia, serif;
-    font-weight: 700;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: #b12a2a;
-    margin-bottom: 0.6rem;
-}
-
-.lead-editorial__title {
-    font-family: 'Merriweather', Georgia, serif;
+.featured-essay__title {
+    font-family: var(--hj-serif);
     font-weight: 900;
-    font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+    font-size: var(--hj-fs-2xl);
     line-height: 1.2;
-    color: #111;
+    color: var(--hj-rule);
     border-bottom: none;
     padding-bottom: 0;
 }
 
-.lead-editorial__columns {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2.5rem;
+.featured-essay__title a {
+    color: var(--hj-rule);
 }
 
-.lead-editorial__col p {
-    font-family: 'Merriweather', Georgia, serif;
+.featured-essay__title a:hover {
+    color: var(--hj-accent);
+    text-decoration: none;
+}
+
+.featured-essay__excerpt {
+    max-width: var(--hj-measure);
     font-weight: 300;
     font-size: 1.05rem;
     line-height: 1.75;
-    color: #333;
-    margin-bottom: 1.2em;
-    text-align: justify;
-    hyphens: auto;
-    -webkit-hyphens: auto;
+    color: var(--hj-text);
+    margin-bottom: var(--hj-space-md);
 }
 
-.lead-editorial__col:first-child p:first-child::first-letter {
-    font-family: 'Merriweather', Georgia, serif;
+.featured-essay__continue {
+    font-family: var(--hj-sans);
+    font-weight: 700;
+    font-size: var(--hj-fs-sm);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--hj-rule);
+}
+
+.featured-essay__continue:hover {
+    color: var(--hj-accent);
+    text-decoration: none;
+}
+
+/* --- 3. Notes List --- */
+
+.notes-section {
+    padding: var(--hj-space-sm) 0;
+}
+
+.notes-list {
+    border-top: 1px solid var(--hj-rule);
+}
+
+.notes-list__item {
+    padding: var(--hj-space-md) 0;
+    border-bottom: 1px solid var(--hj-rule-light);
+}
+
+.notes-list__item:last-child {
+    border-bottom: 1px solid var(--hj-rule);
+}
+
+.notes-list__title {
+    font-family: var(--hj-serif);
     font-weight: 900;
-    font-size: 3.6rem;
-    float: left;
-    line-height: 1;
-    margin-right: 0.08em;
-    margin-top: 0.05em;
-    color: #111;
+    font-size: var(--hj-fs-xl);
+    line-height: 1.3;
+    color: var(--hj-rule);
+    margin-bottom: 0.4rem;
+    border-bottom: none;
+    padding-bottom: 0;
 }
 
-/* ---------- 3. Competence Grid ---------- */
+.notes-list__title a {
+    color: var(--hj-rule);
+    text-decoration: none;
+}
+
+.notes-list__title a:hover {
+    color: var(--hj-accent);
+}
+
+.notes-list__excerpt {
+    font-weight: 300;
+    font-size: var(--hj-fs-md);
+    line-height: 1.65;
+    color: var(--hj-text-secondary);
+    max-width: 680px;
+}
+
+/* --- 4. Topics Grid --- */
+
+.topics-section {
+    padding: var(--hj-space-sm) 0;
+}
+
+.topics-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: var(--hj-space-md);
+}
+
+/* --- 5. Kompetenzfelder (beibehalten) --- */
 
 .competence-grid {
-    padding: 1rem 0;
+    padding: var(--hj-space-sm) 0;
 }
 
 .competence-grid__header {
-    margin-bottom: 2.5rem;
+    margin-bottom: var(--hj-space-lg);
 }
 
 .competence-grid__title {
-    font-family: 'Merriweather', Georgia, serif;
+    font-family: var(--hj-serif);
     font-weight: 700;
-    font-size: 0.85rem;
+    font-size: var(--hj-fs-sm);
     text-transform: uppercase;
     letter-spacing: 2.5px;
-    color: #111;
+    color: var(--hj-rule);
     border-bottom: none;
     padding-bottom: 0;
 }
@@ -249,8 +676,8 @@ a:hover { text-decoration: underline; }
 }
 
 .competence-card {
-    border-left: 1px solid #111;
-    padding: 1.5rem 2rem 2rem;
+    border-left: 1px solid var(--hj-rule);
+    padding: var(--hj-space-md) var(--hj-gutter) var(--hj-space-lg);
 }
 
 .competence-card:first-child {
@@ -260,154 +687,183 @@ a:hover { text-decoration: underline; }
 
 .competence-card__number {
     display: block;
-    font-family: 'Merriweather', Georgia, serif;
+    font-family: var(--hj-serif);
     font-weight: 300;
     font-style: italic;
     font-size: 1.1rem;
-    color: #999;
+    color: var(--hj-text-muted);
     margin-bottom: 0.8rem;
 }
 
 .competence-card__title {
-    font-family: 'Merriweather', Georgia, serif;
+    font-family: var(--hj-serif);
     font-weight: 900;
     font-size: 1.35rem;
     line-height: 1.3;
-    color: #111;
+    color: var(--hj-rule);
     margin-bottom: 0.8rem;
 }
 
 .competence-card__desc {
-    font-family: 'Merriweather', Georgia, serif;
+    font-family: var(--hj-serif);
     font-weight: 300;
-    font-size: 0.95rem;
+    font-size: var(--hj-fs-md);
     line-height: 1.7;
-    color: #444;
-    margin-bottom: 1.5rem;
+    color: var(--hj-text-secondary);
+    margin-bottom: var(--hj-space-md);
 }
 
 .competence-card__label {
     display: inline-block;
-    font-family: 'Merriweather', Georgia, serif;
+    font-family: var(--hj-sans);
     font-weight: 700;
-    font-size: 0.7rem;
+    font-size: var(--hj-fs-xs);
     text-transform: uppercase;
     letter-spacing: 1.5px;
-    color: #888;
-    border-top: 1px solid #ccc;
+    color: var(--hj-text-muted);
+    border-top: 1px solid var(--hj-rule-light);
     padding-top: 0.6rem;
 }
 
-/* ---------- 4. Newsroom ---------- */
-
-.newsroom {
-    padding: 1rem 0;
-}
-
-.newsroom__header {
-    margin-bottom: 2rem;
-}
-
-.newsroom__title {
-    font-family: 'Merriweather', Georgia, serif;
-    font-weight: 700;
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 2.5px;
-    color: #111;
-    border-bottom: none;
-    padding-bottom: 0;
-}
-
-.newsroom__list {
-    border-top: 1px solid #111;
-}
-
-.newsroom__item {
-    padding: 1.8rem 0;
-    border-bottom: 1px solid #d0d0d0;
-}
-
-.newsroom__item:last-child {
-    border-bottom: 1px solid #111;
-}
-
-.newsroom__date {
-    display: block;
-    font-family: 'Merriweather', Georgia, serif;
-    font-weight: 300;
-    font-style: italic;
-    font-size: 0.8rem;
-    color: #888;
-    margin-bottom: 0.4rem;
-    letter-spacing: 0.5px;
-}
-
-.newsroom__item-title {
-    font-family: 'Merriweather', Georgia, serif;
-    font-weight: 900;
-    font-size: 1.4rem;
-    line-height: 1.3;
-    color: #111;
-    margin-bottom: 0.5rem;
-    border-bottom: none;
-    padding-bottom: 0;
-}
-
-.newsroom__item-title a {
-    color: #111;
-    text-decoration: none;
-    transition: color 0.2s ease;
-}
-
-.newsroom__item-title a:hover {
-    color: #b12a2a;
-    text-decoration: none;
-}
-
-.newsroom__excerpt {
-    font-family: 'Merriweather', Georgia, serif;
-    font-weight: 300;
-    font-size: 0.95rem;
-    line-height: 1.65;
-    color: #555;
-    max-width: 680px;
-}
-
-.newsroom__empty {
-    font-family: 'Merriweather', Georgia, serif;
-    font-weight: 300;
-    font-style: italic;
-    font-size: 1rem;
-    color: #999;
-    padding: 2rem 0;
-}
-
-/* ---------- 5. Colophon ---------- */
+/* --- 6. Colophon --- */
 
 .journal-colophon {
-    padding: 2rem 0 4rem;
+    padding: var(--hj-space-lg) 0 calc(var(--hj-space-2xl) - 1rem);
     text-align: center;
 }
 
 .journal-colophon__text {
-    font-family: 'Merriweather', Georgia, serif;
-    font-weight: 300;
-    font-size: 0.8rem;
+    font-family: var(--hj-sans);
+    font-weight: 400;
+    font-size: var(--hj-fs-sm);
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: #999;
+    color: var(--hj-text-muted);
 }
 
-/* ---------- Responsive ---------- */
+/* --- Fallback (kein Inhalt) --- */
+
+.hp-empty {
+    font-family: var(--hj-serif);
+    font-weight: 300;
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--hj-text-muted);
+    padding: var(--hj-space-lg) 0;
+}
+
+/* =========================================
+   SINGLES — Essay & Note
+   ========================================= */
+
+.single-header {
+    max-width: var(--hj-content-width);
+    margin: 0 auto;
+    padding: var(--hj-space-2xl) var(--hj-gutter) var(--hj-space-lg);
+}
+
+.single-header__title {
+    font-weight: 900;
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1.12;
+    letter-spacing: -1px;
+    color: var(--hj-rule);
+    margin-bottom: 0.4em;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.single-body {
+    max-width: var(--hj-content-width);
+    margin: 0 auto;
+    padding: 0 var(--hj-gutter) var(--hj-space-2xl);
+}
+
+.single-body .prose {
+    max-width: var(--hj-measure);
+}
+
+/* =========================================
+   ARCHIVES — Essay & Note Listenansicht
+   ========================================= */
+
+.archive-header {
+    max-width: var(--hj-content-width);
+    margin: 0 auto;
+    padding: var(--hj-space-2xl) var(--hj-gutter) var(--hj-space-md);
+}
+
+.archive-header__title {
+    font-weight: 900;
+    font-size: 2rem;
+    color: var(--hj-rule);
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 0.3em;
+}
+
+.archive-header__desc {
+    font-weight: 300;
+    font-style: italic;
+    color: var(--hj-text-secondary);
+    max-width: 560px;
+}
+
+.archive-list {
+    max-width: var(--hj-content-width);
+    margin: 0 auto;
+    padding: 0 var(--hj-gutter) var(--hj-space-2xl);
+    border-top: 1px solid var(--hj-rule);
+}
+
+.archive-item {
+    padding: var(--hj-space-lg) 0;
+    border-bottom: 1px solid var(--hj-rule-light);
+}
+
+.archive-item:last-child {
+    border-bottom: 1px solid var(--hj-rule);
+}
+
+.archive-item__title {
+    font-weight: 900;
+    font-size: var(--hj-fs-xl);
+    line-height: 1.3;
+    color: var(--hj-rule);
+    margin-bottom: 0.4rem;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.archive-item__title a {
+    color: var(--hj-rule);
+}
+
+.archive-item__title a:hover {
+    color: var(--hj-accent);
+    text-decoration: none;
+}
+
+.archive-item__excerpt {
+    font-weight: 300;
+    font-size: var(--hj-fs-md);
+    line-height: 1.65;
+    color: var(--hj-text-secondary);
+    max-width: var(--hj-measure);
+    margin-top: 0.5em;
+}
+
+/* =========================================
+   RESPONSIVE
+   ========================================= */
 
 @media (max-width: 768px) {
-    .journal-front {
-        padding: 0 1.2rem;
+    :root {
+        --hj-gutter: 1.2rem;
     }
 
     .masthead {
-        padding: 3.5rem 0 2.5rem;
+        padding: var(--hj-space-xl) 0 var(--hj-space-lg);
     }
 
     .masthead__headline {
@@ -425,15 +881,23 @@ a:hover { text-decoration: underline; }
 
     .competence-card {
         border-left: none;
-        border-top: 1px solid #111;
-        padding: 1.5rem 0;
+        border-top: 1px solid var(--hj-rule);
+        padding: var(--hj-space-md) 0;
     }
 
     .competence-card:first-child {
         border-top: none;
     }
 
-    .newsroom__item-title {
+    .notes-list__title {
         font-size: 1.2rem;
+    }
+
+    .single-header {
+        padding: var(--hj-space-xl) var(--hj-gutter) var(--hj-space-md);
+    }
+
+    .hp-toc {
+        margin: var(--hj-space-md) 0;
     }
 }
