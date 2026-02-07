@@ -2,50 +2,94 @@
 /**
  * Single Template: Essay
  * 
- * Longform-Artikel mit Inhaltsverzeichnis, Lesedauer, Topic-Pills.
+ * Longform-Artikel mit Beitragsbild, Inhaltsverzeichnis, Lesedauer, Topic-Pills.
  * TOC wird via JS aus H2/H3-Elementen generiert.
  *
  * @package Hasimuener_Journal
- * @version 2.0.0
+ * @version 2.1.0
  */
 
 get_header(); ?>
 
 <?php while ( have_posts() ) : the_post(); ?>
 
-<header class="single-header" role="banner">
-    <span class="hp-kicker">Essay</span>
-    <h1 class="single-header__title"><?php the_title(); ?></h1>
+<article class="essay-article" aria-label="<?php the_title_attribute(); ?>">
 
-    <div class="hp-meta">
-        <time datetime="<?php echo esc_attr( get_the_date( 'c' ) ); ?>">
-            <?php echo esc_html( get_the_date( 'j. F Y' ) ); ?>
-        </time>
-        <span class="hp-meta__separator"></span>
-        <span class="hp-reading-time"><?php echo esc_html( hp_reading_time() ); ?></span>
-    </div>
+    <!-- Header -->
+    <header class="single-header" role="banner">
+        <span class="hp-kicker">Essay</span>
+        <h1 class="single-header__title"><?php the_title(); ?></h1>
 
-    <?php
-    $topics = get_the_terms( get_the_ID(), 'topic' );
-    if ( $topics && ! is_wp_error( $topics ) ) : ?>
-        <ul class="hp-topics" aria-label="Themenfelder" style="margin-top: 1rem;">
-            <?php foreach ( $topics as $topic ) : ?>
-                <li><a class="hp-topic-pill" href="<?php echo esc_url( get_term_link( $topic ) ); ?>"><?php echo esc_html( $topic->name ); ?></a></li>
-            <?php endforeach; ?>
-        </ul>
+        <?php if ( has_excerpt() ) : ?>
+            <p class="single-header__excerpt"><?php echo esc_html( get_the_excerpt() ); ?></p>
+        <?php endif; ?>
+
+        <div class="hp-meta">
+            <time datetime="<?php echo esc_attr( get_the_date( 'c' ) ); ?>">
+                <?php echo esc_html( get_the_date( 'j. F Y' ) ); ?>
+            </time>
+            <span class="hp-meta__separator"></span>
+            <span class="hp-reading-time"><?php echo esc_html( hp_reading_time() ); ?></span>
+        </div>
+
+        <?php
+        $topics = get_the_terms( get_the_ID(), 'topic' );
+        if ( $topics && ! is_wp_error( $topics ) ) : ?>
+            <ul class="hp-topics" aria-label="Themenfelder">
+                <?php foreach ( $topics as $topic ) : ?>
+                    <li><a class="hp-topic-pill" href="<?php echo esc_url( get_term_link( $topic ) ); ?>"><?php echo esc_html( $topic->name ); ?></a></li>
+                <?php endforeach; ?>
+            </ul>
+        <?php endif; ?>
+    </header>
+
+    <!-- Beitragsbild -->
+    <?php if ( has_post_thumbnail() ) : ?>
+        <figure class="essay-hero-image">
+            <?php the_post_thumbnail( 'large', array(
+                'class'   => 'essay-hero-image__img',
+                'loading' => 'eager',
+            ) ); ?>
+            <?php
+            $caption = get_the_post_thumbnail_caption();
+            if ( $caption ) : ?>
+                <figcaption class="essay-hero-image__caption"><?php echo esc_html( $caption ); ?></figcaption>
+            <?php endif; ?>
+        </figure>
     <?php endif; ?>
-</header>
 
-<article class="single-body" aria-label="<?php the_title_attribute(); ?>">
+    <!-- Inhalt -->
+    <div class="single-body">
 
-    <!-- TOC wird via JS befüllt -->
-    <nav class="hp-toc" id="js-toc" aria-label="Inhaltsverzeichnis" hidden>
-        <span class="hp-toc__title">Inhalt</span>
-        <ol id="js-toc-list"></ol>
-    </nav>
+        <!-- TOC wird via JS befüllt -->
+        <nav class="hp-toc" id="js-toc" aria-label="Inhaltsverzeichnis" hidden>
+            <span class="hp-toc__title">Inhalt</span>
+            <ol id="js-toc-list"></ol>
+        </nav>
 
-    <div class="prose">
-        <?php the_content(); ?>
+        <div class="prose">
+            <?php the_content(); ?>
+        </div>
+
+        <!-- Artikel-Fußzeile -->
+        <footer class="essay-footer">
+            <hr class="journal-rule" aria-hidden="true">
+            <div class="hp-meta">
+                <span>Veröffentlicht am <?php echo esc_html( get_the_date( 'j. F Y' ) ); ?></span>
+                <span class="hp-meta__separator"></span>
+                <span><?php echo esc_html( hp_reading_time() ); ?></span>
+            </div>
+            <?php
+            $topics_footer = get_the_terms( get_the_ID(), 'topic' );
+            if ( $topics_footer && ! is_wp_error( $topics_footer ) ) : ?>
+                <ul class="hp-topics" aria-label="Themenfelder">
+                    <?php foreach ( $topics_footer as $topic ) : ?>
+                        <li><a class="hp-topic-pill" href="<?php echo esc_url( get_term_link( $topic ) ); ?>"><?php echo esc_html( $topic->name ); ?></a></li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php endif; ?>
+        </footer>
+
     </div>
 
 </article>
