@@ -692,6 +692,91 @@ a.footnote-backref:hover {
     margin-top: var(--hj-space-md);
 }
 
+/* =========================================
+   PAGE: MISSION (Über das Journal)
+   ========================================= */
+
+.hp-mission {
+    max-width: var(--hj-content-width);
+    margin: 0 auto;
+    padding: 0 var(--hj-gutter);
+}
+
+.hp-mission__header {
+    padding: var(--hj-space-2xl) 0 var(--hj-space-lg);
+    max-width: 65ch;
+}
+
+.hp-mission__title {
+    font-family: var(--hj-serif);
+    font-weight: 900;
+    font-size: clamp(2rem, 4.5vw, 3.2rem);
+    line-height: 1.1;
+    letter-spacing: -1.5px;
+    color: var(--hj-rule);
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.hp-mission__body {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--hj-space-xl);
+    padding-bottom: var(--hj-space-2xl);
+}
+
+@media (min-width: 768px) {
+    .hp-mission__body {
+        grid-template-columns: 200px 1fr;
+        gap: var(--hj-space-xl);
+        align-items: start;
+    }
+}
+
+.hp-mission__portrait {
+    margin: 0;
+}
+
+.hp-mission__portrait img {
+    display: block;
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 2px;
+    filter: grayscale(20%);
+}
+
+.hp-mission__prose {
+    max-width: 65ch;
+}
+
+.hp-mission__prose h3 {
+    font-family: var(--hj-sans);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    color: var(--hj-text-muted);
+    margin-top: var(--hj-space-lg);
+    margin-bottom: var(--hj-space-sm);
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.hp-mission__prose h3:first-child {
+    margin-top: 0;
+}
+
+.hp-mission__prose p {
+    font-family: var(--hj-serif);
+    font-weight: 300;
+    font-size: var(--hj-fs-base);
+    line-height: 1.75;
+    color: var(--hj-text);
+    margin-bottom: 1.2em;
+    text-align: left;
+}
+
 /* --- 5. Kolophon-Footer --- */
 
 .hp-colophon {
@@ -736,6 +821,26 @@ a.footnote-backref:hover {
     line-height: 1.65;
     color: var(--hj-text-secondary);
     max-width: 360px;
+}
+
+.hp-colophon__mission-link {
+    display: inline-block;
+    margin-top: 0.6rem;
+    font-family: var(--hj-sans);
+    font-size: var(--hj-fs-sm);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--hj-rule);
+    border-bottom: 1px solid var(--hj-rule);
+    padding-bottom: 1px;
+    transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.hp-colophon__mission-link:hover {
+    color: var(--hj-accent);
+    border-color: var(--hj-accent);
+    text-decoration: none;
 }
 
 .hp-colophon__topic-list {
@@ -1024,6 +1129,72 @@ a.footnote-backref:hover {
 
 .essay-footer .hp-topics {
     margin-top: var(--hj-space-sm);
+}
+
+/* --- Share-Buttons --- */
+
+.hp-share {
+    margin: var(--hj-space-lg) 0;
+}
+
+.hp-share__label {
+    display: block;
+    font-family: var(--hj-sans);
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    color: var(--hj-text-muted);
+    margin-bottom: 0.8rem;
+}
+
+.hp-share__list {
+    display: flex;
+    gap: 0.6rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.hp-share__link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    border: 1px solid var(--hj-border);
+    border-radius: 2px;
+    background: transparent;
+    font-family: var(--hj-sans);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--hj-text-secondary);
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.hp-share__link:hover {
+    background: var(--hj-rule);
+    color: #fff;
+    border-color: var(--hj-rule);
+    text-decoration: none;
+}
+
+.hp-share__link--x {
+    font-style: normal;
+}
+
+.hp-share__link--li {
+    font-style: normal;
+    font-weight: 900;
+    font-size: 0.9rem;
+}
+
+.hp-share__link--copy.is-copied {
+    background: var(--hj-accent);
+    color: #fff;
+    border-color: var(--hj-accent);
 }
 
 /* =========================================

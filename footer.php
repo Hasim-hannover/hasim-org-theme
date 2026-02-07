@@ -1,12 +1,12 @@
-<?php
+1<?php
 /**
  * Footer Template — Kolophon
  *
- * Dreispaltiges Kolophon: Mission · Themenindex · Meta.
+ * Dreispaltiges Kolophon: Herausgeber · Themenindex · Meta.
  * Ersetzt den GeneratePress-Standard-Footer.
  *
  * @package Hasimuener_Journal
- * @version 3.0.0
+ * @version 3.1.0
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -22,10 +22,11 @@ $hp_year    = gmdate( 'Y' );
     <footer class="hp-colophon" role="contentinfo" aria-label="Kolophon">
         <div class="hp-colophon__inner">
 
-            <!-- Spalte 1: Mission -->
+            <!-- Spalte 1: Herausgeber -->
             <div class="hp-colophon__col hp-colophon__mission">
-                <span class="hp-colophon__label">Journal</span>
-                <p>Ein Journal für digitale Souveränität und evidenzbasierten Diskurs.</p>
+                <span class="hp-colophon__label">Herausgeber</span>
+                <p>Herausgegeben von Hasim Üner — Medienwissenschaftler &amp;&nbsp;Digitalstratege.</p>
+                <a class="hp-colophon__mission-link" href="<?php echo esc_url( home_url( '/mission/' ) ); ?>">Mehr zur Mission &rarr;</a>
             </div>
 
             <!-- Spalte 2: Themenindex -->

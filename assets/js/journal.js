@@ -4,12 +4,13 @@
  * 1. Sticky TOC mit Active-Section-Tracking (IntersectionObserver)
  * 2. Lesefortschritts-Balken
  * 3. Footnote Smooth Scroll
+ * 4. Share — Link kopieren
  * 
  * Geladen nur auf Singles (essay, note, post).
  * Kein Framework. Kein Build-Step. ~3KB.
  *
  * @package Hasimuener_Journal
- * @version 3.0.0
+ * @version 3.1.0
  */
 
 ( function () {
@@ -226,6 +227,48 @@
         buildTOC();
         initReadingProgress();
         initFootnoteScroll();
+        initShareCopyLink();
+    }
+
+    /* =========================================
+       4. SHARE — Link kopieren
+       ========================================= */
+
+    function initShareCopyLink() {
+        var buttons = document.querySelectorAll( '.hp-share__link--copy' );
+
+        buttons.forEach( function( btn ) {
+            btn.addEventListener( 'click', function() {
+                var url = btn.getAttribute( 'data-url' );
+                if ( ! url ) return;
+
+                if ( navigator.clipboard && navigator.clipboard.writeText ) {
+                    navigator.clipboard.writeText( url ).then( function() {
+                        showCopied( btn );
+                    } );
+                } else {
+                    // Fallback
+                    var input = document.createElement( 'input' );
+                    input.value = url;
+                    document.body.appendChild( input );
+                    input.select();
+                    document.execCommand( 'copy' );
+                    document.body.removeChild( input );
+                    showCopied( btn );
+                }
+            } );
+        } );
+    }
+
+    function showCopied( btn ) {
+        var original = btn.innerHTML;
+        btn.innerHTML = '✓';
+        btn.classList.add( 'is-copied' );
+
+        setTimeout( function() {
+            btn.innerHTML = original;
+            btn.classList.remove( 'is-copied' );
+        }, 2000 );
     }
 
 } )();

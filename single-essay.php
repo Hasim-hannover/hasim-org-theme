@@ -120,6 +120,23 @@ get_header(); ?>
             <!-- Artikel-Fußzeile -->
             <footer class="essay-footer">
                 <hr class="journal-rule" aria-hidden="true">
+
+                <!-- Teilen -->
+                <?php
+                $share_url   = rawurlencode( get_permalink() );
+                $share_title = rawurlencode( get_the_title() );
+                $share_text  = rawurlencode( get_the_title() . ' — ' . get_bloginfo( 'name' ) );
+                ?>
+                <nav class="hp-share" aria-label="Beitrag teilen">
+                    <span class="hp-share__label">Teilen</span>
+                    <ul class="hp-share__list">
+                        <li><a class="hp-share__link hp-share__link--x" href="https://x.com/intent/tweet?url=<?php echo $share_url; ?>&amp;text=<?php echo $share_title; ?>" target="_blank" rel="noopener noreferrer" aria-label="Auf X teilen">𝕏</a></li>
+                        <li><a class="hp-share__link hp-share__link--li" href="https://www.linkedin.com/sharing/share-offsite/?url=<?php echo $share_url; ?>" target="_blank" rel="noopener noreferrer" aria-label="Auf LinkedIn teilen">in</a></li>
+                        <li><a class="hp-share__link hp-share__link--mail" href="mailto:?subject=<?php echo $share_title; ?>&amp;body=<?php echo $share_text; ?>%20<?php echo $share_url; ?>" aria-label="Per E-Mail teilen">✉</a></li>
+                        <li><button class="hp-share__link hp-share__link--copy" data-url="<?php echo esc_url( get_permalink() ); ?>" aria-label="Link kopieren" type="button">🔗</button></li>
+                    </ul>
+                </nav>
+
                 <?php
                 $topics_footer = get_the_terms( get_the_ID(), 'topic' );
                 if ( $topics_footer && ! is_wp_error( $topics_footer ) ) : ?>
