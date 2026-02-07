@@ -98,37 +98,44 @@ get_header(); ?>
 
     <?php endif; ?>
 
-    <!-- Inhalt -->
-    <div class="single-body">
+    <!-- Lesefortschritt -->
+    <div class="reading-progress" id="js-reading-progress" aria-hidden="true">
+        <div class="reading-progress__bar" id="js-reading-bar"></div>
+    </div>
 
-        <!-- TOC wird via JS befüllt -->
-        <nav class="hp-toc" id="js-toc" aria-label="Inhaltsverzeichnis" hidden>
+    <!-- Inhalt mit Sticky TOC -->
+    <div class="single-body single-body--with-toc">
+
+        <!-- TOC: auf Desktop sticky neben dem Text -->
+        <aside class="hp-toc" id="js-toc" aria-label="Inhaltsverzeichnis" hidden>
             <span class="hp-toc__title">Inhalt</span>
             <ol id="js-toc-list"></ol>
-        </nav>
+        </aside>
 
-        <div class="prose">
-            <?php the_content(); ?>
-        </div>
-
-        <!-- Artikel-Fußzeile -->
-        <footer class="essay-footer">
-            <hr class="journal-rule" aria-hidden="true">
-            <div class="hp-meta">
-                <span>Veröffentlicht am <?php echo esc_html( get_the_date( 'j. F Y' ) ); ?></span>
-                <span class="hp-meta__separator"></span>
-                <span><?php echo esc_html( hp_reading_time() ); ?></span>
+        <div class="single-body__main">
+            <div class="prose">
+                <?php the_content(); ?>
             </div>
-            <?php
-            $topics_footer = get_the_terms( get_the_ID(), 'topic' );
-            if ( $topics_footer && ! is_wp_error( $topics_footer ) ) : ?>
-                <ul class="hp-topics" aria-label="Themenfelder">
-                    <?php foreach ( $topics_footer as $topic ) : ?>
-                        <li><a class="hp-topic-pill" href="<?php echo esc_url( get_term_link( $topic ) ); ?>"><?php echo esc_html( $topic->name ); ?></a></li>
-                    <?php endforeach; ?>
-                </ul>
-            <?php endif; ?>
-        </footer>
+
+            <!-- Artikel-Fußzeile -->
+            <footer class="essay-footer">
+                <hr class="journal-rule" aria-hidden="true">
+                <div class="hp-meta">
+                    <span>Veröffentlicht am <?php echo esc_html( get_the_date( 'j. F Y' ) ); ?></span>
+                    <span class="hp-meta__separator"></span>
+                    <span><?php echo esc_html( hp_reading_time() ); ?></span>
+                </div>
+                <?php
+                $topics_footer = get_the_terms( get_the_ID(), 'topic' );
+                if ( $topics_footer && ! is_wp_error( $topics_footer ) ) : ?>
+                    <ul class="hp-topics" aria-label="Themenfelder">
+                        <?php foreach ( $topics_footer as $topic ) : ?>
+                            <li><a class="hp-topic-pill" href="<?php echo esc_url( get_term_link( $topic ) ); ?>"><?php echo esc_html( $topic->name ); ?></a></li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php endif; ?>
+            </footer>
+        </div>
 
     </div>
 

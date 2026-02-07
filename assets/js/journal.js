@@ -1,21 +1,25 @@
 /**
  * Hasimuener Journal — Frontend JS
  * 
- * 1. Inhaltsverzeichnis (TOC) aus H2/H3 generieren
- * 2. Footnote Smooth Scroll
+ * 1. Sticky TOC mit Active-Section-Tracking (IntersectionObserver)
+ * 2. Lesefortschritts-Balken
+ * 3. Footnote Smooth Scroll
  * 
  * Geladen nur auf Singles (essay, note, post).
- * Kein Framework. Kein Build-Step. ~2KB.
+ * Kein Framework. Kein Build-Step. ~3KB.
  *
  * @package Hasimuener_Journal
- * @version 2.0.0
+ * @version 3.0.0
  */
 
 ( function () {
     'use strict';
 
+    var headingsArray = [];
+    var tocItems      = [];
+
     /* =========================================
-       1. TABLE OF CONTENTS
+       1. TABLE OF CONTENTS + ACTIVE TRACKING
        ========================================= */
 
     function buildTOC() {
@@ -24,19 +28,20 @@
 
         if ( ! tocNav || ! tocList ) return;
 
-        var prose    = document.querySelector( '.prose' );
+        var prose = document.querySelector( '.prose' );
         if ( ! prose ) return;
 
         var headings = prose.querySelectorAll( 'h2, h3' );
-        if ( headings.length < 2 ) return; // TOC nur bei 2+ Überschriften
+        if ( headings.length < 2 ) return;
 
         headings.forEach( function ( heading, index ) {
-            // ID generieren falls nicht vorhanden
             if ( ! heading.id ) {
                 heading.id = 'section-' + ( index + 1 );
             }
 
             var li = document.createElement( 'li' );
+            li.setAttribute( 'data-target', heading.id );
+
             if ( heading.tagName === 'H3' ) {
                 li.classList.add( 'toc-h3' );
             }
@@ -45,7 +50,6 @@
             a.href = '#' + heading.id;
             a.textContent = heading.textContent;
 
-            // Smooth Scroll
             a.addEventListener( 'click', function ( e ) {
                 e.preventDefault();
                 smoothScrollTo( heading );
@@ -54,14 +58,121 @@
 
             li.appendChild( a );
             tocList.appendChild( li );
+
+            headingsArray.push( heading );
+            tocItems.push( li );
         } );
 
         // TOC sichtbar machen
         tocNav.removeAttribute( 'hidden' );
+        tocNav.setAttribute( 'data-visible', 'true' );
+
+        // Active Section Tracking starten
+        initActiveTracking();
+    }
+
+    function initActiveTracking() {
+        // IntersectionObserver: beobachtet Überschriften
+        if ( ! ( 'IntersectionObserver' in window ) ) return;
+
+        var currentIndex = -1;
+
+        var observer = new IntersectionObserver( function ( entries ) {
+            entries.forEach( function ( entry ) {
+                if ( entry.isIntersecting ) {
+                    var idx = headingsArray.indexOf( entry.target );
+                    if ( idx !== -1 ) {
+                        setActive( idx );
+                    }
+                }
+            } );
+        }, {
+            rootMargin: '-10% 0px -75% 0px',
+            threshold: 0
+        } );
+
+        headingsArray.forEach( function ( heading ) {
+            observer.observe( heading );
+        } );
+
+        // Fallback: Scroll-basiert für präzisere Erkennung
+        var ticking = false;
+        window.addEventListener( 'scroll', function () {
+            if ( ! ticking ) {
+                requestAnimationFrame( function () {
+                    updateActiveOnScroll();
+                    ticking = false;
+                } );
+                ticking = true;
+            }
+        }, { passive: true } );
+    }
+
+    function updateActiveOnScroll() {
+        var scrollPos = window.pageYOffset + 120;
+        var active    = -1;
+
+        for ( var i = 0; i < headingsArray.length; i++ ) {
+            if ( headingsArray[ i ].offsetTop <= scrollPos ) {
+                active = i;
+            }
+        }
+
+        if ( active >= 0 ) {
+            setActive( active );
+        }
+    }
+
+    function setActive( index ) {
+        tocItems.forEach( function ( item, i ) {
+            if ( i === index ) {
+                item.classList.add( 'is-active' );
+            } else {
+                item.classList.remove( 'is-active' );
+            }
+        } );
     }
 
     /* =========================================
-       2. FOOTNOTE SMOOTH SCROLL
+       2. READING PROGRESS BAR
+       ========================================= */
+
+    function initReadingProgress() {
+        var bar   = document.getElementById( 'js-reading-bar' );
+        var prose = document.querySelector( '.prose' );
+
+        if ( ! bar || ! prose ) return;
+
+        var ticking = false;
+
+        window.addEventListener( 'scroll', function () {
+            if ( ! ticking ) {
+                requestAnimationFrame( function () {
+                    updateProgress( bar, prose );
+                    ticking = false;
+                } );
+                ticking = true;
+            }
+        }, { passive: true } );
+    }
+
+    function updateProgress( bar, prose ) {
+        var proseRect  = prose.getBoundingClientRect();
+        var proseTop   = prose.offsetTop;
+        var proseHeight = prose.offsetHeight;
+        var scrollPos  = window.pageYOffset;
+        var windowH    = window.innerHeight;
+
+        var start    = proseTop;
+        var end      = proseTop + proseHeight - windowH;
+        var progress = ( scrollPos - start ) / ( end - start );
+
+        progress = Math.max( 0, Math.min( 1, progress ) );
+        bar.style.width = ( progress * 100 ) + '%';
+    }
+
+    /* =========================================
+       3. FOOTNOTE SMOOTH SCROLL
        ========================================= */
 
     function initFootnoteScroll() {
@@ -86,20 +197,17 @@
        ========================================= */
 
     function smoothScrollTo( element ) {
-        var offset = 20; // Abstand zum oberen Rand
+        var offset = 24;
 
         if ( 'scrollBehavior' in document.documentElement.style ) {
-            // Native smooth scroll
             window.scrollTo( {
                 top: element.getBoundingClientRect().top + window.pageYOffset - offset,
                 behavior: 'smooth'
             } );
         } else {
-            // Fallback
             window.scrollTo( 0, element.getBoundingClientRect().top + window.pageYOffset - offset );
         }
 
-        // Focus für Accessibility
         element.setAttribute( 'tabindex', '-1' );
         element.focus( { preventScroll: true } );
     }
@@ -116,6 +224,7 @@
 
     function init() {
         buildTOC();
+        initReadingProgress();
         initFootnoteScroll();
     }
 
