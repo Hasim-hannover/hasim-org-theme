@@ -45,13 +45,14 @@ get_header(); ?>
             <p>Doch das Internet ist heute oft ein Ort, an dem alle schreien und niemand zuhört. Ein Ort der Kälte, nicht der Begegnung. Wir müssen aufpassen, dass wir in diesem Lärm nicht verlernen, was echte Resonanz bedeutet.</p>
 
             <h3>Struktur als Fürsorge</h3>
-            <p>Wenn man seine Wurzeln verpflanzt — wie ich als Kind aus der Türkei nach Deutschland —, lernt man schnell: Regeln können ausgrenzen. Systeme können kalt sein.</p>
+            <p>Wenn man seine Wurzeln verpflanzt — wie ich als Kind kurdischer Herkunft aus der Türkei nach Deutschland —, lernt man schnell: Regeln können ausgrenzen. Systeme können kalt sein.</p>
             <p>Aber ich habe auch gelernt: Gute Organisation kann Freiheit schenken. Doch Struktur hat nur dann eine positive Wirkung, wenn sie mit dem „Super Skill" Empathie gebaut wird. Wenn sie aus Liebe getan wird.</p>
-            <p><strong>Struktur ohne Liebe ist bloß Verwaltung.</strong></p>
-            <p>Struktur mit Liebe ist wie ein Rankgitter für die Rose: Sie engt nicht ein, sondern sie gibt den Halt, den man braucht, um über sich hinauszuwachsen.</p>
+            <p><strong>Struktur ohne Liebe ist niemals harmlos. Sie ist Kälte.</strong></p>
+            <p>Sie reduziert den Menschen auf eine Funktion, auf eine Nummer. Sie ordnet nicht, um zu helfen, sondern um verfügbar zu machen.</p>
+            <p>Struktur mit Liebe hingegen ist wie ein Rankgitter für die Rose: Sie engt nicht ein, sondern sie gibt den Halt, den man braucht, um über sich hinauszuwachsen.</p>
 
             <h3>Was ich mache</h3>
-            <p>Ich baue digitale Systeme. Nicht, um Menschen in Prozesse zu zwingen, sondern um Räume zu schaffen, in denen sie atmen können. Ich nutze Technik, um das Menschliche zu beschützen, nicht um es aufzulösen.</p>
+            <p>Ich baue digitale Systeme. Nicht, um Menschen in starre Prozesse zu zwingen, sondern um Räume zu schaffen, in denen sie atmen können. Ich nutze Technik, um das Menschliche zu beschützen, nicht um es aufzulösen.</p>
             <ul>
                 <li><strong>Essays</strong> — Über Technik, die dem Leben dient.</li>
                 <li><strong>Notizen</strong> — Gedanken eines Menschen, der lieber mit Herz baut als nur mit Kalkül.</li>
