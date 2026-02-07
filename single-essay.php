@@ -2,11 +2,11 @@
 /**
  * Single Template: Essay
  * 
- * Longform-Artikel mit Beitragsbild, Inhaltsverzeichnis, Lesedauer, Topic-Pills.
+ * Longform-Artikel mit Beitragsbild-Hero, Inhaltsverzeichnis, Lesedauer, Topic-Pills.
  * TOC wird via JS aus H2/H3-Elementen generiert.
  *
  * @package Hasimuener_Journal
- * @version 2.1.0
+ * @version 2.2.0
  */
 
 get_header(); ?>
@@ -15,47 +15,87 @@ get_header(); ?>
 
 <article class="essay-article" aria-label="<?php the_title_attribute(); ?>">
 
-    <!-- Header -->
-    <header class="single-header" role="banner">
-        <span class="hp-kicker">Essay</span>
-        <h1 class="single-header__title"><?php the_title(); ?></h1>
-
-        <?php if ( has_excerpt() ) : ?>
-            <p class="single-header__excerpt"><?php echo esc_html( get_the_excerpt() ); ?></p>
-        <?php endif; ?>
-
-        <div class="hp-meta">
-            <time datetime="<?php echo esc_attr( get_the_date( 'c' ) ); ?>">
-                <?php echo esc_html( get_the_date( 'j. F Y' ) ); ?>
-            </time>
-            <span class="hp-meta__separator"></span>
-            <span class="hp-reading-time"><?php echo esc_html( hp_reading_time() ); ?></span>
-        </div>
-
-        <?php
-        $topics = get_the_terms( get_the_ID(), 'topic' );
-        if ( $topics && ! is_wp_error( $topics ) ) : ?>
-            <ul class="hp-topics" aria-label="Themenfelder">
-                <?php foreach ( $topics as $topic ) : ?>
-                    <li><a class="hp-topic-pill" href="<?php echo esc_url( get_term_link( $topic ) ); ?>"><?php echo esc_html( $topic->name ); ?></a></li>
-                <?php endforeach; ?>
-            </ul>
-        <?php endif; ?>
-    </header>
-
-    <!-- Beitragsbild -->
     <?php if ( has_post_thumbnail() ) : ?>
-        <figure class="essay-hero-image">
-            <?php the_post_thumbnail( 'large', array(
-                'class'   => 'essay-hero-image__img',
-                'loading' => 'eager',
-            ) ); ?>
+
+        <!-- HERO: Full-bleed Beitragsbild mit Overlay-Text -->
+        <header class="essay-hero" role="banner">
+            <div class="essay-hero__image-wrap">
+                <?php the_post_thumbnail( 'full', array(
+                    'class'   => 'essay-hero__img',
+                    'loading' => 'eager',
+                ) ); ?>
+                <div class="essay-hero__overlay" aria-hidden="true"></div>
+            </div>
+
+            <div class="essay-hero__content">
+                <span class="hp-kicker hp-kicker--light">Essay</span>
+                <h1 class="essay-hero__title"><?php the_title(); ?></h1>
+
+                <?php if ( has_excerpt() ) : ?>
+                    <p class="essay-hero__excerpt"><?php echo esc_html( get_the_excerpt() ); ?></p>
+                <?php endif; ?>
+            </div>
+        </header>
+
+        <!-- Meta-Leiste unter dem Hero -->
+        <div class="essay-meta-bar">
+            <div class="essay-meta-bar__inner">
+                <div class="hp-meta">
+                    <time datetime="<?php echo esc_attr( get_the_date( 'c' ) ); ?>">
+                        <?php echo esc_html( get_the_date( 'j. F Y' ) ); ?>
+                    </time>
+                    <span class="hp-meta__separator"></span>
+                    <span class="hp-reading-time"><?php echo esc_html( hp_reading_time() ); ?></span>
+                </div>
+
+                <?php
+                $topics = get_the_terms( get_the_ID(), 'topic' );
+                if ( $topics && ! is_wp_error( $topics ) ) : ?>
+                    <ul class="hp-topics" aria-label="Themenfelder">
+                        <?php foreach ( $topics as $topic ) : ?>
+                            <li><a class="hp-topic-pill" href="<?php echo esc_url( get_term_link( $topic ) ); ?>"><?php echo esc_html( $topic->name ); ?></a></li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php endif; ?>
+            </div>
+
             <?php
             $caption = get_the_post_thumbnail_caption();
             if ( $caption ) : ?>
-                <figcaption class="essay-hero-image__caption"><?php echo esc_html( $caption ); ?></figcaption>
+                <p class="essay-meta-bar__caption"><?php echo esc_html( $caption ); ?></p>
             <?php endif; ?>
-        </figure>
+        </div>
+
+    <?php else : ?>
+
+        <!-- FALLBACK: Kein Beitragsbild → klassischer Header -->
+        <header class="single-header" role="banner">
+            <span class="hp-kicker">Essay</span>
+            <h1 class="single-header__title"><?php the_title(); ?></h1>
+
+            <?php if ( has_excerpt() ) : ?>
+                <p class="single-header__excerpt"><?php echo esc_html( get_the_excerpt() ); ?></p>
+            <?php endif; ?>
+
+            <div class="hp-meta">
+                <time datetime="<?php echo esc_attr( get_the_date( 'c' ) ); ?>">
+                    <?php echo esc_html( get_the_date( 'j. F Y' ) ); ?>
+                </time>
+                <span class="hp-meta__separator"></span>
+                <span class="hp-reading-time"><?php echo esc_html( hp_reading_time() ); ?></span>
+            </div>
+
+            <?php
+            $topics = get_the_terms( get_the_ID(), 'topic' );
+            if ( $topics && ! is_wp_error( $topics ) ) : ?>
+                <ul class="hp-topics" aria-label="Themenfelder">
+                    <?php foreach ( $topics as $topic ) : ?>
+                        <li><a class="hp-topic-pill" href="<?php echo esc_url( get_term_link( $topic ) ); ?>"><?php echo esc_html( $topic->name ); ?></a></li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php endif; ?>
+        </header>
+
     <?php endif; ?>
 
     <!-- Inhalt -->
