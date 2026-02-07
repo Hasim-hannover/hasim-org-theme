@@ -18,24 +18,48 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Entfernt die GeneratePress-eigene Ausgabe von Datum, Autor
- * und Post-Meta auf unseren Custom Post Types,
- * damit keine Dopplung mit unserem eigenen Template entsteht.
+ * und Post-Meta auf unseren Custom Post Types.
+ *
+ * Strategie 1: remove_action (verschiedene Prioritäten durchprobieren)
+ * Strategie 2: GP-Filter → leeren String zurückgeben
+ * Strategie 3: CSS-Fallback (nuclear option)
  */
+
+// Strategie 1: Hooks entfernen (Priority 10 + 20 + 30)
 add_action( 'wp', 'hp_disable_gp_post_meta' );
 function hp_disable_gp_post_meta(): void {
     if ( ! is_singular( [ 'essay', 'note' ] ) ) {
         return;
     }
 
-    // Entry-Header-Meta (Datum, Autor, Kategorien)
-    remove_action( 'generate_after_entry_title', 'generate_post_meta' );
-    // Entry-Footer-Meta (Tags, Kategorien)
-    remove_action( 'generate_after_entry_content', 'generate_footer_meta' );
-
-    // Falls GeneratePress Premium aktiv ist
-    if ( function_exists( 'generate_entry_meta_header' ) ) {
-        remove_action( 'generate_after_entry_title', 'generate_entry_meta_header' );
+    foreach ( [ 10, 15, 20, 30 ] as $prio ) {
+        remove_action( 'generate_after_entry_title', 'generate_post_meta', $prio );
+        remove_action( 'generate_after_entry_content', 'generate_footer_meta', $prio );
+        remove_action( 'generate_after_entry_title', 'generate_entry_meta_header', $prio );
     }
+}
+
+// Strategie 2: GP-Output-Filter → leer
+add_filter( 'generate_post_date_output', 'hp_suppress_gp_meta_on_cpt' );
+add_filter( 'generate_post_author_output', 'hp_suppress_gp_meta_on_cpt' );
+add_filter( 'generate_post_categories_output', 'hp_suppress_gp_meta_on_cpt' );
+add_filter( 'generate_post_tags_output', 'hp_suppress_gp_meta_on_cpt' );
+add_filter( 'generate_post_comments_link_output', 'hp_suppress_gp_meta_on_cpt' );
+function hp_suppress_gp_meta_on_cpt( string $output ): string {
+    if ( is_singular( [ 'essay', 'note' ] ) ) {
+        return '';
+    }
+    return $output;
+}
+
+// Strategie 3: Ganzen Entry-Header/Footer-Meta-Container verstecken
+add_filter( 'generate_header_entry_meta_items', 'hp_strip_gp_meta_items', 10, 1 );
+add_filter( 'generate_footer_entry_meta_items', 'hp_strip_gp_meta_items', 10, 1 );
+function hp_strip_gp_meta_items( $items ) {
+    if ( is_singular( [ 'essay', 'note' ] ) ) {
+        return [];
+    }
+    return $items;
 }
 
 /* =========================================
@@ -226,7 +250,7 @@ function hp_flush_rewrite_rules() {
  * Registriert das Custom Meta Field `_hp_social_teaser`
  * für den Post Type `essay`.
  *
- * - Im Block-Editor als Classic Meta Box sichtbar.
+ * - Im Block-Editor als Sidebar-Panel sichtbar.
  * - Via REST API lesbar/beschreibbar (für Automatisierungs-Tools).
  * - Nicht im Frontend ausgegeben.
  */
@@ -243,58 +267,69 @@ function hp_register_social_meta(): void {
 }
 
 /**
- * Meta Box im Editor — Social Teaser.
+ * Gutenberg Sidebar Panel — Social Teaser.
+ * Registriert ein sichtbares Panel in der Editor-Sidebar
+ * (sichtbarer als Classic Meta Box, die ganz unten versteckt ist).
  */
-add_action( 'add_meta_boxes', 'hp_add_social_teaser_metabox' );
-function hp_add_social_teaser_metabox(): void {
-    add_meta_box(
-        'hp_social_teaser',
-        'Social-Media Teaser (X / Twitter)',
-        'hp_render_social_teaser_metabox',
-        'essay',
-        'side',
-        'default'
+add_action( 'enqueue_block_editor_assets', 'hp_social_teaser_editor_assets' );
+function hp_social_teaser_editor_assets(): void {
+    $screen = get_current_screen();
+    if ( ! $screen || 'essay' !== $screen->post_type ) {
+        return;
+    }
+
+    wp_enqueue_script(
+        'hp-social-teaser-panel',
+        false, // no file — we use inline
+        [ 'wp-plugins', 'wp-edit-post', 'wp-element', 'wp-components', 'wp-data', 'wp-compose' ],
     );
-}
 
-function hp_render_social_teaser_metabox( WP_Post $post ): void {
-    $value = get_post_meta( $post->ID, '_hp_social_teaser', true );
-    wp_nonce_field( 'hp_social_teaser_save', 'hp_social_teaser_nonce' );
-    ?>
-    <label for="hp-social-teaser" class="screen-reader-text">Social-Media Hook-Satz</label>
-    <textarea
-        id="hp-social-teaser"
-        name="_hp_social_teaser"
-        rows="3"
-        style="width:100%"
-        placeholder="Hook-Satz für X / Social Media …"
-    ><?php echo esc_textarea( $value ); ?></textarea>
-    <p class="description" style="margin-top:6px">Wird <strong>nicht</strong> im Frontend angezeigt. Nur für Social-Automation via REST&nbsp;API.</p>
-    <?php
-}
+    $inline_js = <<<'JS'
+( function() {
+    var el          = wp.element.createElement;
+    var Fragment    = wp.element.Fragment;
+    var PluginPanel = wp.editPost.PluginDocumentSettingPanel;
+    var TextControl = wp.components.TextareaControl;
+    var useSelect   = wp.data.useSelect;
+    var useDispatch = wp.data.useDispatch;
 
-add_action( 'save_post_essay', 'hp_save_social_teaser_meta' );
-function hp_save_social_teaser_meta( int $post_id ): void {
-    if (
-        ! isset( $_POST['hp_social_teaser_nonce'] ) ||
-        ! wp_verify_nonce( $_POST['hp_social_teaser_nonce'], 'hp_social_teaser_save' )
-    ) {
-        return;
+    var META_KEY = '_hp_social_teaser';
+
+    function SocialTeaserPanel() {
+        var meta = useSelect( function( select ) {
+            return select( 'core/editor' ).getEditedPostAttribute( 'meta' ) || {};
+        }, [] );
+
+        var editPost = useDispatch( 'core/editor' ).editPost;
+        var value = meta[ META_KEY ] || '';
+
+        return el( PluginPanel, {
+            name:  'hp-social-teaser',
+            title: '𝕏  Social-Media Teaser',
+            icon:  'share',
+        },
+            el( TextControl, {
+                label: 'Hook-Satz für X / Social Media',
+                help:  'Wird NICHT im Frontend angezeigt. Nur für Automation via REST API abrufbar.',
+                value: value,
+                onChange: function( newVal ) {
+                    var newMeta = {};
+                    newMeta[ META_KEY ] = newVal;
+                    editPost( { meta: newMeta } );
+                },
+                rows: 3,
+            })
+        );
     }
 
-    if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
-        return;
-    }
+    wp.plugins.registerPlugin( 'hp-social-teaser', {
+        render: SocialTeaserPanel,
+        icon:   'share',
+    });
+})();
+JS;
 
-    if ( ! current_user_can( 'edit_post', $post_id ) ) {
-        return;
-    }
-
-    $teaser = isset( $_POST['_hp_social_teaser'] )
-        ? sanitize_textarea_field( wp_unslash( $_POST['_hp_social_teaser'] ) )
-        : '';
-
-    update_post_meta( $post_id, '_hp_social_teaser', $teaser );
+    wp_add_inline_script( 'hp-social-teaser-panel', $inline_js );
 }
 
 /* =========================================

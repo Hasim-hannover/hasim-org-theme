@@ -1100,6 +1100,16 @@ a.footnote-backref:hover {
    RESPONSIVE
    ========================================= */
 
+/* GeneratePress-Meta auf Essay/Note-Singles verstecken (CSS-Fallback) */
+.single-essay .entry-meta,
+.single-note .entry-meta,
+.single-essay footer.entry-meta,
+.single-note footer.entry-meta,
+.single-essay .post-meta,
+.single-note .post-meta {
+    display: none !important;
+}
+
 @media (max-width: 768px) {
     :root {
         --hj-gutter: 1.2rem;
@@ -1109,7 +1119,8 @@ a.footnote-backref:hover {
         padding: var(--hj-space-xl) 0 var(--hj-space-lg);
     }
 
-    .masthead__headline {
+    .masthead__headline,
+    .editorial-hero__title {
         letter-spacing: -1px;
     }
 
