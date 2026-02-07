@@ -648,84 +648,7 @@ a.footnote-backref:hover {
     margin-top: var(--hj-space-md);
 }
 
-/* --- 5. Kompetenzfelder (beibehalten) --- */
-
-.competence-grid {
-    padding: var(--hj-space-sm) 0;
-}
-
-.competence-grid__header {
-    margin-bottom: var(--hj-space-lg);
-}
-
-.competence-grid__title {
-    font-family: var(--hj-serif);
-    font-weight: 700;
-    font-size: var(--hj-fs-sm);
-    text-transform: uppercase;
-    letter-spacing: 2.5px;
-    color: var(--hj-rule);
-    border-bottom: none;
-    padding-bottom: 0;
-}
-
-.competence-grid__columns {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0;
-}
-
-.competence-card {
-    border-left: 1px solid var(--hj-rule);
-    padding: var(--hj-space-md) var(--hj-gutter) var(--hj-space-lg);
-}
-
-.competence-card:first-child {
-    border-left: none;
-    padding-left: 0;
-}
-
-.competence-card__number {
-    display: block;
-    font-family: var(--hj-serif);
-    font-weight: 300;
-    font-style: italic;
-    font-size: 1.1rem;
-    color: var(--hj-text-muted);
-    margin-bottom: 0.8rem;
-}
-
-.competence-card__title {
-    font-family: var(--hj-serif);
-    font-weight: 900;
-    font-size: 1.35rem;
-    line-height: 1.3;
-    color: var(--hj-rule);
-    margin-bottom: 0.8rem;
-}
-
-.competence-card__desc {
-    font-family: var(--hj-serif);
-    font-weight: 300;
-    font-size: var(--hj-fs-md);
-    line-height: 1.7;
-    color: var(--hj-text-secondary);
-    margin-bottom: var(--hj-space-md);
-}
-
-.competence-card__label {
-    display: inline-block;
-    font-family: var(--hj-sans);
-    font-weight: 700;
-    font-size: var(--hj-fs-xs);
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: var(--hj-text-muted);
-    border-top: 1px solid var(--hj-rule-light);
-    padding-top: 0.6rem;
-}
-
-/* --- 6. Colophon --- */
+/* --- 5. Colophon --- */
 
 .journal-colophon {
     padding: var(--hj-space-lg) 0 calc(var(--hj-space-2xl) - 1rem);
@@ -873,20 +796,6 @@ a.footnote-backref:hover {
     .lead-editorial__columns {
         grid-template-columns: 1fr;
         gap: 0;
-    }
-
-    .competence-grid__columns {
-        grid-template-columns: 1fr;
-    }
-
-    .competence-card {
-        border-left: none;
-        border-top: 1px solid var(--hj-rule);
-        padding: var(--hj-space-md) 0;
-    }
-
-    .competence-card:first-child {
-        border-top: none;
     }
 
     .notes-list__title {
