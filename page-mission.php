@@ -1,6 +1,6 @@
 <?php
 /**
- * Page Template: Mission (Slug: mission)
+ * Template Name: Mission / Über das Journal
  *
  * Statische Seite „Über das Journal" — elegante Typografie,
  * keine Sidebar, max. Lesezeilenbreite.
