@@ -12,54 +12,14 @@
 
 defined( 'ABSPATH' ) || exit;
 
-/* =========================================
-   ROBOTS.TXT — Sicherstellen, dass WordPress
-   eine gültige robots.txt zurückgibt.
-   ========================================= */
-
-/**
- * Flusht einmalig die Rewrite-Rules, damit WordPress
- * /robots.txt korrekt als virtuelle Datei erkennt.
+/*
+ * ROBOTS.TXT — Wird vom SEO Framework Plugin verwaltet.
+ * Keine eigene Logik nötig.
  *
- * Wird nur einmal ausgeführt (via Transient).
+ * Falls /robots.txt trotzdem HTML ausliefert, liegt das am
+ * Nginx-Cache (Hostpress). Lösung: physische robots.txt
+ * im WordPress-Root ablegen (via WP File Manager Plugin).
  */
-add_action( 'init', 'hp_flush_rewrite_for_robots', 99 );
-function hp_flush_rewrite_for_robots(): void {
-    if ( get_transient( 'hp_robots_rewrite_flushed' ) ) {
-        return;
-    }
-    flush_rewrite_rules( false );
-    set_transient( 'hp_robots_rewrite_flushed', true, YEAR_IN_SECONDS );
-}
-
-/**
- * Ergänzt die virtuelle robots.txt um Sitemap-Verweis
- * und sinnvolle Crawl-Regeln.
- */
-add_filter( 'robots_txt', 'hp_custom_robots_txt', 10, 2 );
-function hp_custom_robots_txt( string $output, bool $public ): string {
-    if ( ! $public ) {
-        return $output; // Site auf "nicht indexieren" → WordPress-Default beibehalten
-    }
-
-    $sitemap_url = home_url( '/sitemap.xml' );
-
-    $output  = "User-agent: *\n";
-    $output .= "Allow: /\n";
-    $output .= "Disallow: /wp-admin/\n";
-    $output .= "Allow: /wp-admin/admin-ajax.php\n";
-    $output .= "Disallow: /wp-includes/\n";
-    $output .= "Disallow: /wp-content/plugins/\n";
-    $output .= "Disallow: /wp-content/cache/\n";
-    $output .= "Disallow: /*?replytocom=\n";
-    $output .= "Disallow: /feed/\n";
-    $output .= "Disallow: /comments/feed/\n";
-    $output .= "\n";
-    $output .= "# Sitemap\n";
-    $output .= "Sitemap: " . esc_url( $sitemap_url ) . "\n";
-
-    return $output;
-}
 
 /* =========================================
    0. GENERATEPRESS — Standard-Meta deaktivieren
