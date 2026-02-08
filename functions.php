@@ -13,6 +13,55 @@
 defined( 'ABSPATH' ) || exit;
 
 /* =========================================
+   ROBOTS.TXT — Sicherstellen, dass WordPress
+   eine gültige robots.txt zurückgibt.
+   ========================================= */
+
+/**
+ * Flusht einmalig die Rewrite-Rules, damit WordPress
+ * /robots.txt korrekt als virtuelle Datei erkennt.
+ *
+ * Wird nur einmal ausgeführt (via Transient).
+ */
+add_action( 'init', 'hp_flush_rewrite_for_robots', 99 );
+function hp_flush_rewrite_for_robots(): void {
+    if ( get_transient( 'hp_robots_rewrite_flushed' ) ) {
+        return;
+    }
+    flush_rewrite_rules( false );
+    set_transient( 'hp_robots_rewrite_flushed', true, YEAR_IN_SECONDS );
+}
+
+/**
+ * Ergänzt die virtuelle robots.txt um Sitemap-Verweis
+ * und sinnvolle Crawl-Regeln.
+ */
+add_filter( 'robots_txt', 'hp_custom_robots_txt', 10, 2 );
+function hp_custom_robots_txt( string $output, bool $public ): string {
+    if ( ! $public ) {
+        return $output; // Site auf "nicht indexieren" → WordPress-Default beibehalten
+    }
+
+    $sitemap_url = home_url( '/sitemap.xml' );
+
+    $output  = "User-agent: *\n";
+    $output .= "Allow: /\n";
+    $output .= "Disallow: /wp-admin/\n";
+    $output .= "Allow: /wp-admin/admin-ajax.php\n";
+    $output .= "Disallow: /wp-includes/\n";
+    $output .= "Disallow: /wp-content/plugins/\n";
+    $output .= "Disallow: /wp-content/cache/\n";
+    $output .= "Disallow: /*?replytocom=\n";
+    $output .= "Disallow: /feed/\n";
+    $output .= "Disallow: /comments/feed/\n";
+    $output .= "\n";
+    $output .= "# Sitemap\n";
+    $output .= "Sitemap: " . esc_url( $sitemap_url ) . "\n";
+
+    return $output;
+}
+
+/* =========================================
    0. GENERATEPRESS — Standard-Meta deaktivieren
    ========================================= */
 
@@ -160,19 +209,12 @@ function hp_defer_gp_menu_script( string $tag, string $handle, string $src ): st
     return $tag;
 }
 
-/**
- * SEO: Meta-Description für die Startseite ausgeben.
+/*
+ * SEO: Meta-Description ENTFERNT.
+ *
+ * Das Plugin "The SEO Framework" gibt bereits eine Meta-Description aus.
+ * Eine doppelte Description schadet dem SEO-Score.
  */
-add_action( 'wp_head', 'hp_meta_description', 2 );
-function hp_meta_description(): void {
-    if ( is_front_page() ) {
-        $desc = 'Zwischenräume — Essays und Analysen zu Gesellschaft, Wissenschaft und Digitalisierung. Herausgegeben von Hasim Üner.';
-        printf(
-            '<meta name="description" content="%s">' . "\n",
-            esc_attr( $desc )
-        );
-    }
-}
 
 /* =========================================
    2. CUSTOM POST TYPES
