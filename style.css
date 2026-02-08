@@ -1162,16 +1162,18 @@ a.footnote-backref:hover {
     justify-content: center;
     width: 2.4rem;
     height: 2.4rem;
-    border: 1px solid var(--hj-border);
+    border: 1px solid var(--hj-rule-light);
     border-radius: 2px;
     background: transparent;
-    font-family: var(--hj-sans);
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: var(--hj-text-secondary);
+    color: var(--hj-text);
     text-decoration: none;
     cursor: pointer;
     transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.hp-share__link svg {
+    display: block;
+    flex-shrink: 0;
 }
 
 .hp-share__link:hover {
@@ -1179,16 +1181,6 @@ a.footnote-backref:hover {
     color: #fff;
     border-color: var(--hj-rule);
     text-decoration: none;
-}
-
-.hp-share__link--x {
-    font-style: normal;
-}
-
-.hp-share__link--li {
-    font-style: normal;
-    font-weight: 900;
-    font-size: 0.9rem;
 }
 
 .hp-share__link--copy.is-copied {
