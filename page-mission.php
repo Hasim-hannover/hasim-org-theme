@@ -51,11 +51,11 @@ get_header(); ?>
             <p>Sie reduziert den Menschen auf eine Funktion, auf eine Nummer. Sie ordnet nicht, um zu helfen, sondern um verfügbar zu machen.</p>
             <p>Struktur mit Liebe hingegen ist wie ein Rankgitter für die Rose: Sie engt nicht ein, sondern sie gibt den Halt, den man braucht, um über sich hinauszuwachsen.</p>
 
-            <h3>Was ich mache</h3>
-            <p>Ich baue digitale Systeme. Nicht, um Menschen in starre Prozesse zu zwingen, sondern um Räume zu schaffen, in denen sie atmen können. Ich nutze Technik, um das Menschliche zu beschützen, nicht um es aufzulösen.</p>
+            <h3>Was du hier findest</h3>
+            <p>Dieses Journal ist mein Versuch, laut zu denken — aber ohne zu schreien. Ein Ort, an dem ich aufschreibe, was mich bewegt, bevor ich es in fertige Antworten presse.</p>
             <ul>
-                <li><strong>Essays</strong> — Über Technik, die dem Leben dient.</li>
-                <li><strong>Notizen</strong> — Gedanken eines Menschen, der lieber mit Herz baut als nur mit Kalkül.</li>
+                <li><strong>Essays</strong> — Über Technik, die dem Leben dient. Über Strukturen, die Menschen tragen oder erdrücken.</li>
+                <li><strong>Notizen</strong> — Kürzere Gedanken, Beobachtungen, Fragen, die noch reifen dürfen.</li>
             </ul>
             <p>Hier geht es um <strong>Wahrhaftigkeit</strong>.</p>
             <p>Wer den Unterschied zwischen kalter Optimierung und liebevoller Struktur spürt: Willkommen.</p>

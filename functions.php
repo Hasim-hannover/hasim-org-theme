@@ -70,19 +70,17 @@ add_action( 'wp_enqueue_scripts', 'hp_journal_enqueue_styles' );
 function hp_journal_enqueue_styles() {
     $theme_version = wp_get_theme()->get( 'Version' );
 
-    // Parent Theme
-    wp_enqueue_style(
-        'generatepress-style',
-        get_template_directory_uri() . '/style.css',
-        array(),
-        $theme_version
-    );
+    /*
+     * Parent style.css (nur Theme-Header, ~1 KiB) wird NICHT mehr
+     * separat geladen — GP's main.min.css enthält alle Styles.
+     * → Spart eine render-blocking Anfrage.
+     */
 
-    // Child Theme
+    // Child Theme — abhängig von GP's Haupt-CSS
     wp_enqueue_style(
         'hp-journal-style',
         get_stylesheet_directory_uri() . '/style.css',
-        array( 'generatepress-style' ),
+        array( 'generate-style' ),
         $theme_version
     );
 
@@ -94,6 +92,89 @@ function hp_journal_enqueue_styles() {
             array(),
             $theme_version,
             true
+        );
+    }
+}
+
+/**
+ * Doppelt geladenes Child-CSS entfernen.
+ *
+ * WordPress / GeneratePress kann die Child-style.css automatisch
+ * einreihen (z. B. via get_stylesheet_uri()). Wir laden sie bereits
+ * explizit als 'hp-journal-style' → Duplikat dequeuen.
+ *
+ * Außerdem: Parent style.css (nur Theme-Header) ist unnötig,
+ * da GP's main.min.css alle Styles enthält.
+ */
+add_action( 'wp_enqueue_scripts', 'hp_dequeue_duplicate_styles', 20 );
+function hp_dequeue_duplicate_styles(): void {
+    // Mögliche Auto-Handles für Child-Theme-CSS
+    wp_dequeue_style( 'generate-child' );
+    wp_deregister_style( 'generate-child' );
+
+    // Parent style.css (nur Header-Metadaten, ~1 KiB)
+    wp_dequeue_style( 'generatepress-style' );
+    wp_deregister_style( 'generatepress-style' );
+}
+
+/**
+ * Kritische Schriften vorladen (Preload).
+ *
+ * Bricht die CSS → Font-Kette auf: Browser beginnt Font-Download
+ * parallel zum CSS statt sequentiell danach.
+ *
+ * Nur die drei auf der Startseite sichtbaren Gewichte werden
+ * vorgeladen: 300 (Fließtext), 700 (Zwischenüberschriften), 900 (Titel).
+ */
+add_action( 'wp_head', 'hp_preload_critical_fonts', 1 );
+function hp_preload_critical_fonts(): void {
+    $font_dir = get_stylesheet_directory_uri() . '/fonts';
+    $fonts    = [
+        'merriweather-v33-latin-300.woff2',
+        'merriweather-v33-latin-700.woff2',
+        'merriweather-v33-latin-900.woff2',
+    ];
+
+    foreach ( $fonts as $file ) {
+        printf(
+            '<link rel="preload" href="%s/%s" as="font" type="font/woff2" crossorigin>' . "\n",
+            esc_url( $font_dir ),
+            esc_attr( $file )
+        );
+    }
+}
+
+/**
+ * GP menu.min.js → defer-Attribut setzen.
+ *
+ * Das GP-Menü-Script (2 KiB) blockiert das Rendering,
+ * wird aber erst bei Nutzerinteraktion gebraucht.
+ * Mit defer wird es parallel geladen und erst nach HTML-Parsing ausgeführt.
+ */
+add_filter( 'script_loader_tag', 'hp_defer_gp_menu_script', 10, 3 );
+function hp_defer_gp_menu_script( string $tag, string $handle, string $src ): string {
+    $defer_handles = [ 'generate-menu', 'generate-navigation' ];
+
+    if ( in_array( $handle, $defer_handles, true ) ) {
+        // Nur hinzufügen wenn nicht schon vorhanden
+        if ( false === strpos( $tag, 'defer' ) ) {
+            $tag = str_replace( ' src=', ' defer src=', $tag );
+        }
+    }
+
+    return $tag;
+}
+
+/**
+ * SEO: Meta-Description für die Startseite ausgeben.
+ */
+add_action( 'wp_head', 'hp_meta_description', 2 );
+function hp_meta_description(): void {
+    if ( is_front_page() ) {
+        $desc = 'Zwischenräume — Essays und Analysen zu Gesellschaft, Wissenschaft und Digitalisierung. Herausgegeben von Hasim Üner.';
+        printf(
+            '<meta name="description" content="%s">' . "\n",
+            esc_attr( $desc )
         );
     }
 }
