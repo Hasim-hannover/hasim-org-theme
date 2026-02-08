@@ -718,6 +718,15 @@ a.footnote-backref:hover {
     padding-bottom: 0;
 }
 
+.hp-mission__subline {
+    font-family: var(--hj-serif);
+    font-size: clamp(1.05rem, 2vw, 1.25rem);
+    line-height: 1.5;
+    color: var(--hj-meta);
+    margin-top: var(--hj-space-sm);
+    font-style: italic;
+}
+
 .hp-mission__body {
     display: grid;
     grid-template-columns: 1fr;
