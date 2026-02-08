@@ -70,17 +70,19 @@ add_action( 'wp_enqueue_scripts', 'hp_journal_enqueue_styles' );
 function hp_journal_enqueue_styles() {
     $theme_version = wp_get_theme()->get( 'Version' );
 
-    /*
-     * Parent style.css (nur Theme-Header, ~1 KiB) wird NICHT mehr
-     * separat geladen — GP's main.min.css enthält alle Styles.
-     * → Spart eine render-blocking Anfrage.
-     */
+    // Parent Theme — minimal (nur Theme-Header), aber nötig für korrekte Kaskade
+    wp_enqueue_style(
+        'generatepress-style',
+        get_template_directory_uri() . '/style.css',
+        array(),
+        $theme_version
+    );
 
-    // Child Theme — abhängig von GP's Haupt-CSS
+    // Child Theme — NACH Parent + GP main.min.css
     wp_enqueue_style(
         'hp-journal-style',
         get_stylesheet_directory_uri() . '/style.css',
-        array( 'generate-style' ),
+        array( 'generatepress-style', 'generate-style' ),
         $theme_version
     );
 
@@ -99,22 +101,15 @@ function hp_journal_enqueue_styles() {
 /**
  * Doppelt geladenes Child-CSS entfernen.
  *
- * WordPress / GeneratePress kann die Child-style.css automatisch
- * einreihen (z. B. via get_stylesheet_uri()). Wir laden sie bereits
+ * WordPress / GeneratePress reiht die Child-style.css automatisch
+ * einreihen (handle: generate-child). Wir laden sie bereits
  * explizit als 'hp-journal-style' → Duplikat dequeuen.
- *
- * Außerdem: Parent style.css (nur Theme-Header) ist unnötig,
- * da GP's main.min.css alle Styles enthält.
  */
 add_action( 'wp_enqueue_scripts', 'hp_dequeue_duplicate_styles', 20 );
 function hp_dequeue_duplicate_styles(): void {
-    // Mögliche Auto-Handles für Child-Theme-CSS
+    // GP auto-enqueue für Child-Theme entfernen (Duplikat)
     wp_dequeue_style( 'generate-child' );
     wp_deregister_style( 'generate-child' );
-
-    // Parent style.css (nur Header-Metadaten, ~1 KiB)
-    wp_dequeue_style( 'generatepress-style' );
-    wp_deregister_style( 'generatepress-style' );
 }
 
 /**
