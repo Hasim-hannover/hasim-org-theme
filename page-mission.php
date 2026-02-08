@@ -57,7 +57,7 @@ get_header(); ?>
                 <li><strong>Essays</strong> — Über Technik, die dem Leben dient. Über Strukturen, die Menschen tragen oder erdrücken.</li>
                 <li><strong>Notizen</strong> — Kürzere Gedanken, Beobachtungen, Fragen, die noch reifen dürfen.</li>
             </ul>
-            <p>Hier geht es um <strong>Wahrhaftigkeit</strong>.</p>
+    
             <p>Wer den Unterschied zwischen kalter Optimierung und liebevoller Struktur spürt: Willkommen.</p>
 
         </div>
