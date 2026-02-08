@@ -60,6 +60,11 @@ get_header(); ?>
     
             <p>Wer den Unterschied zwischen kalter Optimierung und liebevoller Struktur spürt: Willkommen.</p>
 
+            <h3>Respekt statt Tracking</h3>
+            <p>Dieses Journal setzt keine Cookies. Es gibt kein Google Analytics, keine Werbe-Tracker, keinen Cookie-Banner, der dich zur Zustimmung nötigt. Für die wenigen Statistiken, die mich interessieren — welche Texte gelesen werden, nicht wer sie liest — nutze ich <a href="https://www.kokoanalytics.com/" target="_blank" rel="noopener">Koko Analytics</a>, ein datenschutzfreundliches Tool, das komplett ohne Cookies auskommt.</p>
+            <p>Gehostet wird das Journal bei <a href="https://www.hostpress.de/" target="_blank" rel="noopener">HostPress</a> in Deutschland.</p>
+            <p>Keine Tricks, keine Dark Patterns. Weil Respekt vor deiner Aufmerksamkeit auch Respekt vor deinen Daten bedeutet.</p>
+
         </div>
     </div>
 
