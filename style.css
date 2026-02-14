@@ -114,10 +114,17 @@
 body {
     background-color: var(--hj-bg);
     color: var(--hj-text);
-    font-family: var(--hj-serif);
+    font-family: var(--hj-sans);
     font-weight: 300;
     font-size: var(--hj-fs-base);
     line-height: 1.7;
+}
+
+/* Fließtext-Elemente explizit Sans-Serif */
+p, li, blockquote, table, input, textarea {
+    font-family: var(--hj-sans);
+    font-weight: 300;
+}
 }
 
 /* --- Überschriften-Hierarchie --- */
