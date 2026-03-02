@@ -39,6 +39,31 @@ This is a **journalistic publication for political and societal discourse** — 
 2. **Barrierefreiheit (a11y)**: Societal topics demand maximum accessibility. Semantic HTML (`<article>`, `<nav>`, `<aside>`, `aria-label`), WCAG AA contrast ratios, and logical heading hierarchy are mandatory — not optional.
 3. **Ernsthaftigkeit (Scholarly Rigor)**: Metadata, structured data (ScholarlyArticle), and markup must reflect journalistic or academic depth. No superficial patterns — every schema field, every `<time>` element, every citation structure must be defensible.
 
+### Gesellschaftskritische Perspektive auf Erinnerungspolitik
+
+Hasims Arbeit — insbesondere im Kontext kurdischer Gedenkarbeit — basiert auf einer strukturellen gesellschaftskritischen Analyse:
+
+**Kernthese:** Die Welt ist hierarchisch-irrational strukturiert. Diese hierarchische Ordnung erzeugt eine fundamentale Dysfunktionalität zwischen Gesellschaft und Staat bzw. staatlichem Monopol. Diese Dysfunktionalität manifestiert sich besonders deutlich in der Kontrolle über kollektive Erinnerung.
+
+**Implikationen für Content & Kommunikation:**
+- Erinnerung wird nicht individuell oder zufällig konstruiert, sondern durch staatliche Machtstrukturen geformt
+- Die Leitfrage ist nicht „Wer wird erinnert?", sondern „Was geschieht mit Erinnerung in hierarchisch organisierten Gesellschaften?"
+- Fokus auf systemische Mechanismen statt personalisierte Schuldzuweisungen
+- Betonung der Spannung zwischen gesellschaftlicher Selbstorganisation und staatlicher Kontrolle
+
+**Sprachliche Konsequenzen (gelten für alle generierten Texte):**
+- Vermeide menschzentrierte Formulierungen („Wer darf sprechen?")
+- Präferiere strukturelle und prozessorientierte Sprache („Wie formt staatliche Macht …")
+- Mache Machtverhältnisse als System sichtbar, nicht nur als individuelle Handlungen
+- Verbinde Erinnerungspolitik mit breiteren Fragen gesellschaftlicher Organisation
+
+**Beispiel-Transformation:**
+| Vermeiden | Bevorzugen |
+|-----------|-----------|
+| „Wer wird erinnert, wer vergessen? Wer darf sprechen, wer soll schweigen?" | „Was geschieht mit Erinnerung in hierarchisch organisierten Gesellschaften? Wie formt staatliche Macht, was gedacht und gesagt werden darf?" |
+
+Diese Perspektive ist bei der Erstellung von Content für Gedenkprojekte, politische Analysen und Solidaritätsarbeit stets mitzudenken.
+
 ## Key Principles
 
 ### 1. Hook-System (Strict)
