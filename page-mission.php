@@ -37,6 +37,8 @@ get_header(); ?>
 
             <p>Geboren in Nordkurdistan, aufgewachsen in Deutschland. Drei Sprachen, drei Welten, ein Blick, der Systeme hinterfragt.</p>
 
+            <p>Im Türkischen höre ich die Herkunft meiner Familie, aber auch einen Nationalstaat, der das Kurdische jahrzehntelang unterdrückt hat – in Nordkurdistan, den mehrheitlich kurdisch bewohnten Regionen im Südosten der Türkei, war selbst das Sprechen der eigenen Sprache lange verboten. Stolz und Schweigen in einer Sprache.</p>
+
             <p>Ich bin politisch — lokal, auf der Straße und am Schreibtisch. Was mich antreibt, ist das Dasein an sich. Was geschieht mit Erinnerung in hierarchisch organisierten Gesellschaften? Wie formt staatliche Macht, was gedacht und gesagt werden darf?</p>
 
             <p>„Zwischenräume" ist das Journal für diese Fragen. Macht, Identität, Medien. Keine fertigen Antworten. Der Versuch, Strukturen sichtbar zu machen.</p>
