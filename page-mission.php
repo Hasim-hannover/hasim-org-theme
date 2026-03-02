@@ -37,9 +37,9 @@ get_header(); ?>
 
             <p>Geboren in Nordkurdistan, aufgewachsen in Deutschland. Drei Sprachen, drei Welten, ein Blick, der Systeme hinterfragt.</p>
 
-            <p>Ich bin politisch — lokal, auf der Straße und am Schreibtisch. Was mich antreibt, ist das Dasein an sich. Wer wird erinnert, wer vergessen? Wer darf sprechen, wer soll schweigen?</p>
+            <p>Ich bin politisch — lokal, auf der Straße und am Schreibtisch. Was mich antreibt, ist das Dasein an sich. Was geschieht mit Erinnerung in hierarchisch organisierten Gesellschaften? Wie formt staatliche Macht, was gedacht und gesagt werden darf?</p>
 
-            <p>„Zwischenräume" ist das Journal für diese Fragen. Macht, Identität, Medien. Keine fertigen Antworten. Der Versuch, genau hinzuschauen.</p>
+            <p>„Zwischenräume" ist das Journal für diese Fragen. Macht, Identität, Medien. Keine fertigen Antworten. Der Versuch, Strukturen sichtbar zu machen.</p>
 
             <p>Kein Tracking. Keine Werbung. Keine Cookies.</p>
 
