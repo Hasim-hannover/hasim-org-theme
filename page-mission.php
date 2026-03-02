@@ -35,7 +35,7 @@ get_header(); ?>
 
         <div class="hp-mission__prose prose">
 
-            <p>Ich bin Kurde. Geboren in Nordkurdistan, aufgewachsen in Deutschland. Drei Sprachen, drei Welten, ein Blick, der Systeme hinterfragt.</p>
+            <p>Geboren in Nordkurdistan, aufgewachsen in Deutschland. Drei Sprachen, drei Welten, ein Blick, der Systeme hinterfragt.</p>
 
             <p>Ich bin politisch — lokal, auf der Straße und am Schreibtisch. Was mich antreibt, ist das Dasein an sich. Wer wird erinnert, wer vergessen? Wer darf sprechen, wer soll schweigen?</p>
 
