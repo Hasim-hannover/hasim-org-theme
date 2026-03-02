@@ -9,5 +9,5 @@ Disallow: /*?replytocom=
 Disallow: /feed/
 Disallow: /comments/feed/
 
-# Sitemap
-Sitemap: https://hasimuener.org/sitemap.xml
+# Sitemap (WordPress-Core, seit WP 5.5)
+Sitemap: https://hasimuener.org/wp-sitemap.xml
