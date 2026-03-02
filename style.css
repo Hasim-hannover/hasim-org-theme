@@ -737,6 +737,7 @@ a.footnote-backref:hover {
     display: grid;
     grid-template-columns: 1fr;
     gap: var(--hj-space-xl);
+    padding-top: var(--hj-space-2xl);
     padding-bottom: var(--hj-space-2xl);
 }
 

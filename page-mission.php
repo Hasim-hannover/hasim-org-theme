@@ -1,12 +1,18 @@
 <?php
 /**
- * Template Name: Wer hier schreibt
+ * Template Name: Über mich
  *
  * Persönliche Seite — wer ich bin, was mich bewegt,
  * warum dieses Journal existiert.
  *
  * @package Hasimuener_Journal
- * @version 4.0.0
+ * @version 5.0.0
+ */
+
+/*
+ * TODO (manuell im WP-Admin):
+ * 1. Design → Menüs: Menüpunkt „Warum" umbenennen in „Über" (URL /mission/ bleibt)
+ * 2. Seite „Mission" bearbeiten: Seitentitel ändern zu „Über" (beeinflusst <title>-Tag & SEO)
  */
 
 get_header(); ?>
@@ -14,12 +20,6 @@ get_header(); ?>
 <?php while ( have_posts() ) : the_post(); ?>
 
 <article class="hp-mission" aria-label="<?php the_title_attribute(); ?>">
-
-    <header class="hp-mission__header">
-        <span class="hp-kicker">Zwischenräume</span>
-        <h1 class="hp-mission__title"><?php the_title(); ?></h1>
-        <p class="hp-mission__subline">Gedanken aus den Zwischenräumen — zwischen Sprachen, Kulturen und dem, was als normal gilt.</p>
-    </header>
 
     <div class="hp-mission__body">
 
@@ -35,22 +35,15 @@ get_header(); ?>
 
         <div class="hp-mission__prose prose">
 
-            <h3>Drei Sprachen, drei Welten</h3>
-            <p>Ich bin Kurde. Geboren in Nordkurdistan, aufgewachsen in Deutschland. Zwischen drei Sprachen, drei Geschichten, drei Vorstellungen davon, was Ordnung bedeutet.</p>
-            <p>Im <strong>Deutschen</strong> höre ich den Staat, in dem ich lebe. Verwaltung, Regeln, den Anspruch auf Ordnung — und die stille Erwartung, sich einzufügen.</p>
-            <p>Im <strong>Türkischen</strong> höre ich die Herkunft meiner Familie — und einen Nationalstaat, der das Kurdische jahrzehntelang unterdrückt hat. Stolz und Schweigen in einer Sprache.</p>
-            <p>Im <strong>Kurdischen</strong> höre ich die Perspektive derer, die keine Eroberer waren. Die keine imperialen Strukturen gebaut haben, um andere zu beherrschen. Eine Sprache, die überlebt hat, weil Menschen sich geweigert haben zu schweigen.</p>
-            <p>Dieser dreifache Blick ist kein Nachteil. Er ist mein Werkzeug.</p>
+            <p>Ich bin Kurde. Geboren in Nordkurdistan, aufgewachsen in Deutschland. Drei Sprachen, drei Welten, ein Blick, der Systeme hinterfragt.</p>
 
-            <h3>Warum ich schreibe</h3>
-            <p>Ich bin politisch. Lokal, konkret, auf der Straße und am Schreibtisch. Ich organisiere mich dort, wo ich lebe — nicht als Beruf, sondern weil es notwendig ist.</p>
-            <p>Was mich antreibt: Die Frage, wer in dieser Gesellschaft erinnert wird und wer vergessen. Wer sprechen darf und wer erklärt bekommt, dass jetzt nicht der richtige Moment ist. Wer Strukturen baut und wer von ihnen zerrieben wird.</p>
-            <p>Ich bin systemkritisch. Nicht aus Pose, sondern aus Erfahrung. Wer zwischen Kulturen aufwächst, lernt früh, dass das, was als „normal" gilt, immer eine Entscheidung war — von jemandem, der die Macht hatte, sie zu treffen.</p>
+            <p>Ich bin politisch — lokal, auf der Straße und am Schreibtisch. Was mich antreibt, ist das Dasein an sich. Wer wird erinnert, wer vergessen? Wer darf sprechen, wer soll schweigen?</p>
 
-            <h3>Was du hier findest</h3>
-            <p>„Zwischenräume" ist das Journal für diese Gedanken. Macht und Technologie. Identität und Widerstand. Medien und die Geschichten, die sie erzählen — oder verschweigen.</p>
-            <p>Meine Interessen sind vielfältig, meine Haltung ist klar: Ich schreibe für die, die zwischen den Stühlen sitzen. Weil genau dort der beste Blick ist.</p>
-            <p>Kein Tracking, keine Werbung, keine Cookies. Gehostet in Deutschland. Die einzige Statistik, die mich interessiert, ist welche Texte gelesen werden — nicht von wem. Dafür nutze ich <a href="https://www.kokoanalytics.com/" target="_blank" rel="noopener">Koko Analytics</a>, cookiefrei.</p>
+            <p>„Zwischenräume" ist das Journal für diese Fragen. Macht, Identität, Medien. Keine fertigen Antworten. Der Versuch, genau hinzuschauen.</p>
+
+            <p>Kein Tracking. Keine Werbung. Keine Cookies.</p>
+
+            <!-- TODO: Kontaktweg ergänzen (E-Mail, Social-Link o. Ä.) -->
 
         </div>
     </div>
