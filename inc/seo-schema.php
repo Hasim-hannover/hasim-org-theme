@@ -10,8 +10,8 @@
  * Google erkennt diesen Typ und kann ihn in den
  * Knowledge Graph übernehmen.
  *
- * Hinweis: Meta-Description wird vom Plugin "The SEO Framework"
- * verwaltet. Keine doppelte Ausgabe im Theme.
+ * Hinweis: Meta-Description und OG-Tags werden von
+ * inc/seo-meta.php verwaltet. Keine doppelte Ausgabe im Theme.
  *
  * @package Hasimuener_Journal
  * @since   4.0.0

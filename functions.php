@@ -16,6 +16,7 @@
  * 5. GP Compat       → GeneratePress Meta-Unterdrückung
  * 6. Meta Fields     → Social-Teaser (Editor-Panel + REST)
  * 7. SEO Schema      → JSON-LD für Essays
+ * 8. SEO Meta        → Description, Open Graph, Twitter Cards
  *
  * @package Hasimuener_Journal
  * @version 4.0.0
@@ -24,7 +25,7 @@
 defined( 'ABSPATH' ) || exit;
 
 /*
- * ROBOTS.TXT — Wird vom SEO Framework Plugin verwaltet.
+ * ROBOTS.TXT — Statische Datei im Theme-Root.
  * Falls /robots.txt trotzdem HTML ausliefert: physische
  * robots.txt im WordPress-Root ablegen (Nginx-Cache Hostpress).
  */
@@ -42,3 +43,4 @@ require_once $hp_inc_dir . '/enqueue.php';
 require_once $hp_inc_dir . '/generatepress-compat.php';
 require_once $hp_inc_dir . '/meta-fields.php';
 require_once $hp_inc_dir . '/seo-schema.php';
+require_once $hp_inc_dir . '/seo-meta.php';
