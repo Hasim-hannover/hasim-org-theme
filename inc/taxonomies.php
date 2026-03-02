@@ -67,25 +67,17 @@ add_action( 'init', 'hp_maybe_create_default_topics', 20 );
  */
 function hp_create_default_topics(): void {
 	$defaults = [
-		'digitale-macht' => [
-			'name'        => 'Digitale Macht',
-			'description' => 'Algorithmen, Plattformen, Überwachung — wer kontrolliert die Technologie, die uns kontrolliert?',
+		'macht-und-technologie' => [
+			'name'        => 'Macht & Technologie',
+			'description' => 'Wie digitale Systeme, Algorithmen und Plattformen Machtverhältnisse formen — und wer davon profitiert.',
 		],
-		'code-und-politik' => [
-			'name'        => 'Code & Politik',
-			'description' => 'Wenn Infrastruktur politisch wird: Software, Systeme und ihre gesellschaftlichen Folgen.',
-		],
-		'gesellschaft-und-wandel' => [
-			'name'        => 'Gesellschaft & Wandel',
-			'description' => 'Wie wir zusammenleben — und wie es anders ginge.',
+		'identitaet-und-widerstand' => [
+			'name'        => 'Identität & Widerstand',
+			'description' => 'Erfahrungen zwischen Kulturen, Sprachen und Systemen. Selbstbestimmung, Erinnerung, Diaspora.',
 		],
 		'medien-und-narrative' => [
 			'name'        => 'Medien & Narrative',
 			'description' => 'Welche Geschichten erzählt werden, welche nicht — und warum das wichtig ist.',
-		],
-		'identitaet-und-zugehoerigkeit' => [
-			'name'        => 'Identität & Zugehörigkeit',
-			'description' => 'Erfahrungen zwischen Kulturen, Sprachen und Systemen.',
 		],
 	];
 
@@ -98,3 +90,38 @@ function hp_create_default_topics(): void {
 		}
 	}
 }
+
+/* -----------------------------------------
+   Einmalige Migration: v1 → v2 Themenfelder
+   ----------------------------------------- */
+
+/**
+ * Einmalige Migration: Alte Themenfelder → neue Struktur.
+ * Nach erfolgreichem Lauf die Option setzen und diese Funktion entfernen.
+ */
+function hp_migrate_topics_v2(): void {
+	if ( get_option( 'hp_topics_migrated_v2' ) ) {
+		return;
+	}
+
+	// Alte Terms löschen (nur wenn keine Posts zugeordnet)
+	$old_slugs = [
+		'digitale-macht',
+		'code-und-politik',
+		'gesellschaft-und-wandel',
+		'identitaet-und-zugehoerigkeit',
+	];
+
+	foreach ( $old_slugs as $slug ) {
+		$term = get_term_by( 'slug', $slug, 'topic' );
+		if ( $term && $term->count === 0 ) {
+			wp_delete_term( $term->term_id, 'topic' );
+		}
+	}
+
+	// Flag zurücksetzen damit neue Defaults angelegt werden
+	delete_option( 'hp_default_topics_created' );
+
+	update_option( 'hp_topics_migrated_v2', true );
+}
+add_action( 'init', 'hp_migrate_topics_v2', 15 );
