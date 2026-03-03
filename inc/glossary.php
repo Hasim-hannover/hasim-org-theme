@@ -1,0 +1,336 @@
+<?php
+/**
+ * Glossar — Vernetzte Wissensbasis
+ *
+ * CPT „glossar" mit zwei Meta-Feldern:
+ *   - Kurzdefinition (Excerpt/Zusammenfassung, 1–2 Sätze)
+ *   - Kontext (editor): strukturelle Einordnung, Querverbindungen
+ *
+ * Auto-Linking:
+ *   Glossar-Begriffe werden in Essay- und Notiz-Content automatisch
+ *   beim ersten Vorkommen verlinkt (Tooltip + Link zur Glossar-Seite).
+ *   Nur published-Einträge werden verlinkt; Heading-Tags werden
+ *   übersprungen, um Semantik nicht zu brechen.
+ *
+ * @package Hasimuener_Journal
+ * @since   5.1.0
+ */
+
+defined( 'ABSPATH' ) || exit;
+
+/* =========================================
+   1. CPT REGISTRIERUNG
+   ========================================= */
+
+/**
+ * Registriert den Custom Post Type „glossar".
+ */
+function hp_register_glossar_cpt(): void {
+
+	register_post_type( 'glossar', [
+		'labels' => [
+			'name'               => 'Glossar',
+			'singular_name'      => 'Glossar-Eintrag',
+			'add_new'            => 'Neuer Eintrag',
+			'add_new_item'       => 'Neuen Glossar-Eintrag erstellen',
+			'edit_item'          => 'Eintrag bearbeiten',
+			'view_item'          => 'Eintrag ansehen',
+			'all_items'          => 'Alle Einträge',
+			'search_items'       => 'Glossar durchsuchen',
+			'not_found'          => 'Keine Einträge gefunden.',
+			'not_found_in_trash' => 'Keine Einträge im Papierkorb.',
+		],
+		'public'        => true,
+		'has_archive'   => true,
+		'rewrite'       => [ 'slug' => 'glossar', 'with_front' => false ],
+		'menu_icon'     => 'dashicons-book-alt',
+		'menu_position' => 7,
+		'supports'      => [ 'title', 'editor', 'excerpt', 'revisions', 'custom-fields' ],
+		'taxonomies'    => [ 'topic' ],
+		'show_in_rest'  => true,
+		'description'   => 'Vernetzte Wissensbasis: Begriffe, Konzepte, strukturelle Einordnungen.',
+	] );
+}
+add_action( 'init', 'hp_register_glossar_cpt' );
+
+/* =========================================
+   2. META-FELDER
+   ========================================= */
+
+/**
+ * Registriert die Glossar-spezifischen Meta-Felder.
+ *
+ * - _hp_glossar_kurz:     Kurzdefinition (1–2 Sätze, für Tooltip + Archiv)
+ * - _hp_glossar_synonyme:  Komma-separierte Synonyme/Alternativschreibungen
+ *                          für Auto-Linking (z. B. "Nordkurdistan, Bakur")
+ */
+function hp_register_glossar_meta(): void {
+
+	$meta_args = [
+		'object_subtype' => 'glossar',
+		'show_in_rest'   => true,
+		'single'         => true,
+		'type'           => 'string',
+		'auth_callback'  => function () {
+			return current_user_can( 'edit_posts' );
+		},
+	];
+
+	register_post_meta( 'glossar', '_hp_glossar_kurz', array_merge( $meta_args, [
+		'sanitize_callback' => 'sanitize_textarea_field',
+		'default'           => '',
+	] ) );
+
+	register_post_meta( 'glossar', '_hp_glossar_synonyme', array_merge( $meta_args, [
+		'sanitize_callback' => 'sanitize_text_field',
+		'default'           => '',
+	] ) );
+}
+add_action( 'init', 'hp_register_glossar_meta' );
+
+/* =========================================
+   3. GUTENBERG SIDEBAR-PANEL
+   ========================================= */
+
+/**
+ * Inline-JS Panel im Block-Editor für Glossar-Felder.
+ * Kein Build-Step — läuft als Inline-Script im Editor.
+ */
+function hp_glossar_editor_panel(): void {
+
+	$screen = get_current_screen();
+	if ( ! $screen || 'glossar' !== $screen->post_type ) {
+		return;
+	}
+
+	wp_add_inline_script( 'wp-edit-post', "
+		( function() {
+			var el          = wp.element.createElement;
+			var Fragment    = wp.element.Fragment;
+			var PluginPanel = wp.editPost.PluginDocumentSettingPanel;
+			var TextArea    = wp.components.TextareaControl;
+			var TextControl = wp.components.TextControl;
+			var useSelect   = wp.data.useSelect;
+			var useDispatch = wp.data.useDispatch;
+
+			var GlossarPanel = function() {
+				var meta = useSelect( function( select ) {
+					return select( 'core/editor' ).getEditedPostAttribute( 'meta' ) || {};
+				} );
+				var editPost = useDispatch( 'core/editor' ).editPost;
+
+				function setMeta( key, value ) {
+					var update = {};
+					update[ key ] = value;
+					editPost( { meta: update } );
+				}
+
+				return el( PluginPanel, {
+					name:  'hp-glossar-panel',
+					title: 'Glossar-Felder',
+					icon:  'book-alt',
+				},
+					el( TextArea, {
+						label: 'Kurzdefinition',
+						help:  '1–2 Sätze. Wird als Tooltip und im Archiv angezeigt.',
+						value: meta._hp_glossar_kurz || '',
+						onChange: function( v ) { setMeta( '_hp_glossar_kurz', v ); },
+						rows: 3,
+					}),
+					el( TextControl, {
+						label: 'Synonyme / Alternativbegriffe',
+						help:  'Komma-getrennt. Diese Begriffe werden ebenfalls auto-verlinkt.',
+						value: meta._hp_glossar_synonyme || '',
+						onChange: function( v ) { setMeta( '_hp_glossar_synonyme', v ); },
+					})
+				);
+			};
+
+			wp.plugins.registerPlugin( 'hp-glossar-panel', {
+				render: GlossarPanel,
+				icon:   'book-alt',
+			} );
+		} )();
+	" );
+}
+add_action( 'enqueue_block_editor_assets', 'hp_glossar_editor_panel' );
+
+/* =========================================
+   4. AUTO-LINKING IN CONTENT
+   ========================================= */
+
+/**
+ * Ersetzt beim ersten Vorkommen jedes Glossar-Begriffs im Content
+ * einen verlinkten Tooltip.
+ *
+ * Regeln:
+ * - Nur in essay/note CPTs aktiv
+ * - Nur published Glossar-Einträge
+ * - Überspringt <h1>–<h6>, <a>, <code>, <pre>, <script>, <style>
+ * - Maximal 1 Verlinkung pro Begriff pro Beitrag
+ * - Ergebnis wird transient-gecacht (1 h)
+ *
+ * @param string $content Post-Content.
+ * @return string
+ */
+function hp_glossar_auto_link( string $content ): string {
+
+	// Nur in Essay/Note Singular-Ansichten
+	if ( ! is_singular( [ 'essay', 'note' ] ) ) {
+		return $content;
+	}
+
+	$post_id   = get_the_ID();
+	$cache_key = 'hp_glossar_linked_' . $post_id;
+
+	// Transient-Cache prüfen
+	$cached = get_transient( $cache_key );
+	if ( false !== $cached ) {
+		return $cached;
+	}
+
+	// Glossar-Einträge laden
+	$entries = get_posts( [
+		'post_type'      => 'glossar',
+		'post_status'    => 'publish',
+		'posts_per_page' => -1,
+		'fields'         => 'ids',
+	] );
+
+	if ( empty( $entries ) ) {
+		return $content;
+	}
+
+	// Begriffe sammeln: Titel + Synonyme → URL + Kurzdefinition
+	$terms = [];
+	foreach ( $entries as $entry_id ) {
+		$title   = get_the_title( $entry_id );
+		$url     = get_permalink( $entry_id );
+		$kurz    = get_post_meta( $entry_id, '_hp_glossar_kurz', true );
+		$tooltip = esc_attr( wp_strip_all_tags( $kurz ) );
+
+		// Hauptbegriff
+		$terms[] = [
+			'pattern' => preg_quote( $title, '/' ),
+			'url'     => $url,
+			'tooltip' => $tooltip,
+			'label'   => $title,
+		];
+
+		// Synonyme
+		$synonyme = get_post_meta( $entry_id, '_hp_glossar_synonyme', true );
+		if ( $synonyme ) {
+			foreach ( explode( ',', $synonyme ) as $syn ) {
+				$syn = trim( $syn );
+				if ( $syn ) {
+					$terms[] = [
+						'pattern' => preg_quote( $syn, '/' ),
+						'url'     => $url,
+						'tooltip' => $tooltip,
+						'label'   => $syn,
+					];
+				}
+			}
+		}
+	}
+
+	// Längere Begriffe zuerst (verhindert Teilersetzung)
+	usort( $terms, function ( $a, $b ) {
+		return mb_strlen( $b['pattern'] ) - mb_strlen( $a['pattern'] );
+	} );
+
+	// Tags aufteilen: HTML-Tags vs. Text-Nodes
+	// Überspringe: Headings, Links, Code, Pre, Script, Style
+	$skip_tags = 'h[1-6]|a|code|pre|script|style';
+	$parts     = preg_split(
+		'/(<\/?(?:' . $skip_tags . ')[\s>][^>]*>)/i',
+		$content,
+		-1,
+		PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY
+	);
+
+	$in_skip   = 0;
+	$linked    = []; // Bereits verlinkte Begriffe (max 1×)
+	$processed = '';
+
+	foreach ( $parts as $part ) {
+
+		// Skip-Tag öffnen/schließen?
+		if ( preg_match( '/^<(' . $skip_tags . ')[\s>]/i', $part ) ) {
+			$in_skip++;
+			$processed .= $part;
+			continue;
+		}
+		if ( preg_match( '/^<\/(' . $skip_tags . ')>/i', $part ) ) {
+			$in_skip = max( 0, $in_skip - 1 );
+			$processed .= $part;
+			continue;
+		}
+
+		// Innerhalb eines Skip-Tags → unverändert
+		if ( $in_skip > 0 ) {
+			$processed .= $part;
+			continue;
+		}
+
+		// Ist es ein HTML-Tag? → unverändert
+		if ( preg_match( '/^<[^>]+>$/', $part ) ) {
+			$processed .= $part;
+			continue;
+		}
+
+		// Text-Node: Begriffe ersetzen
+		foreach ( $terms as $term ) {
+			if ( isset( $linked[ $term['pattern'] ] ) ) {
+				continue;
+			}
+
+			$regex = '/\b(' . $term['pattern'] . ')\b/u';
+
+			if ( preg_match( $regex, $part ) ) {
+				$replacement = sprintf(
+					'<a href="%s" class="hp-glossar-link" title="%s" data-glossar>%s</a>',
+					esc_url( $term['url'] ),
+					$term['tooltip'],
+					'$1'
+				);
+
+				$part = preg_replace( $regex, $replacement, $part, 1 );
+				$linked[ $term['pattern'] ] = true;
+			}
+		}
+
+		$processed .= $part;
+	}
+
+	// Cache für 1 Stunde
+	set_transient( $cache_key, $processed, HOUR_IN_SECONDS );
+
+	return $processed;
+}
+add_filter( 'the_content', 'hp_glossar_auto_link', 20 );
+
+/* =========================================
+   5. CACHE INVALIDIERUNG
+   ========================================= */
+
+/**
+ * Löscht den Auto-Link-Cache wenn ein Glossar-Eintrag
+ * erstellt, aktualisiert oder gelöscht wird.
+ */
+function hp_glossar_flush_cache( int $post_id ): void {
+
+	if ( 'glossar' !== get_post_type( $post_id ) ) {
+		return;
+	}
+
+	// Alle Glossar-Link-Transients löschen
+	global $wpdb;
+	$wpdb->query(
+		"DELETE FROM {$wpdb->options}
+		 WHERE option_name LIKE '_transient_hp_glossar_linked_%'
+		    OR option_name LIKE '_transient_timeout_hp_glossar_linked_%'"
+	);
+}
+add_action( 'save_post',   'hp_glossar_flush_cache' );
+add_action( 'delete_post', 'hp_glossar_flush_cache' );

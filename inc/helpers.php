@@ -89,6 +89,7 @@ add_filter( 'body_class', 'hp_custom_body_classes' );
  */
 function hp_flush_rewrite_rules(): void {
 	hp_register_post_types();
+	hp_register_glossar_cpt();
 	hp_register_taxonomies();
 	flush_rewrite_rules();
 
