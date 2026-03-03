@@ -25,7 +25,7 @@ $hp_year    = gmdate( 'Y' );
             <!-- Spalte 1: Herausgeber -->
             <div class="hp-colophon__col hp-colophon__mission">
                 <span class="hp-colophon__label">Herausgeber</span>
-                <p>Herausgegeben von Hasim Üner — Kurde. Publizist. Schreibt aus den Zwischenräumen.</p>
+                <p>Herausgegeben von Hasim Üner — Medienwissenschaftler. Publizist. Schreibt aus den Zwischenräumen.</p>
                 <a class="hp-colophon__mission-link" href="<?php echo esc_url( home_url( '/mission/' ) ); ?>">Wer hier schreibt &rarr;</a>
             </div>
 
