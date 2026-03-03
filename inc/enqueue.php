@@ -49,8 +49,8 @@ function hp_journal_enqueue_styles(): void {
 		$theme_version
 	);
 
-	// Journal JS (TOC, Footnotes, Share, Glossar-Tooltip) — auf Single-Views + Glossar
-	if ( is_singular( [ 'essay', 'note', 'post', 'glossar' ] ) ) {
+	// Journal JS (TOC, Footnotes, Share, Glossar-Tooltip) — auf Single-Views + Pages + Glossar
+	if ( is_singular( [ 'essay', 'note', 'post', 'glossar' ] ) || is_page() ) {
 		wp_enqueue_script(
 			'hp-journal-js',
 			get_stylesheet_directory_uri() . '/assets/js/journal.js',

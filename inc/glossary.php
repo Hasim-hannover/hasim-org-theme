@@ -175,8 +175,8 @@ add_action( 'enqueue_block_editor_assets', 'hp_glossar_editor_panel' );
  */
 function hp_glossar_auto_link( string $content ): string {
 
-	// Nur in Essay/Note Singular-Ansichten
-	if ( ! is_singular( [ 'essay', 'note' ] ) ) {
+	// Nur in Essay/Note/Page Singular-Ansichten
+	if ( ! is_singular( [ 'essay', 'note', 'page' ] ) ) {
 		return $content;
 	}
 
