@@ -1338,23 +1338,94 @@ a.footnote-backref:hover {
    GLOSSAR — Vernetzte Wissensbasis
    ========================================= */
 
-/* --- Auto-Link im Content --- */
-.hp-glossar-link {
-    color: var(--hj-text);
-    text-decoration: underline;
-    text-decoration-color: var(--hj-accent);
-    text-decoration-style: dotted;
-    text-decoration-thickness: 1.5px;
-    text-underline-offset: 3px;
+/* --- Begriff-Markierung im Content --- */
+.hp-glossar-term {
+    border-bottom: 1.5px dotted var(--hj-accent);
     cursor: help;
-    transition: color 0.2s ease, text-decoration-color 0.2s ease;
+    transition: border-color 0.15s ease, color 0.15s ease;
 }
 
-.hp-glossar-link:hover,
-.hp-glossar-link:focus {
+.hp-glossar-term:hover,
+.hp-glossar-term:focus {
     color: var(--hj-accent);
-    text-decoration-style: solid;
-    text-decoration-thickness: 2px;
+    border-bottom-style: solid;
+    outline: none;
+}
+
+/* --- Glossar-Tooltip --- */
+.hp-gtt {
+    position: absolute;
+    z-index: 9999;
+    width: 280px;
+    background-color: var(--hj-rule);
+    color: #fff;
+    border-radius: 6px;
+    padding: var(--hj-space-md) var(--hj-space-md);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.22), 0 2px 8px rgba(0, 0, 0, 0.12);
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.hp-gtt--visible {
+    pointer-events: auto;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Pfeil oben (Standard: Tooltip ist unterhalb) */
+.hp-gtt::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 7px solid transparent;
+    border-bottom-color: var(--hj-rule);
+}
+
+/* Pfeil wenn Tooltip oberhalb ist */
+.hp-gtt--below::before {
+    bottom: auto;
+    top: 100%;
+    border-bottom-color: transparent;
+    border-top-color: var(--hj-rule);
+}
+
+.hp-gtt__term {
+    display: block;
+    font-family: var(--hj-sans);
+    font-size: var(--hj-fs-sm);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 0.4em;
+}
+
+.hp-gtt__def {
+    font-family: var(--hj-serif);
+    font-size: var(--hj-fs-sm);
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0 0 var(--hj-space-sm);
+}
+
+.hp-gtt__link {
+    font-family: var(--hj-sans);
+    font-size: var(--hj-fs-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--hj-accent);
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.hp-gtt__link:hover {
+    color: #e87070;
+    text-decoration: underline;
 }
 
 /* =========================================

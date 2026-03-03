@@ -289,10 +289,10 @@ function hp_glossar_auto_link( string $content ): string {
 
 			if ( preg_match( $regex, $part ) ) {
 				$replacement = sprintf(
-					'<a href="%s" class="hp-glossar-link" title="%s" data-glossar>%s</a>',
-					esc_url( $term['url'] ),
-					$term['tooltip'],
-					'$1'
+					'<span class="hp-glossar-term" data-term="%s" data-def="%s" data-url="%s" tabindex="0" role="button" aria-describedby="hp-gtt">$1</span>',
+					esc_attr( $term['label'] ),
+					esc_attr( $term['tooltip'] ),
+					esc_url( $term['url'] )
 				);
 
 				$part = preg_replace( $regex, $replacement, $part, 1 );
