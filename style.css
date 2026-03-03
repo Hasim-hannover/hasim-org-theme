@@ -1424,20 +1424,39 @@ a.footnote-backref:hover {
 
 /* --- Body --- */
 .hp-glossar-body {
-    max-width: var(--hj-content-width);
-    margin: 0 auto;
     padding: var(--hj-space-xl) var(--hj-gutter) var(--hj-space-2xl);
 }
 
 .hp-glossar-body__content {
     max-width: var(--hj-measure);
-    margin: 0 auto;
+    margin-right: auto;
+    margin-left: auto;
+    width: 100%;
+}
+
+/* GP erzwingt manchmal andere Containerbreiten — explizit überschreiben */
+.single-glossar .site-content,
+.single-glossar .content-area,
+.single-glossar .inside-article,
+.archive-glossar .site-content,
+.archive-glossar .content-area,
+.archive-glossar .inside-article {
+    max-width: none !important;
+    padding: 0 !important;
+}
+
+.single-glossar .entry-content,
+.archive-glossar .entry-content {
+    max-width: none;
+    padding: 0;
 }
 
 /* --- Rückverlinkungen --- */
 .hp-glossar-related {
     max-width: var(--hj-measure);
-    margin: var(--hj-space-xl) auto 0;
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: var(--hj-space-xl);
     padding: var(--hj-space-lg);
     background-color: var(--hj-callout-bg);
     border-left: 3px solid var(--hj-accent);
@@ -1497,7 +1516,9 @@ a.footnote-backref:hover {
 /* --- Back-Navigation --- */
 .hp-glossar-backnav {
     max-width: var(--hj-measure);
-    margin: var(--hj-space-xl) auto 0;
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: var(--hj-space-xl);
     padding-top: var(--hj-space-md);
     border-top: 1px solid var(--hj-border);
     text-align: center;
@@ -1602,7 +1623,8 @@ a.footnote-backref:hover {
 /* --- Index --- */
 .hp-glossar-index {
     max-width: var(--hj-content-width);
-    margin: 0 auto;
+    margin-right: auto;
+    margin-left: auto;
     padding: var(--hj-space-xl) var(--hj-gutter) var(--hj-space-2xl);
 }
 
