@@ -35,15 +35,15 @@ get_header(); ?>
 
         <div class="hp-mission__prose prose">
 
-            <p>Geboren in Nordkurdistan, aufgewachsen in Deutschland. Drei Sprachen, drei Welten, ein Blick, der Systeme hinterfragt.</p>
+            <p>Geboren in Nordkurdistan — den Regionen, die der türkische Staat als seinen Südosten beansprucht. Aufgewachsen in Deutschland. Drei Sprachen, drei Welten, keine davon neutral.</p>
 
-            <p>Im Türkischen höre ich die Herkunft meiner Familie, aber auch einen Nationalstaat, der das Kurdische jahrzehntelang unterdrückt hat – in Nordkurdistan, den mehrheitlich kurdisch bewohnten Regionen im Südosten der Türkei, war selbst das Sprechen der eigenen Sprache lange verboten. Stolz und Schweigen in einer Sprache.</p>
+            <p>Kurdisch ist die Sprache, die mir gehört und die ein Staat mir nehmen wollte. Türkisch ist die Sprache, die an ihre Stelle gesetzt wurde — in Nordkurdistan war selbst das Sprechen des Kurdischen lange verboten. Deutsch ist die Sprache, in der ich gelernt habe, beides zu benennen. Jede dieser Sprachen trägt eine Machtgeschichte. Zusammen formen sie den Blick, aus dem heraus ich schreibe.</p>
 
-            <p>Ich bin politisch — lokal, auf der Straße und am Schreibtisch. Was mich antreibt, ist das Dasein an sich. Was geschieht mit Erinnerung in hierarchisch organisierten Gesellschaften? Wie formt staatliche Macht, was gedacht und gesagt werden darf?</p>
+            <p>Ich bin politisch — lokal, auf der Straße und am Schreibtisch. Was mich antreibt, beginnt beim eigenen Dasein: bei der Erfahrung, dass die Welt, in die man geworfen wird, nicht zufällig geordnet ist, sondern hierarchisch. Aus dieser Erfahrung wird eine Frage: Was geschieht mit Erinnerung in hierarchisch organisierten Gesellschaften? Wie formt staatliche Macht, was gedacht und gesagt werden darf?</p>
 
-            <p>„Zwischenräume" ist das Journal für diese Fragen. Macht, Identität, Medien. Keine fertigen Antworten. Der Versuch, Strukturen sichtbar zu machen.</p>
+            <p>„Zwischenräume" ist das Journal für diese Fragen. Macht, Identität, Medien. Keine fertigen Antworten — aber der Anspruch, die Strukturen freizulegen, die Antworten verhindern.</p>
 
-            <p>Kein Tracking. Keine Werbung. Keine Cookies.</p>
+            <p>Das gilt auch für diesen Ort selbst: kein Tracking, keine Werbung, keine Cookies. Wer Machtverhältnisse analysiert, darf sie nicht nebenbei reproduzieren.</p>
 
             <!-- TODO: Kontaktweg ergänzen (E-Mail, Social-Link o. Ä.) -->
 
