@@ -1081,6 +1081,30 @@ a.footnote-backref:hover {
     text-decoration: none;
 }
 
+.hp-colophon__links {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.6rem;
+}
+
+.hp-colophon__links .hp-colophon__mission-link {
+    margin-top: 0;
+}
+
+.hp-colophon__social {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--hj-text-muted);
+    transition: color 0.15s ease;
+}
+
+.hp-colophon__social:hover {
+    color: var(--hj-accent);
+    text-decoration: none;
+}
+
 .hp-colophon__topic-list {
     list-style: none;
     padding: 0;
