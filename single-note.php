@@ -12,7 +12,9 @@ get_header(); ?>
 
 <?php while ( have_posts() ) : the_post(); ?>
 
-<header class="single-header" role="banner">
+<main id="main-content">
+
+<header class="single-header">
     <span class="hp-kicker">Notiz</span>
     <h1 class="single-header__title"><?php the_title(); ?></h1>
 
@@ -42,6 +44,7 @@ get_header(); ?>
     </div>
 
 </article>
+</main>
 
 <?php endwhile; ?>
 

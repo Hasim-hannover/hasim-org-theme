@@ -13,12 +13,13 @@ get_header(); ?>
 
 <?php while ( have_posts() ) : the_post(); ?>
 
+<main id="main-content">
 <article class="essay-article" aria-label="<?php the_title_attribute(); ?>">
 
     <?php if ( has_post_thumbnail() ) : ?>
 
         <!-- HERO: Full-bleed Beitragsbild mit Overlay-Text -->
-        <header class="essay-hero" role="banner">
+        <header class="essay-hero">
             <div class="essay-hero__image-wrap">
                 <?php the_post_thumbnail( 'full', array(
                     'class'   => 'essay-hero__img',
@@ -69,7 +70,7 @@ get_header(); ?>
     <?php else : ?>
 
         <!-- FALLBACK: Kein Beitragsbild → klassischer Header -->
-        <header class="single-header" role="banner">
+        <header class="single-header">
             <span class="hp-kicker">Essay</span>
             <h1 class="single-header__title"><?php the_title(); ?></h1>
 
@@ -161,6 +162,7 @@ get_header(); ?>
     <?php endif; ?>
 
 </article>
+</main>
 
 <?php endwhile; ?>
 

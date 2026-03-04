@@ -16,8 +16,10 @@ get_header(); ?>
 
 <?php while ( have_posts() ) : the_post(); ?>
 
+<main id="main-content">
+
 <!-- Header: Zentriert, großzügig, editoriales Auftreten -->
-<header class="hp-glossar-hero" role="banner">
+<header class="hp-glossar-hero">
     <div class="hp-glossar-hero__inner">
         <span class="hp-kicker">Glossar</span>
         <h1 class="hp-glossar-hero__title"><?php the_title(); ?></h1>
@@ -94,6 +96,7 @@ get_header(); ?>
     </nav>
 
 </article>
+</main>
 
 <?php endwhile; ?>
 

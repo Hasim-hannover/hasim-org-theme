@@ -94,6 +94,8 @@ function hp_render_journal_header(): void {
 	];
 	?>
 
+	<a class="hp-skip-link" href="#main-content">Zum Inhalt springen</a>
+
 	<header class="hp-site-header" role="banner">
 
 		<!-- Masthead: Titel + Tagline -->

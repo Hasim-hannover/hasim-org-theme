@@ -207,6 +207,9 @@ function hp_output_seo_meta_tags(): void {
 
 	echo "\n<!-- Zwischenräume: SEO-Meta -->\n";
 
+	// Canonical URL
+	printf( '<link rel="canonical" href="%s" />' . "\n", esc_url( $url ) );
+
 	// Meta-Description
 	if ( $desc ) {
 		printf( '<meta name="description" content="%s" />' . "\n", esc_attr( $desc ) );
@@ -238,10 +241,30 @@ function hp_output_seo_meta_tags(): void {
 
 	if ( $image ) {
 		printf( '<meta property="og:image" content="%s" />' . "\n", esc_url( $image ) );
+
+		// OG-Image-Dimensionen für korrektes Social-Preview beim Erstshare
+		if ( is_singular() ) {
+			$img_id = get_post_thumbnail_id();
+			if ( $img_id ) {
+				$img_meta = wp_get_attachment_image_src( $img_id, 'large' );
+				if ( $img_meta ) {
+					printf( '<meta property="og:image:width" content="%d" />' . "\n", $img_meta[1] );
+					printf( '<meta property="og:image:height" content="%d" />' . "\n", $img_meta[2] );
+				}
+			}
+		}
+
+		printf( '<meta property="og:image:alt" content="%s" />' . "\n", esc_attr( $title ) );
+	}
+
+	if ( is_singular() ) {
+		echo '<meta property="article:author" content="Hasim Üner" />' . "\n";
 	}
 
 	// Twitter Card
 	echo '<meta name="twitter:card" content="summary_large_image" />' . "\n";
+	echo '<meta name="twitter:site" content="@_0239983326111" />' . "\n";
+	echo '<meta name="twitter:creator" content="@_0239983326111" />' . "\n";
 	printf( '<meta name="twitter:title" content="%s" />' . "\n", esc_attr( $title ) );
 
 	if ( $desc ) {

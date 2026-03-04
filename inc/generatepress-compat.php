@@ -34,7 +34,7 @@ defined( 'ABSPATH' ) || exit;
  * werden abgedeckt, da GP-Premium diese variiert.
  */
 function hp_disable_gp_post_meta(): void {
-	if ( ! is_singular( [ 'essay', 'note' ] ) ) {
+	if ( ! is_singular( [ 'essay', 'note', 'glossar' ] ) ) {
 		return;
 	}
 
@@ -58,7 +58,7 @@ add_action( 'wp', 'hp_disable_gp_post_meta' );
  * @return string Leer auf CPT-Singles, sonst original.
  */
 function hp_suppress_gp_meta_on_cpt( string $output ): string {
-	if ( is_singular( [ 'essay', 'note' ] ) ) {
+	if ( is_singular( [ 'essay', 'note', 'glossar' ] ) ) {
 		return '';
 	}
 	return $output;
@@ -83,7 +83,7 @@ add_filter( 'generate_post_comments_link_output', 'hp_suppress_gp_meta_on_cpt' )
  * @return array Leer auf CPT-Singles, sonst original.
  */
 function hp_strip_gp_meta_items( $items ) {
-	if ( is_singular( [ 'essay', 'note' ] ) ) {
+	if ( is_singular( [ 'essay', 'note', 'glossar' ] ) ) {
 		return [];
 	}
 	return $items;
