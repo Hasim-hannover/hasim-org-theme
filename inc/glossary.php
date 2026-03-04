@@ -164,11 +164,11 @@ add_action( 'enqueue_block_editor_assets', 'hp_glossar_editor_panel' );
  * einen verlinkten Tooltip.
  *
  * Regeln:
- * - Nur in essay/note CPTs aktiv
+ * - Nur in essay/note/page Singular-Ansichten aktiv
  * - Nur published Glossar-Einträge
- * - Überspringt <h1>–<h6>, <a>, <code>, <pre>, <script>, <style>
+ * - Überspringt <h1>–<h6>, <a>, <code>, <pre>, <script>, <style>, <span class="hp-glossar-term">
  * - Maximal 1 Verlinkung pro Begriff pro Beitrag
- * - Ergebnis wird transient-gecacht (1 h)
+ * - Ergebnis wird versioniert gecacht (auto-invalidiert bei Glossar-Änderungen)
  *
  * @param string $content Post-Content.
  * @return string
@@ -180,8 +180,14 @@ function hp_glossar_auto_link( string $content ): string {
 		return $content;
 	}
 
-	$post_id   = get_the_ID();
-	$cache_key = 'hp_glossar_linked_' . $post_id;
+	// Nicht auf Glossar-Einträgen selbst (verhindert Selbstverlinkung)
+	if ( 'glossar' === get_post_type() ) {
+		return $content;
+	}
+
+	$post_id       = get_the_ID();
+	$glossar_ver   = (int) get_option( 'hp_glossar_version', 0 );
+	$cache_key     = 'hp_gl_' . $post_id . '_v' . $glossar_ver;
 
 	// Transient-Cache prüfen
 	$cached = get_transient( $cache_key );
@@ -210,12 +216,14 @@ function hp_glossar_auto_link( string $content ): string {
 		$tooltip = esc_attr( wp_strip_all_tags( $kurz ) );
 
 		// Hauptbegriff
-		$terms[] = [
-			'pattern' => preg_quote( $title, '/' ),
-			'url'     => $url,
-			'tooltip' => $tooltip,
-			'label'   => $title,
-		];
+		if ( $title ) {
+			$terms[] = [
+				'pattern' => preg_quote( $title, '/' ),
+				'url'     => $url,
+				'tooltip' => $tooltip,
+				'label'   => $title,
+			];
+		}
 
 		// Synonyme
 		$synonyme = get_post_meta( $entry_id, '_hp_glossar_synonyme', true );
@@ -234,20 +242,38 @@ function hp_glossar_auto_link( string $content ): string {
 		}
 	}
 
+	if ( empty( $terms ) ) {
+		return $content;
+	}
+
 	// Längere Begriffe zuerst (verhindert Teilersetzung)
 	usort( $terms, function ( $a, $b ) {
 		return mb_strlen( $b['pattern'] ) - mb_strlen( $a['pattern'] );
 	} );
 
-	// Tags aufteilen: HTML-Tags vs. Text-Nodes
-	// Überspringe: Headings, Links, Code, Pre, Script, Style
-	$skip_tags = 'h[1-6]|a|code|pre|script|style';
-	$parts     = preg_split(
-		'/(<\/?(?:' . $skip_tags . ')[\s>][^>]*>)/i',
-		$content,
-		-1,
-		PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY
+	// Gutenberg-Kommentare entfernen → nach Verarbeitung zurücksetzen
+	// (verhindert, dass Kommentare das Tag-Parsing stören)
+	$placeholders = [];
+	$content = preg_replace_callback(
+		'/<!--.*?-->/s',
+		function ( $match ) use ( &$placeholders ) {
+			$key = '%%HP_CMT_' . count( $placeholders ) . '%%';
+			$placeholders[ $key ] = $match[0];
+			return $key;
+		},
+		$content
 	);
+
+	/*
+	 * Tags aufteilen: HTML-Tags vs. Text-Nodes.
+	 * Überspringe: Headings, Links, Code, Pre, Script, Style, bereits verlinkte Glossar-Spans.
+	 *
+	 * WICHTIG: \b nach dem Tag-Namen statt [\s>] — damit auch
+	 * einfache Tags wie <h2>, </a>, <code> korrekt gematcht werden.
+	 */
+	$skip_tags = 'h[1-6]|a|code|pre|script|style|span';
+	$split_re  = '/(<\/?(?:' . $skip_tags . ')\b[^>]*>)/i';
+	$parts     = preg_split( $split_re, $content, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY );
 
 	$in_skip   = 0;
 	$linked    = []; // Bereits verlinkte Begriffe (max 1×)
@@ -255,13 +281,15 @@ function hp_glossar_auto_link( string $content ): string {
 
 	foreach ( $parts as $part ) {
 
-		// Skip-Tag öffnen/schließen?
-		if ( preg_match( '/^<(' . $skip_tags . ')[\s>]/i', $part ) ) {
+		// Öffnender Skip-Tag?
+		if ( preg_match( '/^<((?:' . $skip_tags . ')\b)/i', $part, $m ) && $part[1] !== '/' ) {
 			$in_skip++;
 			$processed .= $part;
 			continue;
 		}
-		if ( preg_match( '/^<\/(' . $skip_tags . ')>/i', $part ) ) {
+
+		// Schließender Skip-Tag?
+		if ( preg_match( '/^<\/((?:' . $skip_tags . ')\b)/i', $part ) ) {
 			$in_skip = max( 0, $in_skip - 1 );
 			$processed .= $part;
 			continue;
@@ -273,13 +301,13 @@ function hp_glossar_auto_link( string $content ): string {
 			continue;
 		}
 
-		// Ist es ein HTML-Tag? → unverändert
-		if ( preg_match( '/^<[^>]+>$/', $part ) ) {
+		// Ist es ein anderer HTML-Tag? → unverändert
+		if ( isset( $part[0] ) && $part[0] === '<' && preg_match( '/^<[^>]+>$/', $part ) ) {
 			$processed .= $part;
 			continue;
 		}
 
-		// Text-Node: Begriffe ersetzen
+		// Text-Node: Begriffe ersetzen (nur erstes Vorkommen pro Begriff)
 		foreach ( $terms as $term ) {
 			if ( isset( $linked[ $term['pattern'] ] ) ) {
 				continue;
@@ -303,34 +331,66 @@ function hp_glossar_auto_link( string $content ): string {
 		$processed .= $part;
 	}
 
-	// Cache für 1 Stunde
-	set_transient( $cache_key, $processed, HOUR_IN_SECONDS );
+	// Gutenberg-Kommentare wiederherstellen
+	if ( $placeholders ) {
+		$processed = str_replace( array_keys( $placeholders ), array_values( $placeholders ), $processed );
+	}
+
+	// Cache für 24 Stunden (auto-invalidiert durch Glossar-Version)
+	set_transient( $cache_key, $processed, DAY_IN_SECONDS );
 
 	return $processed;
 }
 add_filter( 'the_content', 'hp_glossar_auto_link', 20 );
 
 /* =========================================
-   5. CACHE INVALIDIERUNG
+   5. CACHE INVALIDIERUNG (versionbasiert)
    ========================================= */
 
 /**
- * Löscht den Auto-Link-Cache wenn ein Glossar-Eintrag
- * erstellt, aktualisiert oder gelöscht wird.
+ * Bumpt die Glossar-Version und löscht Transient-Caches
+ * wenn ein Glossar-Eintrag erstellt, aktualisiert oder gelöscht wird.
+ *
+ * Durch die Version im Cache-Key sind alte Transients automatisch
+ * stale — neue Requests erzeugen frische Caches.
  */
 function hp_glossar_flush_cache( int $post_id ): void {
+
+	// Revisions und Autosaves ignorieren
+	if ( wp_is_post_revision( $post_id ) || wp_is_post_autosave( $post_id ) ) {
+		return;
+	}
 
 	if ( 'glossar' !== get_post_type( $post_id ) ) {
 		return;
 	}
 
-	// Alle Glossar-Link-Transients löschen
+	// Version bumpen → alte Cache-Keys werden irrelevant
+	$new_version = (int) get_option( 'hp_glossar_version', 0 ) + 1;
+	update_option( 'hp_glossar_version', $new_version, false );
+
+	// Alte Transients aufräumen (SQL für DB-backed Transients)
 	global $wpdb;
 	$wpdb->query(
 		"DELETE FROM {$wpdb->options}
-		 WHERE option_name LIKE '_transient_hp_glossar_linked_%'
-		    OR option_name LIKE '_transient_timeout_hp_glossar_linked_%'"
+		 WHERE option_name LIKE '_transient_hp_gl_%'
+		    OR option_name LIKE '_transient_timeout_hp_gl_%'"
 	);
 }
-add_action( 'save_post',   'hp_glossar_flush_cache' );
-add_action( 'delete_post', 'hp_glossar_flush_cache' );
+add_action( 'save_post_glossar', 'hp_glossar_flush_cache' );
+add_action( 'delete_post',       'hp_glossar_flush_cache' );
+
+/**
+ * Spezialfall: Glossar-Eintrag wechselt Status (draft → publish).
+ * save_post feuert hier auch, aber transition_post_status
+ * stellt sicher, dass der Cache IMMER invalidiert wird.
+ */
+function hp_glossar_flush_on_status_change( string $new_status, string $old_status, \WP_Post $post ): void {
+	if ( 'glossar' !== $post->post_type ) {
+		return;
+	}
+	if ( $new_status !== $old_status ) {
+		hp_glossar_flush_cache( $post->ID );
+	}
+}
+add_action( 'transition_post_status', 'hp_glossar_flush_on_status_change', 10, 3 );
