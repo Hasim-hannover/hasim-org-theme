@@ -11,8 +11,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$hp_theme   = wp_get_theme();
-$hp_version = $hp_theme->get( 'Version' );
 $hp_year    = gmdate( 'Y' );
 ?>
 
@@ -60,7 +58,6 @@ $hp_year    = gmdate( 'Y' );
                     <li><a href="<?php echo esc_url( home_url( '/impressum/' ) ); ?>">Impressum</a></li>
                     <li><a href="<?php echo esc_url( home_url( '/datenschutz/' ) ); ?>">Datenschutz</a></li>
                 </ul>
-                <p class="hp-colophon__version">Theme v<?php echo esc_html( $hp_version ); ?></p>
             </div>
 
         </div><!-- .hp-colophon__inner -->
