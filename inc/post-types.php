@@ -41,7 +41,7 @@ function hp_register_post_types(): void {
 		'rewrite'       => [ 'slug' => 'essays', 'with_front' => false ],
 		'menu_icon'     => 'dashicons-media-text',
 		'menu_position' => 5,
-		'supports'      => [ 'title', 'editor', 'excerpt', 'thumbnail', 'revisions', 'custom-fields' ],
+		'supports'      => [ 'title', 'editor', 'excerpt', 'thumbnail', 'revisions', 'custom-fields', 'comments' ],
 		'taxonomies'    => [ 'topic' ],
 		'show_in_rest'  => true,
 	] );

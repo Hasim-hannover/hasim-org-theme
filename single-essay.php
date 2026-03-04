@@ -151,6 +151,15 @@ get_header(); ?>
 
     </div>
 
+    <?php if ( comments_open() || get_comments_number() ) : ?>
+    <!-- Kommentarbereich -->
+    <section class="hp-comments" aria-label="Kommentare">
+        <div class="hp-comments__inner">
+            <?php comments_template(); ?>
+        </div>
+    </section>
+    <?php endif; ?>
+
 </article>
 
 <?php endwhile; ?>

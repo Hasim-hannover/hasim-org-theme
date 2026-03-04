@@ -1393,6 +1393,195 @@ a.footnote-backref:hover {
     margin-top: var(--hj-space-sm);
 }
 
+/* --- Kommentare (Essay) --- */
+
+.hp-comments {
+    max-width: var(--hj-measure);
+    margin: var(--hj-space-2xl) auto var(--hj-space-xl);
+    padding-top: var(--hj-space-xl);
+    border-top: 1px solid var(--hj-rule-light);
+}
+
+.hp-comments__inner {
+    font-family: var(--hj-sans);
+}
+
+/* Titel */
+.hp-comments .comments-title,
+.hp-comments #reply-title {
+    font-family: var(--hj-sans);
+    font-weight: 900;
+    font-size: clamp(1.2rem, 2vw, 1.5rem);
+    color: var(--hj-rule);
+    margin-bottom: var(--hj-space-md);
+    letter-spacing: -0.01em;
+}
+
+.hp-comments #reply-title small {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 400;
+    margin-top: 0.4rem;
+}
+
+.hp-comments #reply-title small a {
+    color: var(--hj-accent);
+    text-decoration: none;
+}
+
+/* Kommentarliste */
+.hp-comments .comment-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--hj-space-xl);
+}
+
+.hp-comments .comment-list .comment {
+    padding: var(--hj-space-md) 0;
+    border-bottom: 1px solid var(--hj-rule-light);
+}
+
+.hp-comments .comment-list .comment:last-child {
+    border-bottom: none;
+}
+
+/* Verschachtelte Antworten */
+.hp-comments .comment-list .children {
+    list-style: none;
+    padding-left: var(--hj-space-lg);
+    margin: 0;
+    border-left: 2px solid var(--hj-rule-light);
+}
+
+.hp-comments .comment-author {
+    font-family: var(--hj-sans);
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--hj-rule);
+}
+
+.hp-comments .comment-author .says {
+    display: none;
+}
+
+.hp-comments .comment-metadata {
+    font-size: 0.75rem;
+    color: var(--hj-text-secondary);
+    margin-bottom: 0.6rem;
+}
+
+.hp-comments .comment-metadata a {
+    color: var(--hj-text-secondary);
+    text-decoration: none;
+}
+
+.hp-comments .comment-metadata a:hover {
+    color: var(--hj-accent);
+}
+
+.hp-comments .comment-content p {
+    font-family: var(--hj-serif);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--hj-text-primary);
+    margin: 0.4rem 0;
+}
+
+.hp-comments .reply a {
+    font-family: var(--hj-sans);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--hj-text-secondary);
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.hp-comments .reply a:hover {
+    color: var(--hj-accent);
+}
+
+/* Kommentarformular */
+.hp-comments .comment-form label {
+    display: block;
+    font-family: var(--hj-sans);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--hj-text-secondary);
+    margin-bottom: 0.4rem;
+}
+
+.hp-comments .comment-form input[type="text"],
+.hp-comments .comment-form input[type="email"],
+.hp-comments .comment-form input[type="url"],
+.hp-comments .comment-form textarea {
+    width: 100%;
+    padding: 0.65rem 0.8rem;
+    font-family: var(--hj-serif);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--hj-text-primary);
+    background: var(--hj-bg-surface);
+    border: 1px solid var(--hj-rule-light);
+    border-radius: 2px;
+    transition: border-color 0.15s ease;
+    box-sizing: border-box;
+}
+
+.hp-comments .comment-form input:focus,
+.hp-comments .comment-form textarea:focus {
+    outline: none;
+    border-color: var(--hj-rule);
+}
+
+.hp-comments .comment-form textarea {
+    min-height: 10rem;
+    resize: vertical;
+}
+
+.hp-comments .comment-form .comment-form-comment,
+.hp-comments .comment-form .comment-form-author,
+.hp-comments .comment-form .comment-form-email,
+.hp-comments .comment-form .comment-form-url {
+    margin-bottom: var(--hj-space-sm);
+}
+
+.hp-comments .comment-form .form-submit {
+    margin-top: var(--hj-space-md);
+}
+
+.hp-comments .comment-form .submit {
+    display: inline-block;
+    font-family: var(--hj-sans);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #fff;
+    background: var(--hj-rule);
+    border: 1px solid var(--hj-rule);
+    padding: 0.75rem 2rem;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.hp-comments .comment-form .submit:hover {
+    background: transparent;
+    color: var(--hj-rule);
+}
+
+/* Keine Kommentare Hinweis */
+.hp-comments .no-comments {
+    font-family: var(--hj-sans);
+    font-size: 0.85rem;
+    color: var(--hj-text-secondary);
+    font-style: italic;
+}
+
 /* --- Share-Buttons --- */
 
 .hp-share {
