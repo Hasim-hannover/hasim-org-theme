@@ -13,7 +13,7 @@ get_header(); ?>
 <header class="archive-header" role="banner">
     <span class="hp-kicker">Archiv</span>
     <h1 class="archive-header__title">Essays</h1>
-    <p class="archive-header__desc">Langform-Analysen zu Technologie, Architektur und digitaler Souveränität.</p>
+    <p class="archive-header__desc">Langform-Analysen zu Gesellschaft, Erinnerungspolitik und den Strukturen, die unser Denken formen.</p>
 </header>
 
 <?php if ( have_posts() ) : ?>
