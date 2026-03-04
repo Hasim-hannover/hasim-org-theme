@@ -85,6 +85,22 @@ function hp_custom_body_classes( array $classes ): array {
 add_filter( 'body_class', 'hp_custom_body_classes' );
 
 /* -----------------------------------------
+   CPTs in WordPress-Suche einbinden
+   ----------------------------------------- */
+
+/**
+ * Erweitert die Standard-Suche um alle Custom Post Types.
+ *
+ * @param WP_Query $query Die aktuelle Abfrage.
+ */
+function hp_extend_search_to_cpts( $query ): void {
+	if ( $query->is_search() && $query->is_main_query() && ! is_admin() ) {
+		$query->set( 'post_type', [ 'essay', 'note', 'glossar', 'page' ] );
+	}
+}
+add_action( 'pre_get_posts', 'hp_extend_search_to_cpts' );
+
+/* -----------------------------------------
    Rewrite Flush (Theme-Aktivierung)
    ----------------------------------------- */
 

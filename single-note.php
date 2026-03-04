@@ -29,7 +29,7 @@ get_header(); ?>
     <?php
     $topics = get_the_terms( get_the_ID(), 'topic' );
     if ( $topics && ! is_wp_error( $topics ) ) : ?>
-        <ul class="hp-topics" aria-label="Themenfelder" style="margin-top: 1rem;">
+        <ul class="hp-topics hp-topics--spaced" aria-label="Themenfelder">
             <?php foreach ( $topics as $topic ) : ?>
                 <li><a class="hp-topic-pill" href="<?php echo esc_url( get_term_link( $topic ) ); ?>"><?php echo esc_html( $topic->name ); ?></a></li>
             <?php endforeach; ?>
@@ -44,6 +44,34 @@ get_header(); ?>
     </div>
 
 </article>
+
+    <!-- Prev / Next Navigation -->
+    <?php
+    $hp_prev = get_previous_post( true, '', 'topic' );
+    $hp_next = get_next_post( true, '', 'topic' );
+
+    if ( $hp_prev || $hp_next ) : ?>
+    <nav class="hp-post-nav" aria-label="Beitragsnavigation">
+        <div class="hp-post-nav__inner">
+            <?php if ( $hp_prev ) : ?>
+            <a class="hp-post-nav__link hp-post-nav__link--prev" href="<?php echo esc_url( get_permalink( $hp_prev ) ); ?>">
+                <span class="hp-post-nav__label">&larr; Vorherige Notiz</span>
+                <span class="hp-post-nav__title"><?php echo esc_html( get_the_title( $hp_prev ) ); ?></span>
+            </a>
+            <?php else : ?>
+            <span class="hp-post-nav__link hp-post-nav__link--empty"></span>
+            <?php endif; ?>
+
+            <?php if ( $hp_next ) : ?>
+            <a class="hp-post-nav__link hp-post-nav__link--next" href="<?php echo esc_url( get_permalink( $hp_next ) ); ?>">
+                <span class="hp-post-nav__label">Nächste Notiz &rarr;</span>
+                <span class="hp-post-nav__title"><?php echo esc_html( get_the_title( $hp_next ) ); ?></span>
+            </a>
+            <?php endif; ?>
+        </div>
+    </nav>
+    <?php endif; ?>
+
 </main>
 
 <?php endwhile; ?>
