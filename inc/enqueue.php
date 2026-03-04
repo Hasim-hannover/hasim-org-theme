@@ -49,16 +49,14 @@ function hp_journal_enqueue_styles(): void {
 		$theme_version
 	);
 
-	// Journal JS (TOC, Footnotes, Share, Glossar-Tooltip) — auf Single-Views + Pages + Glossar
-	if ( is_singular( [ 'essay', 'note', 'post', 'glossar' ] ) || is_page() ) {
-		wp_enqueue_script(
-			'hp-journal-js',
-			get_stylesheet_directory_uri() . '/assets/js/journal.js',
-			[],
-			$theme_version,
-			true
-		);
-	}
+	// Journal JS — auf allen Seiten (Header-Nav, Glossar-Tooltips, TOC, Share etc.)
+	wp_enqueue_script(
+		'hp-journal-js',
+		get_stylesheet_directory_uri() . '/assets/js/journal.js',
+		[],
+		$theme_version,
+		true
+	);
 }
 add_action( 'wp_enqueue_scripts', 'hp_journal_enqueue_styles' );
 

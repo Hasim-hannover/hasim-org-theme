@@ -1,0 +1,194 @@
+<?php
+/**
+ * Header & Navigation — Hasimuener Journal
+ *
+ * Registriert eine eigene Menu-Location und ersetzt den
+ * GeneratePress-Standard-Header durch ein redaktionelles
+ * Zeitungsstil-Layout: Titel zentriert, Navigation darunter.
+ *
+ * Menü-Punkte werden hardcoded generiert (CPT-Archives + Pages),
+ * damit sie IMMER synchron mit den registrierten CPTs sind.
+ * Optional kann ein WP-Menü als Override angelegt werden.
+ *
+ * @package Hasimuener_Journal
+ * @since   5.3.0
+ */
+
+defined( 'ABSPATH' ) || exit;
+
+/* =========================================
+   1. MENÜ-LOCATION REGISTRIEREN
+   ========================================= */
+
+function hp_register_nav_menus(): void {
+	register_nav_menus( [
+		'hp-primary' => 'Hauptnavigation (Zeitungsstil)',
+	] );
+}
+add_action( 'after_setup_theme', 'hp_register_nav_menus' );
+
+/* =========================================
+   2. GP-HEADER UNTERDRÜCKEN
+   ========================================= */
+
+/**
+ * Entfernt den gesamten GeneratePress-Header-Bereich,
+ * damit unser eigener Header ohne Konflikte gerendert wird.
+ *
+ * GP nutzt generate_header / generate_inside_header Hooks.
+ * Wir entfernen alle relevanten Actions.
+ */
+function hp_remove_gp_header(): void {
+	// GP header output
+	remove_action( 'generate_header', 'generate_construct_header' );
+	// GP navigation
+	remove_action( 'generate_after_header', 'generate_add_navigation_after_header', 5 );
+
+	// Falls GP-Premium Module weitere Header-Hooks nutzen
+	if ( function_exists( 'generate_menu_plus_setup' ) ) {
+		remove_action( 'generate_after_header', 'generate_menu_plus_mobile_header' );
+	}
+}
+add_action( 'after_setup_theme', 'hp_remove_gp_header', 50 );
+
+/* =========================================
+   3. EIGENEN HEADER EINFÜGEN
+   ========================================= */
+
+/**
+ * Rendert den redaktionellen Zeitungsstil-Header.
+ *
+ * Struktur:
+ * ┌──────────────────────────────────────┐
+ * │          ZWISCHENRÄUME               │  ← Titel, zentriert
+ * │   Hasim Üner — Zwischenräume         │  ← Untertitel
+ * ├──────────────────────────────────────┤
+ * │  Essays · Notizen · Glossar · Mission│  ← Nav-Leiste
+ * └──────────────────────────────────────┘
+ */
+function hp_render_journal_header(): void {
+	$hp_current_url = trailingslashit( home_url( add_query_arg( [] ) ) );
+
+	// Navigation: hardcoded Items (immer synchron mit CPTs)
+	$hp_nav_items = [
+		[
+			'label' => 'Essays',
+			'url'   => get_post_type_archive_link( 'essay' ),
+			'match' => [ 'post_type_archive' => 'essay', 'singular' => 'essay' ],
+		],
+		[
+			'label' => 'Notizen',
+			'url'   => get_post_type_archive_link( 'note' ),
+			'match' => [ 'post_type_archive' => 'note', 'singular' => 'note' ],
+		],
+		[
+			'label' => 'Glossar',
+			'url'   => get_post_type_archive_link( 'glossar' ),
+			'match' => [ 'post_type_archive' => 'glossar', 'singular' => 'glossar' ],
+		],
+		[
+			'label' => 'Mission',
+			'url'   => home_url( '/mission/' ),
+			'match' => [ 'page_slug' => 'mission' ],
+		],
+	];
+	?>
+
+	<header class="hp-site-header" role="banner">
+
+		<!-- Masthead: Titel + Tagline -->
+		<div class="hp-masthead">
+			<div class="hp-masthead__inner">
+				<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="hp-masthead__link" rel="home">
+					<span class="hp-masthead__title">Zwischenräume</span>
+				</a>
+				<p class="hp-masthead__tagline">Gesellschaft · Politik · Erinnerung</p>
+			</div>
+		</div>
+
+		<!-- Navigation -->
+		<nav class="hp-nav" aria-label="Hauptnavigation">
+			<div class="hp-nav__inner">
+
+				<?php if ( has_nav_menu( 'hp-primary' ) ) : ?>
+					<?php
+					wp_nav_menu( [
+						'theme_location'  => 'hp-primary',
+						'container'       => false,
+						'menu_class'      => 'hp-nav__list',
+						'depth'           => 1,
+						'fallback_cb'     => false,
+					] );
+					?>
+				<?php else : ?>
+					<!-- Automatische Navigation aus CPT-Archiven -->
+					<ul class="hp-nav__list">
+						<?php foreach ( $hp_nav_items as $item ) :
+							$is_active = hp_nav_is_active( $item['match'] );
+						?>
+							<li class="hp-nav__item<?php echo $is_active ? ' hp-nav__item--active' : ''; ?>">
+								<a class="hp-nav__link" href="<?php echo esc_url( $item['url'] ); ?>"<?php echo $is_active ? ' aria-current="page"' : ''; ?>>
+									<?php echo esc_html( $item['label'] ); ?>
+								</a>
+							</li>
+						<?php endforeach; ?>
+					</ul>
+				<?php endif; ?>
+
+				<!-- Hamburger (Mobile) -->
+				<button class="hp-nav__toggle" aria-label="Menü öffnen" aria-expanded="false" aria-controls="hp-nav-mobile">
+					<span class="hp-nav__toggle-bar" aria-hidden="true"></span>
+					<span class="hp-nav__toggle-bar" aria-hidden="true"></span>
+					<span class="hp-nav__toggle-bar" aria-hidden="true"></span>
+				</button>
+
+			</div>
+		</nav>
+
+		<!-- Mobile-Menü (ausklappbar) -->
+		<div class="hp-nav-mobile" id="hp-nav-mobile" hidden>
+			<ul class="hp-nav-mobile__list">
+				<?php foreach ( $hp_nav_items as $item ) :
+					$is_active = hp_nav_is_active( $item['match'] );
+				?>
+					<li class="hp-nav-mobile__item<?php echo $is_active ? ' hp-nav-mobile__item--active' : ''; ?>">
+						<a href="<?php echo esc_url( $item['url'] ); ?>"<?php echo $is_active ? ' aria-current="page"' : ''; ?>>
+							<?php echo esc_html( $item['label'] ); ?>
+						</a>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+		</div>
+
+	</header>
+
+	<?php
+}
+add_action( 'generate_before_header', 'hp_render_journal_header', 5 );
+
+/* =========================================
+   4. HILFS-FUNKTIONEN
+   ========================================= */
+
+/**
+ * Prüft ob ein Nav-Item den aktuellen Seitenkontext matcht.
+ *
+ * @param array $match Assoziatives Array mit Match-Regeln.
+ * @return bool
+ */
+function hp_nav_is_active( array $match ): bool {
+
+	if ( isset( $match['post_type_archive'] ) && is_post_type_archive( $match['post_type_archive'] ) ) {
+		return true;
+	}
+
+	if ( isset( $match['singular'] ) && is_singular( $match['singular'] ) ) {
+		return true;
+	}
+
+	if ( isset( $match['page_slug'] ) && is_page( $match['page_slug'] ) ) {
+		return true;
+	}
+
+	return false;
+}

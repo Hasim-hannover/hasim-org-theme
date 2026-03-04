@@ -45,3 +45,4 @@ require_once $hp_inc_dir . '/meta-fields.php';
 require_once $hp_inc_dir . '/seo-schema.php';
 require_once $hp_inc_dir . '/seo-meta.php';
 require_once $hp_inc_dir . '/glossary.php';
+require_once $hp_inc_dir . '/header-nav.php';

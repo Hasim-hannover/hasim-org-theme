@@ -72,6 +72,14 @@ function hp_custom_body_classes( array $classes ): array {
 		$classes[] = 'archive-notes';
 	}
 
+	if ( is_singular( 'glossar' ) ) {
+		$classes[] = 'single-glossar';
+	}
+
+	if ( is_post_type_archive( 'glossar' ) ) {
+		$classes[] = 'archive-glossar';
+	}
+
 	return $classes;
 }
 add_filter( 'body_class', 'hp_custom_body_classes' );

@@ -274,6 +274,57 @@
 } )();
 
 /* =========================================
+   MOBILE NAVIGATION — Hamburger Toggle
+   =========================================
+   Öffnet/schließt das Mobile-Menü.
+   Kein Framework. Kein Build-Step.
+*/
+( function () {
+    'use strict';
+
+    function init() {
+        var toggle = document.querySelector( '.hp-nav__toggle' );
+        var mobile = document.getElementById( 'hp-nav-mobile' );
+
+        if ( ! toggle || ! mobile ) return;
+
+        toggle.addEventListener( 'click', function () {
+            var expanded = toggle.getAttribute( 'aria-expanded' ) === 'true';
+            toggle.setAttribute( 'aria-expanded', String( ! expanded ) );
+            toggle.setAttribute( 'aria-label', expanded ? 'Menü öffnen' : 'Menü schließen' );
+
+            if ( expanded ) {
+                // Schließen
+                mobile.setAttribute( 'data-open', 'false' );
+                setTimeout( function () {
+                    mobile.setAttribute( 'hidden', '' );
+                }, 300 );
+            } else {
+                // Öffnen
+                mobile.removeAttribute( 'hidden' );
+                // Force reflow für Animation
+                void mobile.offsetHeight;
+                mobile.setAttribute( 'data-open', 'true' );
+            }
+        } );
+
+        // ESC schließt Menü
+        document.addEventListener( 'keydown', function ( e ) {
+            if ( e.key === 'Escape' && toggle.getAttribute( 'aria-expanded' ) === 'true' ) {
+                toggle.click();
+                toggle.focus();
+            }
+        } );
+    }
+
+    if ( document.readyState === 'loading' ) {
+        document.addEventListener( 'DOMContentLoaded', init );
+    } else {
+        init();
+    }
+} )();
+
+/* =========================================
    GLOSSAR — TOOLTIP
    =========================================
    Erzeugt ein einziges schwebendes Tooltip-Overlay
