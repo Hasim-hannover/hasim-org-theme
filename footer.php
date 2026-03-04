@@ -23,7 +23,7 @@ $hp_year    = gmdate( 'Y' );
             <!-- Spalte 1: Herausgeber -->
             <div class="hp-colophon__col hp-colophon__mission">
                 <span class="hp-colophon__label">Herausgeber</span>
-                <p>Hasim Üner — Medienwissenschaftler. Publizist. Schreibt aus den Zwischenräumen.</p>
+                <p>Hasim Üner — Medienwissenschaftler. Publizist.</p>
                 <div class="hp-colophon__links">
                     <a class="hp-colophon__mission-link" href="<?php echo esc_url( home_url( '/mission/' ) ); ?>">Wer hier schreibt &rarr;</a>
                     <a class="hp-colophon__social" href="https://x.com/_0239983326111" target="_blank" rel="noopener noreferrer" aria-label="Hasim Üner auf X">
@@ -57,7 +57,7 @@ $hp_year    = gmdate( 'Y' );
             <!-- Spalte 3: Meta / Legal -->
             <div class="hp-colophon__col hp-colophon__meta">
                 <span class="hp-colophon__label">Meta</span>
-                <p>&copy; <?php echo esc_html( $hp_year ); ?> Zwischenräume — Hasim Üner</p>
+                <p>&copy; <?php echo esc_html( $hp_year ); ?> Hasim Üner</p>
                 <ul class="hp-colophon__legal">
                     <li><a href="<?php echo esc_url( get_post_type_archive_link( 'glossar' ) ); ?>">Glossar</a></li>
                     <li><a href="<?php echo esc_url( home_url( '/impressum/' ) ); ?>">Impressum</a></li>

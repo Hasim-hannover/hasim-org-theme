@@ -1,7 +1,7 @@
 # Copilot Instructions: Hasimuener Journal Theme
 
 ## Project Overview
-**Hasimuener Journal** (Zwischenräume) is a WordPress child theme extending [GeneratePress](https://generatepress.com/). High-performance editorial theme for hasimuener.org.
+**Hasim Üner** (hasimuener.org) is a WordPress child theme extending [GeneratePress](https://generatepress.com/). High-performance editorial theme for hasimuener.org. Claim: „Macht. Medien. Gesellschaft."
 
 - **Parent Theme**: GeneratePress (assumed active in WordPress installation)
 - **Language**: PHP (hooks/actions), CSS, vanilla JS

@@ -45,7 +45,7 @@ get_header(); ?>
 
             <p>Und dann ist da die Frage nach der Freiheit — nicht als Ideal, sondern als Problem. Was bedeutet Freiheit an sich, wenn die Realität, in der sie stattfinden soll, hierarchisch verfasst ist? Man kann sagen, Freiheit sei individuell. Doch jeder individuelle Freiheitsbegriff entsteht innerhalb konkreter Verhältnisse — er ist nicht losgelöst von der Ordnung, die ihn begrenzt. Mein Freiheitsbegriff ist kein abstrakter: Er entsteht dort, wo Erfahrung auf Struktur trifft, wo das eigene Leben die Theorie prüft.</p>
 
-            <p>„Zwischenräume" ist das Journal für diese Fragen. Macht, Erinnerung, Freiheit, Identität, Medien. Keine fertigen Antworten — aber der Anspruch, die Strukturen freizulegen, die Antworten verhindern.</p>
+            <p>Dies ist der Ort für diese Fragen. Macht, Erinnerung, Freiheit, Identität, Medien. Keine fertigen Antworten — aber der Anspruch, die Strukturen freizulegen, die Antworten verhindern.</p>
 
             <p>Das gilt auch für diesen Ort selbst: kein Tracking, keine Werbung, keine Cookies. Wer Machtverhältnisse analysiert, darf sie nicht nebenbei reproduzieren.</p>
             <?php

@@ -205,7 +205,7 @@ function hp_output_seo_meta_tags(): void {
 	$locale    = get_locale();
 	$image     = hp_get_seo_image();
 
-	echo "\n<!-- Zwischenräume: SEO-Meta -->\n";
+	echo "\n<!-- Hasim Üner: SEO-Meta -->\n";
 
 	// Canonical URL
 	printf( '<link rel="canonical" href="%s" />' . "\n", esc_url( $url ) );

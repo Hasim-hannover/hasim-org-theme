@@ -60,10 +60,10 @@ add_action( 'after_setup_theme', 'hp_remove_gp_header', 50 );
  *
  * Struktur:
  * ┌──────────────────────────────────────┐
- * │          ZWISCHENRÄUME               │  ← Titel, zentriert
- * │   Hasim Üner — Zwischenräume         │  ← Untertitel
+ * │          HASIM ÜNER                  │  ← Titel, zentriert
+ * │   Macht. Medien. Gesellschaft.       │  ← Claim
  * ├──────────────────────────────────────┤
- * │  Essays · Notizen · Glossar · Mission│  ← Nav-Leiste
+ * │  Essays · Notizen · Glossar · Über   │  ← Nav-Leiste
  * └──────────────────────────────────────┘
  */
 function hp_render_journal_header(): void {
@@ -87,7 +87,7 @@ function hp_render_journal_header(): void {
 			'match' => [ 'post_type_archive' => 'glossar', 'singular' => 'glossar' ],
 		],
 		[
-			'label' => 'Mission',
+			'label' => 'Über',
 			'url'   => home_url( '/mission/' ),
 			'match' => [ 'page_slug' => 'mission' ],
 		],
@@ -102,9 +102,9 @@ function hp_render_journal_header(): void {
 		<div class="hp-masthead">
 			<div class="hp-masthead__inner">
 				<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="hp-masthead__link" rel="home">
-					<span class="hp-masthead__title">Zwischenräume</span>
+					<span class="hp-masthead__title">Hasim Üner</span>
 				</a>
-				<p class="hp-masthead__tagline">Gesellschaft · Politik · Erinnerung</p>
+				<p class="hp-masthead__tagline">Macht. Medien. Gesellschaft.</p>
 			</div>
 		</div>
 

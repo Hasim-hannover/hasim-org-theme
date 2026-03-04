@@ -73,7 +73,7 @@ function hp_essay_jsonld_schema(): void {
 		$schema['wordCount'] = $word_count;
 	}
 
-	echo "\n<!-- Zwischenräume: JSON-LD -->\n";
+	echo "\n<!-- Hasim Üner: JSON-LD -->\n";
 	echo '<script type="application/ld+json">';
 	echo wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT );
 	echo "</script>\n";
@@ -111,7 +111,7 @@ function hp_org_website_jsonld_schema(): void {
 		'@id'         => $site_url . '#organization',
 		'name'        => $site_name,
 		'url'         => $site_url,
-		'description' => $site_desc ?: 'Gesellschaftskritisches Journal für Politik, Erinnerung und strukturelle Analyse.',
+		'description' => $site_desc ?: 'Essays und Analysen zu Macht, Medien und Gesellschaft. Von Hasim Üner.',
 		'founder'     => [
 			'@type'  => 'Person',
 			'name'   => 'Hasim Üner',
@@ -165,7 +165,7 @@ function hp_org_website_jsonld_schema(): void {
 
 	$graph['@graph'][] = $website;
 
-	echo "\n<!-- Zwischenräume: Organization + WebSite JSON-LD -->\n";
+	echo "\n<!-- Hasim Üner: Organization + WebSite JSON-LD -->\n";
 	echo '<script type="application/ld+json">';
 	echo wp_json_encode( $graph, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT );
 	echo "</script>\n";

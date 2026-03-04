@@ -46,7 +46,7 @@ get_header(); ?>
             <h2>Journalistisch-redaktionelle Inhalte</h2>
 
             <p>
-                „Zwischenräume" ist ein unabhängiges Journal für politischen und gesellschaftlichen Diskurs.
+                Dies ist ein unabhängiges Journal für politischen und gesellschaftlichen Diskurs.
                 Alle veröffentlichten Texte geben die persönliche Meinung und Analyse des Herausgebers wieder.
                 Für die Inhalte verlinkter externer Seiten übernehme ich keine Haftung.
             </p>
