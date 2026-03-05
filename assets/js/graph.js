@@ -1,14 +1,14 @@
 /**
  * Wissensgraph — D3.js Force-Directed Graph
  *
- * Interaktive Visualisierung der Beziehungen zwischen
+ * Immersive, ganzseitige Visualisierung der Beziehungen zwischen
  * Essays, Notizen, Glossar-Einträgen und Themenfeldern.
  *
  * Abhängigkeit: D3.js v7 (per CDN geladen).
  * Daten: REST-Endpoint /wp-json/hp/v1/graph
  *
  * @package Hasimuener_Journal
- * @since   6.0.0
+ * @since   6.1.0
  */
 
 ( function() {
@@ -20,18 +20,34 @@
 
 	var CONFIG = {
 		colors: {
-			essay:   '#b12a2a',
-			note:    '#555555',
-			glossar: '#2a6cb1',
-			topic:   '#e0e0e0',
+			essay:   '#e8574b',
+			note:    '#8b95a5',
+			glossar: '#4da6e8',
+			topic:   '#e8c94b',
 		},
-		edgeColor:     '#d0d0d0',
-		edgeHighlight: '#888888',
-		dimOpacity:    0.1,
-		minRadius:     6,
-		maxRadius:     28,
-		labelOffset:   4,
-		mobileBreak:   768,
+		glowColors: {
+			essay:   'rgba(232,87,75,0.6)',
+			note:    'rgba(139,149,165,0.5)',
+			glossar: 'rgba(77,166,232,0.6)',
+			topic:   'rgba(232,201,75,0.6)',
+		},
+		edgeStyles: {
+			topic_membership:  '8,4',   // dashed: post↔topic
+			shared_topic:      '',       // solid: posts sharing topic
+			glossar_in_content:'4,3',   // dotted: glossar in content
+		},
+		edgeColor:      'rgba(255,255,255,0.12)',
+		edgeHighlight:  'rgba(255,255,255,0.55)',
+		dimOpacity:     0.15,
+		dimEdgeOpacity: 0.03,
+		minRadius:      8,
+		maxRadius:      32,
+		labelOffset:    6,
+		mobileBreak:    768,
+		// Force-Simulation
+		chargeStrength: -400,
+		linkDistBase:   100,
+		linkDistTopic:  140,
 	};
 
 	var prefersReducedMotion = window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches;
@@ -52,6 +68,7 @@
 		linkSel:      null,
 		nodeSel:      null,
 		labelSel:     null,
+		glowSel:      null,
 		width:        0,
 		height:       0,
 	};
@@ -110,6 +127,7 @@
 			}
 
 			buildGraph();
+			updateSRSummary();
 		} )
 		.catch( function() {
 			if ( loading ) { loading.hidden = true; }
@@ -133,7 +151,6 @@
 			linkCount[ e.target ] = ( linkCount[ e.target ] || 0 ) + 1;
 		} );
 
-		// Radius-Skala
 		var maxLinks = 1;
 		state.nodes.forEach( function( n ) {
 			var c = linkCount[ n.id ] || 0;
@@ -158,9 +175,39 @@
 			.attr( 'role', 'img' )
 			.attr( 'aria-label', 'Wissensgraph: Interaktive Netzwerk-Visualisierung' );
 
+		// SVG-Defs: Glow-Filter pro Typ
+		var defs = state.svg.append( 'defs' );
+
+		Object.keys( CONFIG.glowColors ).forEach( function( type ) {
+			var filter = defs.append( 'filter' )
+				.attr( 'id', 'glow-' + type )
+				.attr( 'x', '-50%' )
+				.attr( 'y', '-50%' )
+				.attr( 'width', '200%' )
+				.attr( 'height', '200%' );
+
+			filter.append( 'feGaussianBlur' )
+				.attr( 'stdDeviation', '4' )
+				.attr( 'result', 'blur' );
+
+			filter.append( 'feFlood' )
+				.attr( 'flood-color', CONFIG.glowColors[ type ] )
+				.attr( 'result', 'color' );
+
+			filter.append( 'feComposite' )
+				.attr( 'in', 'color' )
+				.attr( 'in2', 'blur' )
+				.attr( 'operator', 'in' )
+				.attr( 'result', 'glow' );
+
+			var merge = filter.append( 'feMerge' );
+			merge.append( 'feMergeNode' ).attr( 'in', 'glow' );
+			merge.append( 'feMergeNode' ).attr( 'in', 'SourceGraphic' );
+		} );
+
 		// Zoom-Verhalten
 		state.zoom = d3.zoom()
-			.scaleExtent( [ 0.3, 4 ] )
+			.scaleExtent( [ 0.3, 5 ] )
 			.on( 'zoom', function( event ) {
 				state.g.attr( 'transform', event.transform );
 			} );
@@ -178,8 +225,11 @@
 			.enter()
 			.append( 'line' )
 			.attr( 'stroke', CONFIG.edgeColor )
-			.attr( 'stroke-width', function( d ) { return Math.max( 1, d.weight ); } )
-			.attr( 'stroke-opacity', 0.6 );
+			.attr( 'stroke-width', function( d ) { return Math.max( 1, d.weight || 1 ); } )
+			.attr( 'stroke-opacity', 0.6 )
+			.attr( 'stroke-dasharray', function( d ) {
+				return CONFIG.edgeStyles[ d.type ] || '';
+			} );
 
 		// Node-Gruppen
 		state.nodeSel = state.g.append( 'g' )
@@ -193,23 +243,33 @@
 			.attr( 'role', 'button' )
 			.attr( 'aria-label', function( d ) {
 				var typeLabel = { essay: 'Essay', note: 'Notiz', glossar: 'Glossar', topic: 'Themenfeld' };
-				return ( typeLabel[ d.type ] || d.type ) + ': ' + d.label;
+				return ( typeLabel[ d.type ] || d.type ) + ': ' + d.label +
+					' (' + d._linkCount + ' Verbindung' + ( d._linkCount !== 1 ? 'en' : '' ) + ')';
 			} );
 
-		// Kreise
+		// Glow-Kreis (hinter dem eigentlichen Kreis)
+		state.glowSel = state.nodeSel.append( 'circle' )
+			.attr( 'r', function( d ) { return d._radius + 4; } )
+			.attr( 'fill', function( d ) { return CONFIG.colors[ d.type ] || '#999'; } )
+			.attr( 'opacity', 0.35 )
+			.attr( 'filter', function( d ) { return 'url(#glow-' + d.type + ')'; } )
+			.attr( 'class', 'hp-graph__glow' );
+
+		// Hauptkreis
 		state.nodeSel.append( 'circle' )
 			.attr( 'r', function( d ) { return d._radius; } )
 			.attr( 'fill', function( d ) { return CONFIG.colors[ d.type ] || '#999'; } )
-			.attr( 'stroke', '#fff' )
-			.attr( 'stroke-width', 1.5 );
+			.attr( 'stroke', 'rgba(255,255,255,0.25)' )
+			.attr( 'stroke-width', 1.5 )
+			.attr( 'class', 'hp-graph__circle' );
 
-		// Labels (standardmäßig versteckt, bei Hover/Fokus sichtbar)
+		// Labels — immer sichtbar
 		state.labelSel = state.nodeSel.append( 'text' )
 			.text( function( d ) { return d.label; } )
 			.attr( 'class', 'hp-graph__label' )
 			.attr( 'dy', function( d ) { return -d._radius - CONFIG.labelOffset; } )
 			.attr( 'text-anchor', 'middle' )
-			.attr( 'opacity', 0 )
+			.attr( 'opacity', 0.7 )
 			.attr( 'aria-hidden', 'true' );
 
 		// Interaktionen
@@ -238,30 +298,74 @@
 		state.simulation = d3.forceSimulation( state.nodes )
 			.force( 'link', d3.forceLink( state.edges )
 				.id( function( d ) { return d.id; } )
-				.distance( 80 )
+				.distance( function( d ) {
+					var src = typeof d.source === 'object' ? d.source : findNode( d.source );
+					var tgt = typeof d.target === 'object' ? d.target : findNode( d.target );
+					if ( ( src && src.type === 'topic' ) || ( tgt && tgt.type === 'topic' ) ) {
+						return CONFIG.linkDistTopic;
+					}
+					return CONFIG.linkDistBase;
+				} )
 			)
-			.force( 'charge', d3.forceManyBody().strength( -200 ) )
+			.force( 'charge', d3.forceManyBody().strength( CONFIG.chargeStrength ) )
 			.force( 'center', d3.forceCenter( state.width / 2, state.height / 2 ) )
-			.force( 'collision', d3.forceCollide().radius( function( d ) { return d._radius + 2; } ) )
+			.force( 'collision', d3.forceCollide().radius( function( d ) { return d._radius + 4; } ) )
+			.force( 'x', d3.forceX( state.width / 2 ).strength( 0.04 ) )
+			.force( 'y', d3.forceY( state.height / 2 ).strength( 0.04 ) )
 			.on( 'tick', ticked );
 
 		if ( prefersReducedMotion ) {
-			// Keine Animation: Simulation sofort berechnen
 			state.simulation.alpha( 1 ).alphaDecay( 0.05 );
 			for ( var i = 0; i < 300; i++ ) { state.simulation.tick(); }
 			state.simulation.stop();
 			ticked();
+			zoomToFit();
 		} else {
 			state.simulation.on( 'end', function() {
 				state.simulation.stop();
+				zoomToFit();
 			} );
 		}
 
-		// Zoom-Buttons binden
+		// Zoom-Buttons
 		bindZoomButtons();
 
-		// Resize-Handler
+		// Resize
 		window.addEventListener( 'resize', debounce( handleResize, 250 ) );
+	}
+
+	/* =========================================
+	   ZOOM TO FIT
+	   ========================================= */
+
+	function zoomToFit() {
+		if ( ! state.svg || ! state.nodes.length ) { return; }
+
+		var xMin = Infinity, xMax = -Infinity;
+		var yMin = Infinity, yMax = -Infinity;
+
+		state.nodes.forEach( function( n ) {
+			var r = n._radius || 0;
+			if ( n.x - r < xMin ) { xMin = n.x - r; }
+			if ( n.x + r > xMax ) { xMax = n.x + r; }
+			if ( n.y - r < yMin ) { yMin = n.y - r; }
+			if ( n.y + r > yMax ) { yMax = n.y + r; }
+		} );
+
+		var pad = 60;
+		var bw = xMax - xMin + pad * 2;
+		var bh = yMax - yMin + pad * 2;
+		var scale = Math.min( state.width / bw, state.height / bh, 1.5 );
+		var tx = ( state.width - bw * scale ) / 2 - ( xMin - pad ) * scale;
+		var ty = ( state.height - bh * scale ) / 2 - ( yMin - pad ) * scale;
+
+		var t = d3.zoomIdentity.translate( tx, ty ).scale( scale );
+
+		if ( prefersReducedMotion ) {
+			state.svg.call( state.zoom.transform, t );
+		} else {
+			state.svg.transition().duration( 800 ).call( state.zoom.transform, t );
+		}
 	}
 
 	/* =========================================
@@ -294,6 +398,12 @@
 				return ( n.id === d.id || connected[ n.id ] ) ? 1 : CONFIG.dimOpacity;
 			} );
 
+		// Glow bei Hover verstärken
+		state.glowSel
+			.attr( 'opacity', function( n ) {
+				return ( n.id === d.id || connected[ n.id ] ) ? 0.7 : 0.1;
+			} );
+
 		state.linkSel
 			.attr( 'stroke', function( e ) {
 				var src = typeof e.source === 'object' ? e.source.id : e.source;
@@ -303,22 +413,30 @@
 			.attr( 'stroke-opacity', function( e ) {
 				var src = typeof e.source === 'object' ? e.source.id : e.source;
 				var tgt = typeof e.target === 'object' ? e.target.id : e.target;
-				return ( src === d.id || tgt === d.id ) ? 1 : 0.1;
+				return ( src === d.id || tgt === d.id ) ? 1 : CONFIG.dimEdgeOpacity;
+			} )
+			.attr( 'stroke-width', function( e ) {
+				var src = typeof e.source === 'object' ? e.source.id : e.source;
+				var tgt = typeof e.target === 'object' ? e.target.id : e.target;
+				var base = Math.max( 1, e.weight || 1 );
+				return ( src === d.id || tgt === d.id ) ? base + 1 : base;
 			} );
 
-		// Label einblenden
+		// Labels: connected voll, rest schwach
 		state.labelSel
 			.attr( 'opacity', function( n ) {
-				return ( n.id === d.id || connected[ n.id ] ) ? 1 : 0;
+				return ( n.id === d.id || connected[ n.id ] ) ? 1 : 0.15;
 			} );
 	}
 
 	function handleNodeUnhover() {
 		state.nodeSel.attr( 'opacity', 1 );
+		state.glowSel.attr( 'opacity', 0.35 );
 		state.linkSel
 			.attr( 'stroke', CONFIG.edgeColor )
-			.attr( 'stroke-opacity', 0.6 );
-		state.labelSel.attr( 'opacity', 0 );
+			.attr( 'stroke-opacity', 0.6 )
+			.attr( 'stroke-width', function( d ) { return Math.max( 1, d.weight || 1 ); } );
+		state.labelSel.attr( 'opacity', 0.7 );
 	}
 
 	/* =========================================
@@ -342,7 +460,6 @@
 		html += '<span class="hp-graph__detail-type hp-graph__detail-type--' + escHtml( d.type ) + '">' + escHtml( typeLabel[ d.type ] || d.type ) + '</span>';
 		html += '<h2 class="hp-graph__detail-title">' + escHtml( d.label ) + '</h2>';
 
-		// Meta-Infos
 		if ( d.meta ) {
 			if ( d.meta.reading_time ) {
 				html += '<p class="hp-graph__detail-meta">' + escHtml( d.meta.reading_time );
@@ -363,7 +480,6 @@
 			}
 		}
 
-		// Verbundene Nodes
 		var connected = getConnectedNodes( d.id );
 		if ( connected.length > 0 ) {
 			html += '<h3 class="hp-graph__detail-subtitle">Verbindungen</h3>';
@@ -378,13 +494,13 @@
 			html += '</ul>';
 		}
 
-		// Link zum Beitrag
 		if ( d.url ) {
 			html += '<a href="' + escAttr( d.url ) + '" class="hp-graph__detail-cta">Zum Beitrag →</a>';
 		}
 
 		content.innerHTML = html;
 		panel.hidden = false;
+		panel.scrollIntoView( { behavior: 'smooth', block: 'nearest' } );
 	}
 
 	function hideDetail() {
@@ -411,6 +527,8 @@
 			var visible = src && tgt && state.activeTypes[ src.type ] && state.activeTypes[ tgt.type ];
 			d3.select( this ).attr( 'visibility', visible ? 'visible' : 'hidden' );
 		} );
+
+		updateSRSummary();
 	}
 
 	/* =========================================
@@ -455,10 +573,7 @@
 		}
 		if ( zoomReset ) {
 			zoomReset.addEventListener( 'click', function() {
-				state.svg.transition().duration( 300 ).call(
-					state.zoom.transform,
-					d3.zoomIdentity
-				);
+				zoomToFit();
 			} );
 		}
 	}
@@ -468,7 +583,6 @@
 	   ========================================= */
 
 	function bindControls() {
-		// Filter-Toggles
 		var filters = document.querySelectorAll( '.hp-graph__filter' );
 		filters.forEach( function( btn ) {
 			btn.addEventListener( 'click', function() {
@@ -481,18 +595,15 @@
 			} );
 		} );
 
-		// Detail-Panel schließen
 		var closeBtn = document.getElementById( 'hp-graph-detail-close' );
 		if ( closeBtn ) {
 			closeBtn.addEventListener( 'click', hideDetail );
 		}
 
-		// ESC schließt Detail-Panel
 		document.addEventListener( 'keydown', function( e ) {
 			if ( e.key === 'Escape' ) { hideDetail(); }
 		} );
 
-		// Klick auf Canvas schließt Detail-Panel
 		var canvas = document.getElementById( 'hp-graph-canvas' );
 		if ( canvas ) {
 			canvas.addEventListener( 'click', function( e ) {
@@ -517,9 +628,36 @@
 		state.svg.attr( 'viewBox', '0 0 ' + state.width + ' ' + state.height );
 
 		if ( state.simulation ) {
-			state.simulation.force( 'center', d3.forceCenter( state.width / 2, state.height / 2 ) );
+			state.simulation
+				.force( 'center', d3.forceCenter( state.width / 2, state.height / 2 ) )
+				.force( 'x', d3.forceX( state.width / 2 ).strength( 0.04 ) )
+				.force( 'y', d3.forceY( state.height / 2 ).strength( 0.04 ) );
 			state.simulation.alpha( 0.3 ).restart();
 		}
+	}
+
+	/* =========================================
+	   SR ZUSAMMENFASSUNG
+	   ========================================= */
+
+	function updateSRSummary() {
+		var el = document.getElementById( 'hp-graph-sr-summary' );
+		if ( ! el ) { return; }
+
+		var counts = { essay: 0, note: 0, glossar: 0, topic: 0 };
+		state.nodes.forEach( function( n ) {
+			if ( state.activeTypes[ n.type ] ) {
+				counts[ n.type ] = ( counts[ n.type ] || 0 ) + 1;
+			}
+		} );
+
+		var total = counts.essay + counts.note + counts.glossar + counts.topic;
+		el.textContent = 'Wissensgraph: ' + total + ' Knoten sichtbar — ' +
+			counts.essay + ' Essays, ' +
+			counts.note + ' Notizen, ' +
+			counts.glossar + ' Glossar-Einträge, ' +
+			counts.topic + ' Themenfelder. ' +
+			state.edges.length + ' Verbindungen insgesamt.';
 	}
 
 	/* =========================================

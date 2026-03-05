@@ -26,11 +26,13 @@
     --hj-topic-text:    #333;
 
     /* Wissensgraph */
-    --hj-graph-essay:   #b12a2a;
-    --hj-graph-note:    #555555;
-    --hj-graph-glossar: #2a6cb1;
-    --hj-graph-topic:   #111111;
-    --hj-graph-topic-node: #e0e0e0;  /* helle Variante für dunklen Canvas */
+    --hj-graph-essay:   #e8574b;
+    --hj-graph-note:    #8b95a5;
+    --hj-graph-glossar: #4da6e8;
+    --hj-graph-topic:   #e8c94b;
+    --hj-graph-bg:      #0a0f1a;
+    --hj-graph-edge:    rgba(255,255,255,0.12);
+    --hj-graph-label:   rgba(255,255,255,0.85);
 
     /* Typografie */
     --hj-serif:         'Merriweather', Georgia, 'Times New Roman', serif;
@@ -2969,16 +2971,25 @@ a.footnote-backref:hover {
     margin: 0;
 }
 
-/* --- Controls (Filter-Toggles) --- */
+/* --- Toolbar (Filter + Zoom) --- */
+
+.hp-graph__toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    max-width: none;
+    margin: 0 0 2px;
+    padding: 0.6rem var(--hj-gutter);
+    background: var(--hj-graph-bg);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
 
 .hp-graph__controls {
     display: flex;
-    justify-content: center;
     flex-wrap: wrap;
     gap: 0.5rem;
-    max-width: var(--hj-content-width);
-    margin: 0 auto var(--hj-space-sm);
-    padding: 0 var(--hj-gutter);
 }
 
 .hp-graph__filter {
@@ -2987,18 +2998,19 @@ a.footnote-backref:hover {
     gap: 0.4em;
     font-family: var(--hj-sans);
     font-size: var(--hj-fs-sm);
-    padding: 0.3em 0.8em;
-    border: 1px solid var(--hj-border);
+    padding: 0.35em 0.85em;
+    border: 1px solid rgba(255,255,255,0.15);
     border-radius: 2rem;
-    background: var(--hj-bg-surface);
-    color: var(--hj-text-secondary);
+    background: transparent;
+    color: rgba(255,255,255,0.5);
     cursor: pointer;
-    transition: opacity 0.15s ease, border-color 0.15s ease;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
 .hp-graph__filter--active {
-    border-color: var(--hj-text);
-    color: var(--hj-text);
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.3);
+    color: #fff;
 }
 
 .hp-graph__filter[aria-pressed="false"] {
@@ -3006,7 +3018,8 @@ a.footnote-backref:hover {
 }
 
 .hp-graph__filter:hover {
-    border-color: var(--hj-accent);
+    border-color: rgba(255,255,255,0.4);
+    color: #fff;
 }
 
 .hp-graph__filter-dot {
@@ -3021,19 +3034,124 @@ a.footnote-backref:hover {
 .hp-graph__filter-dot--glossar { background: var(--hj-graph-glossar); }
 .hp-graph__filter-dot--topic   { background: var(--hj-graph-topic); }
 
-/* --- Legende --- */
+/* --- Zoom-Buttons (in Toolbar) --- */
+
+.hp-graph__zoom {
+    display: flex;
+    gap: 2px;
+}
+
+.hp-graph__zoom-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--hj-sans);
+    font-size: 1.1rem;
+    font-weight: 700;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 4px;
+    cursor: pointer;
+    color: rgba(255,255,255,0.7);
+    line-height: 1;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.hp-graph__zoom-btn:hover {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+}
+
+/* --- Canvas --- */
+
+.hp-graph__canvas {
+    position: relative;
+    width: 100%;
+    min-height: 75vh;
+    background:
+        radial-gradient(circle at 1px 1px, rgba(255,255,255,0.04) 1px, transparent 0),
+        var(--hj-graph-bg);
+    background-size: 24px 24px, auto;
+    overflow: hidden;
+}
+
+.hp-graph__canvas svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 75vh;
+}
+
+.hp-graph__loading,
+.hp-graph__error {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hp-graph__loading p,
+.hp-graph__error p {
+    font-family: var(--hj-serif);
+    font-style: italic;
+    font-size: var(--hj-fs-md);
+    color: rgba(255,255,255,0.4);
+}
+
+.hp-graph__error p {
+    color: var(--hj-graph-essay);
+}
+
+/* --- Labels (SVG) --- */
+
+.hp-graph__label {
+    font-family: var(--hj-sans);
+    font-size: 11px;
+    fill: var(--hj-graph-label);
+    pointer-events: none;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.7);
+}
+
+/* --- Glow --- */
+
+.hp-graph__glow {
+    pointer-events: none;
+}
+
+/* --- Node Hover --- */
+
+.hp-graph__node {
+    cursor: pointer;
+}
+
+.hp-graph__node:focus {
+    outline: none;
+}
+
+.hp-graph__node:focus .hp-graph__circle {
+    stroke: #fff;
+    stroke-width: 2.5;
+}
+
+/* --- Footer (Legende + SR) --- */
+
+.hp-graph__footer {
+    background: var(--hj-graph-bg);
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 0.6rem var(--hj-gutter);
+}
 
 .hp-graph__legend {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
     gap: 1rem;
-    max-width: var(--hj-content-width);
-    margin: 0 auto var(--hj-space-sm);
-    padding: 0 var(--hj-gutter);
     font-family: var(--hj-sans);
     font-size: var(--hj-fs-xs);
-    color: var(--hj-text-muted);
+    color: rgba(255,255,255,0.45);
 }
 
 .hp-graph__legend-item {
@@ -3054,106 +3172,35 @@ a.footnote-backref:hover {
 .hp-graph__legend-circle--glossar { background: var(--hj-graph-glossar); }
 .hp-graph__legend-circle--topic   { background: var(--hj-graph-topic); }
 
-/* --- Canvas --- */
-
-.hp-graph__canvas {
-    position: relative;
-    width: 100%;
-    height: 70vh;
-    background: var(--hj-rule);
-    border-radius: 4px;
-    overflow: hidden;
-}
-
-.hp-graph__canvas svg {
-    display: block;
-    width: 100%;
-    height: 100%;
-}
-
-.hp-graph__loading,
-.hp-graph__error {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.hp-graph__loading p,
-.hp-graph__error p {
-    font-family: var(--hj-serif);
-    font-style: italic;
-    font-size: var(--hj-fs-md);
-    color: var(--hj-rule-light);
-}
-
-.hp-graph__error p {
-    color: var(--hj-accent);
-}
-
-/* --- Labels (SVG) --- */
-
-.hp-graph__label {
-    font-family: var(--hj-sans);
-    font-size: 11px;
-    fill: #ffffff;
-    pointer-events: none;
-}
-
-/* --- Zoom-Buttons --- */
-
-.hp-graph__zoom {
-    position: absolute;
-    bottom: var(--hj-space-sm);
-    right: var(--hj-space-sm);
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    z-index: 5;
-}
-
-.hp-graph__zoom-btn {
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--hj-sans);
-    font-size: 1.1rem;
-    font-weight: 700;
-    background: var(--hj-bg-surface);
-    border: 1px solid var(--hj-border);
-    border-radius: 4px;
-    cursor: pointer;
-    color: var(--hj-text);
-    line-height: 1;
-}
-
-.hp-graph__zoom-btn:hover {
-    background: var(--hj-bg);
-}
-
-/* --- Detail-Panel --- */
+/* --- Detail-Panel (unterhalb Canvas) --- */
 
 .hp-graph__detail {
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 340px;
-    height: 100vh;
     background: var(--hj-bg-surface);
-    border-left: 1px solid var(--hj-border);
-    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.08);
-    overflow-y: auto;
-    z-index: 100;
+    border-top: 3px solid var(--hj-accent);
+    padding: 0;
+    max-width: var(--hj-content-width);
+    margin: var(--hj-space-md) auto;
+}
+
+.hp-graph__detail[hidden] {
+    display: none;
+}
+
+.hp-graph__detail-inner {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--hj-space-md);
     padding: var(--hj-space-md);
+    position: relative;
+}
+
+.hp-graph__detail-content {
+    flex: 1;
+    min-width: 0;
 }
 
 .hp-graph__detail-close {
-    position: absolute;
-    top: var(--hj-space-xs);
-    right: var(--hj-space-xs);
+    flex-shrink: 0;
     background: none;
     border: none;
     font-size: 1.6rem;
@@ -3273,26 +3320,41 @@ a.footnote-backref:hover {
     text-decoration: underline;
 }
 
-/* --- Mobile (<768px) --- */
+/* --- Responsive: Large (>1100px) --- */
 
-@media (max-width: 767px) {
+@media (min-width: 1100px) {
     .hp-graph__canvas {
-        height: 50vh;
+        min-height: 80vh;
     }
 
-    .hp-graph__detail {
-        position: fixed;
-        top: auto;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        width: 100%;
-        height: auto;
-        max-height: 55vh;
-        border-left: none;
-        border-top: 1px solid var(--hj-border);
-        border-radius: 12px 12px 0 0;
-        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.12);
+    .hp-graph__canvas svg {
+        min-height: 80vh;
+    }
+}
+
+/* --- Responsive: Mobile (<768px) --- */
+
+@media (max-width: 767px) {
+    .hp-graph__toolbar {
+        justify-content: center;
+    }
+
+    .hp-graph__canvas {
+        min-height: 55vh;
+    }
+
+    .hp-graph__canvas svg {
+        min-height: 55vh;
+    }
+
+    .hp-graph__detail-inner {
+        flex-direction: column;
+    }
+
+    .hp-graph__detail-close {
+        position: absolute;
+        top: var(--hj-space-xs);
+        right: var(--hj-space-xs);
     }
 }
 
