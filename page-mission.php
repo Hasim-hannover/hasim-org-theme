@@ -37,6 +37,8 @@ get_header(); ?>
 
             <?php
             ob_start(); ?>
+            <p><strong style="color:red;font-size:2em;">SICHTBARKEITSTEST — DIESEN TEXT SIEHST DU? DANN FUNKTIONIERT DAS TEMPLATE.</strong></p>
+
             <p>Geboren in Nordkurdistan — den Regionen, die der türkische Staat als seinen Südosten beansprucht. Aufgewachsen in Deutschland. Drei Sprachen, drei Welten, keine davon neutral.</p>
 
             <p>Kurdisch ist die Sprache, die mir gehört und die ein Staat mir nehmen wollte. Türkisch ist die Sprache, die an ihre Stelle gesetzt wurde — in Nordkurdistan war selbst das Sprechen des Kurdischen lange verboten. Deutsch ist die Sprache, in der ich gelernt habe, beides zu benennen. Jede dieser Sprachen trägt eine Machtgeschichte. Zusammen formen sie den Blick, aus dem heraus ich schreibe.</p>
