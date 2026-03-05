@@ -14,7 +14,6 @@ get_header(); ?>
 <?php while ( have_posts() ) : the_post(); ?>
 
 <main id="main-content">
-<?php hp_breadcrumbs(); ?>
 <article class="essay-article" aria-label="<?php the_title_attribute(); ?>">
 
     <?php if ( has_post_thumbnail() ) : ?>

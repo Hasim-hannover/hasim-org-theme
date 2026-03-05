@@ -11,8 +11,6 @@
 
 get_header(); ?>
 
-<?php hp_breadcrumbs(); ?>
-
 <header class="hp-glossar-archive-header">
     <div class="hp-glossar-archive-header__inner">
         <span class="hp-kicker">Wissensbasis</span>

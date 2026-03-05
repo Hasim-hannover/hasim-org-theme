@@ -10,8 +10,6 @@
 
 get_header(); ?>
 
-<?php hp_breadcrumbs(); ?>
-
 <header class="archive-header">
     <span class="hp-kicker">Archiv</span>
     <h1 class="archive-header__title">Essays</h1>

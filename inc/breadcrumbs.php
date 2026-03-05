@@ -2,11 +2,9 @@
 /**
  * Breadcrumbs — Hasimuener Journal
  *
- * Visuelle Breadcrumb-Navigation + BreadcrumbList JSON-LD Schema.
- * Zeigt Lesern ihre Position in der Wissensstruktur.
- *
- * Aufruf: hp_breadcrumbs() in Templates — gibt die Breadcrumb-
- * Navigation aus und registriert das Schema für wp_head.
+ * BreadcrumbList JSON-LD Schema (unsichtbar).
+ * Gibt Google strukturierte Pfad-Daten für die Suchergebnisse,
+ * ohne sichtbare Navigation im Frontend.
  *
  * @package Hasimuener_Journal
  * @since   5.4.0
@@ -15,23 +13,16 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Gibt die Breadcrumb-Navigation aus und registriert Schema.
- *
- * Unterstützte Kontexte:
- * - Single Essay/Note/Glossar (mit optionalem Topic)
- * - Archive Essay/Note/Glossar
- * - Taxonomy topic
- * - Seiten (page)
- * - Suche, 404
+ * Baut die Breadcrumb-Items für den aktuellen Seitenkontext
+ * und gibt BreadcrumbList JSON-LD im <head> aus.
  */
-function hp_breadcrumbs(): void {
+function hp_breadcrumbs_schema_output(): void {
 	if ( is_front_page() ) {
 		return;
 	}
 
 	$items = [];
 
-	// Startseite immer als erstes Element
 	$items[] = [
 		'name' => 'Startseite',
 		'url'  => home_url( '/' ),
@@ -99,42 +90,7 @@ function hp_breadcrumbs(): void {
 		return;
 	}
 
-	// HTML-Ausgabe
-	echo '<nav class="hp-breadcrumbs" aria-label="Brotkrümel-Navigation">';
-	echo '<ol class="hp-breadcrumbs__list">';
-
-	foreach ( $items as $i => $item ) {
-		$is_last = ( $i === count( $items ) - 1 );
-
-		echo '<li class="hp-breadcrumbs__item">';
-		if ( ! $is_last && isset( $item['url'] ) ) {
-			printf(
-				'<a class="hp-breadcrumbs__link" href="%s">%s</a>',
-				esc_url( $item['url'] ),
-				esc_html( $item['name'] )
-			);
-		} else {
-			printf(
-				'<span class="hp-breadcrumbs__current" aria-current="page">%s</span>',
-				esc_html( $item['name'] )
-			);
-		}
-		echo '</li>';
-	}
-
-	echo '</ol>';
-	echo '</nav>';
-
-	// Schema registrieren für wp_head (einmalig)
-	hp_breadcrumbs_schema( $items );
-}
-
-/**
- * Gibt BreadcrumbList JSON-LD aus.
- *
- * @param array $items Breadcrumb-Items mit 'name' und optionalem 'url'.
- */
-function hp_breadcrumbs_schema( array $items ): void {
+	// JSON-LD ausgeben
 	$list_items = [];
 	foreach ( $items as $i => $item ) {
 		$entry = [
@@ -147,6 +103,19 @@ function hp_breadcrumbs_schema( array $items ): void {
 		}
 		$list_items[] = $entry;
 	}
+
+	$schema = [
+		'@context'        => 'https://schema.org',
+		'@type'           => 'BreadcrumbList',
+		'itemListElement' => $list_items,
+	];
+
+	echo "\n<!-- Hasim Üner: BreadcrumbList JSON-LD -->\n";
+	echo '<script type="application/ld+json">';
+	echo wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
+	echo "</script>\n";
+}
+add_action( 'wp_head', 'hp_breadcrumbs_schema_output', 6 );
 
 	$schema = [
 		'@context'        => 'https://schema.org',
