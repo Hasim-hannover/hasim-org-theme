@@ -228,7 +228,11 @@
 			.attr( 'fill', function( d ) { return CONFIG.colors[ d.type ] || '#999'; } )
 			.attr( 'opacity', 0.35 )
 			.attr( 'filter', function( d ) { return 'url(#glow-' + d.type + ')'; } )
-			.attr( 'class', 'hp-graph__glow' );
+			.attr( 'class', 'hp-graph__glow' )
+			.style( 'animation-delay', function( _, i ) {
+				// Versetzt Pulse-Animation organisch, jeder Node leicht anders
+				return ( ( i * 0.37 ) % 2.8 ).toFixed( 2 ) + 's';
+			} );
 
 		// Hauptkreis
 		state.nodeSel.append( 'circle' )
@@ -250,6 +254,7 @@
 		// Interaktionen
 		state.nodeSel
 			.on( 'mouseenter', handleNodeHover )
+			.on( 'mousemove', function( event, d ) { moveTooltip( event ); } )
 			.on( 'mouseleave', handleNodeUnhover )
 			.on( 'click', handleNodeClick )
 			.on( 'keydown', function( event, d ) {
@@ -367,19 +372,22 @@
 	function handleNodeHover( event, d ) {
 		var connected = getConnectedIds( d.id );
 
-		// Nicht-verbundene dimmen
+		// Nicht-verbundene dimmen (mit sanfter Transition)
 		state.nodeSel
+			.transition().duration( 180 )
 			.attr( 'opacity', function( n ) {
 				return ( n.id === d.id || connected[ n.id ] ) ? 1 : CONFIG.dimOpacity;
 			} );
 
 		// Glow bei Hover verstärken
 		state.glowSel
+			.transition().duration( 180 )
 			.attr( 'opacity', function( n ) {
-				return ( n.id === d.id || connected[ n.id ] ) ? 0.7 : 0.1;
+				return ( n.id === d.id || connected[ n.id ] ) ? 0.8 : 0.05;
 			} );
 
 		state.linkSel
+			.transition().duration( 180 )
 			.attr( 'stroke', function( e ) {
 				var src = typeof e.source === 'object' ? e.source.id : e.source;
 				var tgt = typeof e.target === 'object' ? e.target.id : e.target;
@@ -394,24 +402,30 @@
 				var src = typeof e.source === 'object' ? e.source.id : e.source;
 				var tgt = typeof e.target === 'object' ? e.target.id : e.target;
 				var base = Math.max( 1, e.weight || 1 );
-				return ( src === d.id || tgt === d.id ) ? base + 1 : base;
+				return ( src === d.id || tgt === d.id ) ? base + 1.5 : base;
 			} );
 
 		// Labels: connected voll, rest schwach
 		state.labelSel
+			.transition().duration( 180 )
 			.attr( 'opacity', function( n ) {
-				return ( n.id === d.id || connected[ n.id ] ) ? 1 : 0.15;
+				return ( n.id === d.id || connected[ n.id ] ) ? 1 : 0.1;
 			} );
+
+		// Tooltip anzeigen
+		showTooltip( event, d );
 	}
 
 	function handleNodeUnhover() {
-		state.nodeSel.attr( 'opacity', 1 );
-		state.glowSel.attr( 'opacity', 0.35 );
+		state.nodeSel.transition().duration( 250 ).attr( 'opacity', 1 );
+		state.glowSel.transition().duration( 250 ).attr( 'opacity', 0.35 );
 		state.linkSel
+			.transition().duration( 250 )
 			.attr( 'stroke', CONFIG.edgeColor )
 			.attr( 'stroke-opacity', 0.6 )
 			.attr( 'stroke-width', function( d ) { return Math.max( 1, d.weight || 1 ); } );
-		state.labelSel.attr( 'opacity', 0.7 );
+		state.labelSel.transition().duration( 250 ).attr( 'opacity', 0.7 );
+		hideTooltip();
 	}
 
 	/* =========================================
@@ -420,6 +434,7 @@
 
 	function handleNodeClick( event, d ) {
 		event.stopPropagation();
+		hideTooltip();
 		state.selectedNode = d;
 		showDetail( d );
 	}
@@ -609,6 +624,43 @@
 				.force( 'y', d3.forceY( state.height / 2 ).strength( 0.04 ) );
 			state.simulation.alpha( 0.3 ).restart();
 		}
+	}
+
+	/* =========================================
+	   TOOLTIP
+	   ========================================= */
+
+	var typeLabels = { essay: 'Essay', note: 'Notiz', glossar: 'Glossar', topic: 'Themenfeld' };
+
+	function showTooltip( event, d ) {
+		var tt = document.getElementById( 'hp-graph-tooltip' );
+		if ( ! tt ) { return; }
+		var label = typeLabels[ d.type ] || d.type;
+		tt.innerHTML =
+			'<span class="hp-graph__tooltip-badge hp-graph__tooltip-badge--' + escHtml( d.type ) + '">' +
+			escHtml( label ) + '</span>' +
+			'<span class="hp-graph__tooltip-label">' + escHtml( d.label ) + '</span>';
+		tt.hidden = false;
+		moveTooltip( event );
+	}
+
+	function moveTooltip( event ) {
+		var tt = document.getElementById( 'hp-graph-tooltip' );
+		if ( ! tt || tt.hidden ) { return; }
+		var canvas = document.getElementById( 'hp-graph-canvas' );
+		if ( ! canvas ) { return; }
+		var rect = canvas.getBoundingClientRect();
+		var x = event.clientX - rect.left + 16;
+		var y = event.clientY - rect.top - 38;
+		// Rechts-Overflow verhindern
+		if ( x + 200 > rect.width ) { x = event.clientX - rect.left - 220; }
+		tt.style.left = x + 'px';
+		tt.style.top  = y + 'px';
+	}
+
+	function hideTooltip() {
+		var tt = document.getElementById( 'hp-graph-tooltip' );
+		if ( tt ) { tt.hidden = true; }
 	}
 
 	/* =========================================
