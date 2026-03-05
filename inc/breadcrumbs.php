@@ -116,17 +116,3 @@ function hp_breadcrumbs_schema_output(): void {
 	echo "</script>\n";
 }
 add_action( 'wp_head', 'hp_breadcrumbs_schema_output', 6 );
-
-	$schema = [
-		'@context'        => 'https://schema.org',
-		'@type'           => 'BreadcrumbList',
-		'itemListElement' => $list_items,
-	];
-
-	add_action( 'wp_head', function () use ( $schema ) {
-		echo "\n<!-- Hasim Üner: BreadcrumbList JSON-LD -->\n";
-		echo '<script type="application/ld+json">';
-		echo wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
-		echo "</script>\n";
-	}, 6 );
-}
