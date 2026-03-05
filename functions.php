@@ -47,3 +47,4 @@ require_once $hp_inc_dir . '/seo-meta.php';
 require_once $hp_inc_dir . '/glossary.php';
 require_once $hp_inc_dir . '/breadcrumbs.php';
 require_once $hp_inc_dir . '/header-nav.php';
+require_once $hp_inc_dir . '/graph-api.php';

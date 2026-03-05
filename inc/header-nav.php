@@ -87,6 +87,11 @@ function hp_render_journal_header(): void {
 			'match' => [ 'post_type_archive' => 'glossar', 'singular' => 'glossar' ],
 		],
 		[
+			'label' => 'Graph',
+			'url'   => home_url( '/wissensgraph/' ),
+			'match' => [ 'page_slug' => 'wissensgraph' ],
+		],
+		[
 			'label' => 'Über',
 			'url'   => home_url( '/mission/' ),
 			'match' => [ 'page_slug' => 'mission' ],

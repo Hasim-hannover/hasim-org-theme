@@ -80,6 +80,10 @@ function hp_custom_body_classes( array $classes ): array {
 		$classes[] = 'archive-glossar';
 	}
 
+	if ( is_page( 'wissensgraph' ) ) {
+		$classes[] = 'page-wissensgraph';
+	}
+
 	return $classes;
 }
 add_filter( 'body_class', 'hp_custom_body_classes' );
