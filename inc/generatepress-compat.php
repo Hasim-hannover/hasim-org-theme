@@ -100,10 +100,14 @@ add_filter( 'generate_footer_entry_meta_items', 'hp_strip_gp_meta_items' );
  * Das Child-Theme nutzt einen eigenen Kolophon-Footer.
  */
 add_filter( 'generate_copyright', '__return_empty_string' );
-add_action( 'after_setup_theme', function (): void {
-	remove_action( 'generate_credits', 'generate_add_footer_info' );
-}, 15 );
 
-/** WordPress-eigene Feed-Links aus wp_head entfernen. */
-remove_action( 'wp_head', 'feed_links', 2 );
-remove_action( 'wp_head', 'feed_links_extra', 3 );
+/**
+ * Entfernt GP-Footer-Info und WordPress-Feed-Links.
+ * Muss auf 'init' laufen, damit die Original-Actions bereits registriert sind.
+ */
+function hp_remove_gp_footer_and_feeds() {
+	remove_action( 'generate_credits', 'generate_add_footer_info' );
+	remove_action( 'wp_head', 'feed_links', 2 );
+	remove_action( 'wp_head', 'feed_links_extra', 3 );
+}
+add_action( 'init', 'hp_remove_gp_footer_and_feeds' );
