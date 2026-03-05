@@ -16,15 +16,10 @@ get_header(); ?>
 
 <main id="main-content" class="hp-graph">
 
-	<header class="hp-graph__header">
-		<span class="hp-kicker">Wissensbasis</span>
-		<h1 class="hp-graph__title">Wissensgraph</h1>
-		<p class="hp-graph__desc">Alle Verbindungen zwischen Essays, Notizen, Glossar und Themenfeldern — interaktiv.</p>
-	</header>
-
-	<!-- Toolbar: Filter + Zoom -->
-	<div class="hp-graph__toolbar">
-		<div class="hp-graph__controls" role="toolbar" aria-label="Graph-Filter">
+	<!-- Toolbar: Titel + Filter + Zoom -->
+	<div class="hp-graph__toolbar" role="toolbar" aria-label="Wissensgraph-Steuerung">
+		<h1 class="hp-graph__toolbar-title">Wissensgraph</h1>
+		<div class="hp-graph__controls" aria-label="Graph-Filter">
 			<button class="hp-graph__filter hp-graph__filter--active" data-type="essay" type="button" aria-pressed="true">
 				<span class="hp-graph__filter-dot hp-graph__filter-dot--essay" aria-hidden="true"></span>
 				Essays
@@ -57,6 +52,7 @@ get_header(); ?>
 		<div class="hp-graph__error" id="hp-graph-error" hidden>
 			<p>Der Graph konnte nicht geladen werden. Bitte später erneut versuchen.</p>
 		</div>
+		<div class="hp-graph__tooltip" id="hp-graph-tooltip" aria-hidden="true" hidden></div>
 	</div>
 
 	<!-- Legende + SR-Zusammenfassung -->
