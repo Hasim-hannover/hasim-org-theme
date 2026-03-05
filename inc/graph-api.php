@@ -40,12 +40,25 @@ function hp_graph_rest_callback(): WP_REST_Response {
 	$cache_key   = 'hp_graph_data_v' . $glossar_ver;
 	$cached      = get_transient( $cache_key );
 
-	if ( false !== $cached ) {
+	if ( false !== $cached && is_array( $cached ) && isset( $cached['nodes'] ) ) {
 		$cached['meta']['cached'] = true;
 		return new WP_REST_Response( $cached, 200 );
 	}
 
-	$data = hp_graph_build_data();
+	try {
+		$data = hp_graph_build_data();
+	} catch ( \Throwable $e ) {
+		return new WP_REST_Response( [
+			'nodes' => [],
+			'edges' => [],
+			'meta'  => [
+				'error'      => $e->getMessage(),
+				'node_count' => 0,
+				'edge_count' => 0,
+			],
+		], 200 );
+	}
+
 	set_transient( $cache_key, $data, DAY_IN_SECONDS );
 
 	$data['meta']['cached'] = false;

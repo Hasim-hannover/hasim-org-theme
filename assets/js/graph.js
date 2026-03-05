@@ -107,6 +107,10 @@
 		} )
 		.then( function( res ) {
 			if ( ! res.ok ) { throw new Error( 'HTTP ' + res.status ); }
+			var ct = res.headers.get( 'content-type' ) || '';
+			if ( ct.indexOf( 'application/json' ) === -1 ) {
+				throw new Error( 'Unexpected content-type: ' + ct );
+			}
 			return res.json();
 		} )
 		.then( function( data ) {
@@ -129,9 +133,13 @@
 			buildGraph();
 			updateSRSummary();
 		} )
-		.catch( function() {
+		.catch( function( err ) {
 			if ( loading ) { loading.hidden = true; }
-			if ( error )   { error.hidden = false; }
+			if ( error ) {
+				error.hidden = false;
+				/* eslint-disable-next-line no-console */
+				if ( typeof console !== 'undefined' ) { console.error( 'Wissensgraph fetch error:', err ); }
+			}
 		} );
 	}
 
