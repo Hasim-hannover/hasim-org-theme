@@ -351,6 +351,8 @@ add_action( 'created_topic', 'hp_graph_flush_cache_on_topic' );
 
 /**
  * Lädt D3.js und graph.js nur auf der Graph-Seite.
+ * Graph-Daten werden direkt als Inline-JSON eingebettet —
+ * kein REST-Aufruf nötig.
  */
 function hp_graph_enqueue_assets(): void {
 	if ( ! is_page( 'wissensgraph' ) ) {
@@ -377,9 +379,22 @@ function hp_graph_enqueue_assets(): void {
 		true
 	);
 
-	// REST-URL an JS übergeben (kein Nonce nötig — Endpoint ist öffentlich)
+	// Graph-Daten direkt inline einbetten (kein REST nötig)
+	$glossar_ver = (int) get_option( 'hp_glossar_version', 0 );
+	$cache_key   = 'hp_graph_data_v' . $glossar_ver;
+	$data        = get_transient( $cache_key );
+
+	if ( false === $data || ! is_array( $data ) || ! isset( $data['nodes'] ) ) {
+		try {
+			$data = hp_graph_build_data();
+			set_transient( $cache_key, $data, DAY_IN_SECONDS );
+		} catch ( \Throwable $e ) {
+			$data = [ 'nodes' => [], 'edges' => [], 'meta' => [ 'error' => $e->getMessage() ] ];
+		}
+	}
+
 	wp_localize_script( 'hp-graph-js', 'hpGraph', [
-		'restUrl' => esc_url_raw( rest_url( 'hp/v1/graph' ) ),
+		'data' => $data,
 	] );
 }
 add_action( 'wp_enqueue_scripts', 'hp_graph_enqueue_assets' );

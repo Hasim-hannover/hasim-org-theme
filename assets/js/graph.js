@@ -84,63 +84,30 @@
 
 		if ( ! canvas ) { return; }
 
-		if ( typeof d3 === 'undefined' || typeof hpGraph === 'undefined' ) {
+		if ( typeof d3 === 'undefined' || typeof hpGraph === 'undefined' || ! hpGraph.data ) {
 			if ( loading ) { loading.hidden = true; }
 			if ( error )   { error.hidden = false; }
 			return;
 		}
 
 		bindControls();
-		fetchData();
-	}
 
-	/* =========================================
-	   DATEN LADEN
-	   ========================================= */
+		// Daten direkt aus Inline-JSON lesen (kein Fetch nötig)
+		if ( loading ) { loading.hidden = true; }
 
-	function fetchData() {
-		var loading = document.getElementById( 'hp-graph-loading' );
-		var error   = document.getElementById( 'hp-graph-error' );
+		state.nodes = hpGraph.data.nodes || [];
+		state.edges = hpGraph.data.edges || [];
 
-		fetch( hpGraph.restUrl, {
-			headers: { 'X-WP-Nonce': hpGraph.nonce },
-		} )
-		.then( function( res ) {
-			if ( ! res.ok ) { throw new Error( 'HTTP ' + res.status ); }
-			var ct = res.headers.get( 'content-type' ) || '';
-			if ( ct.indexOf( 'application/json' ) === -1 ) {
-				throw new Error( 'Unexpected content-type: ' + ct );
-			}
-			return res.json();
-		} )
-		.then( function( data ) {
-			if ( loading ) { loading.hidden = true; }
-			state.nodes = data.nodes || [];
-			state.edges = data.edges || [];
+		if ( state.nodes.length === 0 ) {
+			var empty = document.createElement( 'div' );
+			empty.className = 'hp-graph__loading';
+			empty.innerHTML = '<p>Noch keine Inhalte für den Wissensgraph vorhanden.</p>';
+			canvas.appendChild( empty );
+			return;
+		}
 
-			if ( state.nodes.length === 0 ) {
-				var empty = document.getElementById( 'hp-graph-loading' );
-				if ( ! empty ) {
-					empty = document.createElement( 'div' );
-					empty.className = 'hp-graph__loading';
-					document.getElementById( 'hp-graph-canvas' ).appendChild( empty );
-				}
-				empty.hidden = false;
-				empty.innerHTML = '<p>Noch keine Inhalte für den Wissensgraph vorhanden.</p>';
-				return;
-			}
-
-			buildGraph();
-			updateSRSummary();
-		} )
-		.catch( function( err ) {
-			if ( loading ) { loading.hidden = true; }
-			if ( error ) {
-				error.hidden = false;
-				/* eslint-disable-next-line no-console */
-				if ( typeof console !== 'undefined' ) { console.error( 'Wissensgraph fetch error:', err ); }
-			}
-		} );
+		buildGraph();
+		updateSRSummary();
 	}
 
 	/* =========================================
