@@ -55,7 +55,9 @@ get_header(); ?>
 
             <p>Dies ist der Ort für diese Fragen. Macht, Erinnerung, Freiheit, Identität, Medien. Keine fertigen Antworten — aber der Anspruch, die Strukturen freizulegen, die Antworten verhindern.</p>
 
-            <p>Das gilt auch für diesen Ort selbst: kein Tracking, keine Werbung, keine Cookies. Wer Machtverhältnisse analysiert, darf sie nicht nebenbei reproduzieren.</p>
+            <p>Macht ist nicht das Problem — Macht ist neutral. Das Problem beginnt dort, wo sie sich konzentriert und denen entzogen wird, die sich fügen. Diesen Mechanismus freizulegen ist der Anspruch, der diesen Ort trägt.</p>
+
+            <p>Kein Tracking, keine Werbung, keine Cookies. Nicht weil Technologie das Problem ist — sondern weil Aufmerksamkeit kein Rohstoff sein sollte.</p>
 
         </div>
     </div>
