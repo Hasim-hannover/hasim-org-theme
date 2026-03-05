@@ -88,6 +88,7 @@ function hp_graph_build_data(): array {
 		} elseif ( 'note' === $type ) {
 			$meta['reading_time'] = hp_reading_time( $post->ID );
 			$meta['date']         = get_the_date( 'j. F Y', $post );
+			$meta['excerpt']      = hp_graph_get_excerpt( $post );
 		} elseif ( 'glossar' === $type ) {
 			$meta['kurz'] = get_post_meta( $post->ID, '_hp_glossar_kurz', true );
 		}
@@ -129,13 +130,18 @@ function hp_graph_build_data(): array {
 		}
 	}
 
-	// --- Edges: topic_membership ---
+	// --- Topics pro Post laden (einmal für membership + shared) ---
+	$post_topic_map = []; // node_id => [term_ids]
 	foreach ( $post_map as $node_id => $post ) {
-		$post_topics = wp_get_object_terms( $post->ID, 'topic', [ 'fields' => 'ids' ] );
-		if ( is_wp_error( $post_topics ) ) {
-			continue;
+		$term_ids = wp_get_object_terms( $post->ID, 'topic', [ 'fields' => 'ids' ] );
+		if ( ! is_wp_error( $term_ids ) && ! empty( $term_ids ) ) {
+			$post_topic_map[ $node_id ] = $term_ids;
 		}
-		foreach ( $post_topics as $term_id ) {
+	}
+
+	// --- Edges: topic_membership ---
+	foreach ( $post_topic_map as $node_id => $term_ids ) {
+		foreach ( $term_ids as $term_id ) {
 			$topic_node_id = 'topic_' . $term_id;
 			if ( isset( $nodes[ $topic_node_id ] ) ) {
 				$edges[] = [
@@ -151,14 +157,6 @@ function hp_graph_build_data(): array {
 	}
 
 	// --- Edges: shared_topic ---
-	// Beiträge, die mindestens ein Topic teilen
-	$post_topic_map = []; // node_id => [term_ids]
-	foreach ( $post_map as $node_id => $post ) {
-		$term_ids = wp_get_object_terms( $post->ID, 'topic', [ 'fields' => 'ids' ] );
-		if ( ! is_wp_error( $term_ids ) && ! empty( $term_ids ) ) {
-			$post_topic_map[ $node_id ] = $term_ids;
-		}
-	}
 
 	$post_node_ids = array_keys( $post_topic_map );
 	$shared_seen   = [];

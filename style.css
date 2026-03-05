@@ -30,6 +30,7 @@
     --hj-graph-note:    #555555;
     --hj-graph-glossar: #2a6cb1;
     --hj-graph-topic:   #111111;
+    --hj-graph-topic-node: #e0e0e0;  /* helle Variante für dunklen Canvas */
 
     /* Typografie */
     --hj-serif:         'Merriweather', Georgia, 'Times New Roman', serif;
@@ -3112,21 +3113,6 @@ a.footnote-backref:hover {
     z-index: 5;
 }
 
-.hp-graph__canvas ~ .hp-graph__zoom {
-    /* Falls außerhalb canvas platziert: relativ zum Graph-Container */
-}
-
-/* Zoom innerhalb canvas positionieren */
-.hp-graph {
-    position: relative;
-}
-
-.hp-graph__zoom {
-    position: absolute;
-    bottom: calc(var(--hj-space-sm) + 2px);
-    right: var(--hj-space-sm);
-}
-
 .hp-graph__zoom-btn {
     width: 32px;
     height: 32px;
@@ -3316,5 +3302,4 @@ a.footnote-backref:hover {
     .hp-graph__canvas svg * {
         transition: none !important;
     }
-}
 }

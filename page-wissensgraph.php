@@ -62,13 +62,6 @@ get_header(); ?>
 		</div>
 	</div>
 
-	<!-- Zoom-Controls -->
-	<div class="hp-graph__zoom" aria-label="Zoom-Steuerung">
-		<button class="hp-graph__zoom-btn" id="hp-graph-zoom-in" type="button" aria-label="Hineinzoomen">+</button>
-		<button class="hp-graph__zoom-btn" id="hp-graph-zoom-out" type="button" aria-label="Herauszoomen">−</button>
-		<button class="hp-graph__zoom-btn" id="hp-graph-zoom-reset" type="button" aria-label="Zoom zurücksetzen">⟳</button>
-	</div>
-
 	<!-- Graph Container -->
 	<div class="hp-graph__canvas" id="hp-graph-canvas" role="img" aria-label="Interaktiver Wissensgraph: Visualisiert Verbindungen zwischen Inhalten">
 		<div class="hp-graph__loading" id="hp-graph-loading">
@@ -76,6 +69,12 @@ get_header(); ?>
 		</div>
 		<div class="hp-graph__error" id="hp-graph-error" hidden>
 			<p>Der Graph konnte nicht geladen werden. Bitte später erneut versuchen.</p>
+		</div>
+		<!-- Zoom-Controls -->
+		<div class="hp-graph__zoom" aria-label="Zoom-Steuerung">
+			<button class="hp-graph__zoom-btn" id="hp-graph-zoom-in" type="button" aria-label="Hineinzoomen">+</button>
+			<button class="hp-graph__zoom-btn" id="hp-graph-zoom-out" type="button" aria-label="Herauszoomen">−</button>
+			<button class="hp-graph__zoom-btn" id="hp-graph-zoom-reset" type="button" aria-label="Zoom zurücksetzen">⟳</button>
 		</div>
 	</div>
 

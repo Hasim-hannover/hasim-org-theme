@@ -23,7 +23,7 @@
 			essay:   '#b12a2a',
 			note:    '#555555',
 			glossar: '#2a6cb1',
-			topic:   '#111111',
+			topic:   '#e0e0e0',
 		},
 		edgeColor:     '#d0d0d0',
 		edgeHighlight: '#888888',
@@ -61,13 +61,20 @@
 	   ========================================= */
 
 	function init() {
-		var canvas = document.getElementById( 'hp-graph-canvas' );
-		if ( ! canvas || typeof d3 === 'undefined' || typeof hpGraph === 'undefined' ) {
+		var canvas  = document.getElementById( 'hp-graph-canvas' );
+		var loading = document.getElementById( 'hp-graph-loading' );
+		var error   = document.getElementById( 'hp-graph-error' );
+
+		if ( ! canvas ) { return; }
+
+		if ( typeof d3 === 'undefined' || typeof hpGraph === 'undefined' ) {
+			if ( loading ) { loading.hidden = true; }
+			if ( error )   { error.hidden = false; }
 			return;
 		}
 
-		fetchData();
 		bindControls();
+		fetchData();
 	}
 
 	/* =========================================
@@ -89,6 +96,19 @@
 			if ( loading ) { loading.hidden = true; }
 			state.nodes = data.nodes || [];
 			state.edges = data.edges || [];
+
+			if ( state.nodes.length === 0 ) {
+				var empty = document.getElementById( 'hp-graph-loading' );
+				if ( ! empty ) {
+					empty = document.createElement( 'div' );
+					empty.className = 'hp-graph__loading';
+					document.getElementById( 'hp-graph-canvas' ).appendChild( empty );
+				}
+				empty.hidden = false;
+				empty.innerHTML = '<p>Noch keine Inhalte für den Wissensgraph vorhanden.</p>';
+				return;
+			}
+
 			buildGraph();
 		} )
 		.catch( function() {
@@ -339,7 +359,7 @@
 				html += '<p class="hp-graph__detail-excerpt">' + escHtml( d.meta.description ) + '</p>';
 			}
 			if ( d.meta.count !== undefined ) {
-				html += '<p class="hp-graph__detail-meta">' + d.meta.count + ' Beiträge</p>';
+				html += '<p class="hp-graph__detail-meta">' + escHtml( d.meta.count ) + ' Beiträge</p>';
 			}
 		}
 
@@ -378,6 +398,8 @@
 	   ========================================= */
 
 	function applyFilter() {
+		if ( ! state.nodeSel || ! state.linkSel ) { return; }
+
 		state.nodeSel.each( function( d ) {
 			var visible = state.activeTypes[ d.type ];
 			d3.select( this ).attr( 'visibility', visible ? 'visible' : 'hidden' );
