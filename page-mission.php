@@ -51,8 +51,6 @@ get_header(); ?>
             <?php
             echo apply_filters( 'the_content', ob_get_clean() ); ?>
 
-            <!-- TODO: Kontaktweg ergänzen (E-Mail, Social-Link o. Ä.) -->
-
         </div>
     </div>
 
