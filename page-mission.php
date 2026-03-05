@@ -35,8 +35,6 @@ get_header(); ?>
 
         <div class="hp-mission__prose prose">
 
-            <?php
-            ob_start(); ?>
             <p>Geboren in Nordkurdistan — den Regionen, die der türkische Staat als seinen Südosten beansprucht. Aufgewachsen in Deutschland. Drei Sprachen, drei Welten, keine davon neutral.</p>
 
             <p>Kurdisch ist die Sprache, die mir gehört und die ein Staat mir nehmen wollte. Türkisch ist die Sprache, die an ihre Stelle gesetzt wurde — in Nordkurdistan war selbst das Sprechen des Kurdischen lange verboten. Deutsch ist die Sprache, in der ich gelernt habe, beides zu benennen. Jede dieser Sprachen trägt eine Machtgeschichte. Zusammen formen sie den Blick, aus dem heraus ich schreibe.</p>
@@ -58,8 +56,6 @@ get_header(); ?>
             <p>Dies ist der Ort für diese Fragen. Macht, Erinnerung, Freiheit, Identität, Medien. Keine fertigen Antworten — aber der Anspruch, die Strukturen freizulegen, die Antworten verhindern.</p>
 
             <p>Das gilt auch für diesen Ort selbst: kein Tracking, keine Werbung, keine Cookies. Wer Machtverhältnisse analysiert, darf sie nicht nebenbei reproduzieren.</p>
-            <?php
-            echo apply_filters( 'the_content', ob_get_clean() ); ?>
 
         </div>
     </div>
