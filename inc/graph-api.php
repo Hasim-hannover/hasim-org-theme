@@ -377,10 +377,9 @@ function hp_graph_enqueue_assets(): void {
 		true
 	);
 
-	// REST-URL an JS übergeben
+	// REST-URL an JS übergeben (kein Nonce nötig — Endpoint ist öffentlich)
 	wp_localize_script( 'hp-graph-js', 'hpGraph', [
 		'restUrl' => esc_url_raw( rest_url( 'hp/v1/graph' ) ),
-		'nonce'   => wp_create_nonce( 'wp_rest' ),
 	] );
 }
 add_action( 'wp_enqueue_scripts', 'hp_graph_enqueue_assets' );
