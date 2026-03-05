@@ -17,7 +17,6 @@
 
 get_header(); ?>
 
-<!-- TEMPLATE-TEST-2026 -->
 <?php while ( have_posts() ) : the_post(); ?>
 
 <article class="hp-mission" aria-label="<?php the_title_attribute(); ?>">
