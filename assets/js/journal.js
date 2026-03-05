@@ -325,6 +325,51 @@
 } )();
 
 /* =========================================
+   NAVIGATION SEARCH TOGGLE
+   =========================================
+   Öffnet/schließt das Suchfeld in der Navigation.
+*/
+( function () {
+    'use strict';
+
+    function init() {
+        var toggle = document.querySelector( '.hp-nav__search-toggle' );
+        var panel  = document.getElementById( 'hp-nav-search' );
+
+        if ( ! toggle || ! panel ) return;
+
+        toggle.addEventListener( 'click', function () {
+            var expanded = toggle.getAttribute( 'aria-expanded' ) === 'true';
+            toggle.setAttribute( 'aria-expanded', String( ! expanded ) );
+            toggle.setAttribute( 'aria-label', expanded ? 'Suche öffnen' : 'Suche schließen' );
+
+            if ( expanded ) {
+                panel.setAttribute( 'hidden', '' );
+            } else {
+                panel.removeAttribute( 'hidden' );
+                var input = panel.querySelector( 'input[type="search"]' );
+                if ( input ) input.focus();
+            }
+        } );
+
+        document.addEventListener( 'keydown', function ( e ) {
+            if ( e.key === 'Escape' && toggle.getAttribute( 'aria-expanded' ) === 'true' ) {
+                toggle.setAttribute( 'aria-expanded', 'false' );
+                toggle.setAttribute( 'aria-label', 'Suche öffnen' );
+                panel.setAttribute( 'hidden', '' );
+                toggle.focus();
+            }
+        } );
+    }
+
+    if ( document.readyState === 'loading' ) {
+        document.addEventListener( 'DOMContentLoaded', init );
+    } else {
+        init();
+    }
+} )();
+
+/* =========================================
    GLOSSAR — TOOLTIP
    =========================================
    Erzeugt ein einziges schwebendes Tooltip-Overlay

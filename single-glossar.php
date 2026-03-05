@@ -17,6 +17,7 @@ get_header(); ?>
 <?php while ( have_posts() ) : the_post(); ?>
 
 <main id="main-content">
+<?php hp_breadcrumbs(); ?>
 
 <!-- Header: Zentriert, großzügig, editoriales Auftreten -->
 <header class="hp-glossar-hero">

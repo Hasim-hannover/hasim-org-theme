@@ -13,6 +13,7 @@ get_header(); ?>
 <?php while ( have_posts() ) : the_post(); ?>
 
 <main id="main-content">
+<?php hp_breadcrumbs(); ?>
 
 <header class="single-header">
     <span class="hp-kicker">Notiz</span>

@@ -105,6 +105,24 @@ function hp_preload_critical_fonts(): void {
 add_action( 'wp_head', 'hp_preload_critical_fonts', 1 );
 
 /* -----------------------------------------
+   RSS-Feed Discovery
+   ----------------------------------------- */
+
+/**
+ * Gibt <link rel="alternate"> für den RSS-Feed im <head> aus.
+ * WordPress entfernt feed_links standardmäßig nicht, aber
+ * da wir den GP-Header ersetzen, stellen wir es explizit sicher.
+ */
+function hp_rss_feed_links(): void {
+	printf(
+		'<link rel="alternate" type="application/rss+xml" title="%s — Feed" href="%s" />' . "\n",
+		esc_attr( get_bloginfo( 'name' ) ),
+		esc_url( get_feed_link() )
+	);
+}
+add_action( 'wp_head', 'hp_rss_feed_links', 2 );
+
+/* -----------------------------------------
    Script-Defer (GP Menu)
    ----------------------------------------- */
 

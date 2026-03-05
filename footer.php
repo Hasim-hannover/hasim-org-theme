@@ -60,6 +60,7 @@ $hp_year    = gmdate( 'Y' );
                 <p>&copy; <?php echo esc_html( $hp_year ); ?> Hasim Üner</p>
                 <ul class="hp-colophon__legal">
                     <li><a href="<?php echo esc_url( get_post_type_archive_link( 'glossar' ) ); ?>">Glossar</a></li>
+                    <li><a href="<?php echo esc_url( get_feed_link() ); ?>" aria-label="RSS-Feed abonnieren">RSS-Feed</a></li>
                     <li><a href="<?php echo esc_url( home_url( '/impressum/' ) ); ?>">Impressum</a></li>
                     <li><a href="<?php echo esc_url( home_url( '/datenschutz/' ) ); ?>">Datenschutz</a></li>
                 </ul>

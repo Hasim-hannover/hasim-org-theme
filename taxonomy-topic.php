@@ -17,6 +17,8 @@ $hp_term = get_queried_object();
 <main id="main-content" class="hp-topic-archive">
     <div class="hp-topic-archive__inner">
 
+        <?php hp_breadcrumbs(); ?>
+
         <header class="hp-topic-archive__header">
             <span class="hp-kicker">Themenfeld</span>
             <h1 class="hp-topic-archive__title"><?php single_term_title(); ?></h1>

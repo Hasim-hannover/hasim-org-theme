@@ -6,7 +6,6 @@ Disallow: /wp-includes/
 Disallow: /wp-content/plugins/
 Disallow: /wp-content/cache/
 Disallow: /*?replytocom=
-Disallow: /feed/
 Disallow: /comments/feed/
 
 # Sitemap (WordPress-Core, seit WP 5.5)

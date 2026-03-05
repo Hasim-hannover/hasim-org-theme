@@ -137,6 +137,11 @@ function hp_render_journal_header(): void {
 					</ul>
 				<?php endif; ?>
 
+				<!-- Suche -->
+				<button class="hp-nav__search-toggle" aria-label="Suche öffnen" aria-expanded="false" aria-controls="hp-nav-search" type="button">
+					<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+				</button>
+
 				<!-- Hamburger (Mobile) -->
 				<button class="hp-nav__toggle" aria-label="Menü öffnen" aria-expanded="false" aria-controls="hp-nav-mobile">
 					<span class="hp-nav__toggle-bar" aria-hidden="true"></span>
@@ -146,6 +151,13 @@ function hp_render_journal_header(): void {
 
 			</div>
 		</nav>
+
+		<!-- Suchfeld (ausklappbar) -->
+		<div class="hp-nav-search" id="hp-nav-search" hidden>
+			<div class="hp-nav-search__inner">
+				<?php get_search_form(); ?>
+			</div>
+		</div>
 
 		<!-- Mobile-Menü (ausklappbar) -->
 		<div class="hp-nav-mobile" id="hp-nav-mobile" hidden>

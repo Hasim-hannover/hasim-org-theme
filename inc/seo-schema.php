@@ -171,3 +171,99 @@ function hp_org_website_jsonld_schema(): void {
 	echo "</script>\n";
 }
 add_action( 'wp_head', 'hp_org_website_jsonld_schema', 4 );
+
+/* =========================================
+   DefinedTerm Schema für Glossar
+   ========================================= */
+
+/**
+ * Injiziert DefinedTerm JSON-LD für Glossar-Singles.
+ *
+ * Felder: name, description, url, inDefinedTermSet.
+ * Ermöglicht Google die Erkennung als Begriffsdefinition.
+ */
+function hp_glossar_jsonld_schema(): void {
+	if ( ! is_singular( 'glossar' ) ) {
+		return;
+	}
+
+	$post  = get_queried_object();
+	$kurz  = get_post_meta( $post->ID, '_hp_glossar_kurz', true );
+	$desc  = $kurz
+		? wp_strip_all_tags( $kurz )
+		: wp_trim_words( wp_strip_all_tags( $post->post_content ), 40, ' …' );
+
+	$schema = [
+		'@context'    => 'https://schema.org',
+		'@type'       => 'DefinedTerm',
+		'name'        => get_the_title( $post ),
+		'description' => $desc,
+		'url'         => get_permalink( $post ),
+		'inDefinedTermSet' => [
+			'@type' => 'DefinedTermSet',
+			'name'  => 'Glossar — ' . get_bloginfo( 'name' ),
+			'url'   => get_post_type_archive_link( 'glossar' ),
+		],
+	];
+
+	echo "\n<!-- Hasim Üner: Glossar DefinedTerm JSON-LD -->\n";
+	echo '<script type="application/ld+json">';
+	echo wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT );
+	echo "</script>\n";
+}
+add_action( 'wp_head', 'hp_glossar_jsonld_schema', 5 );
+
+/* =========================================
+   Article Schema für Notizen
+   ========================================= */
+
+/**
+ * Injiziert Article JSON-LD für Notiz-Singles.
+ *
+ * Typ BlogPosting — semantisch passend für kürzere
+ * Beobachtungen und Einordnungen.
+ */
+function hp_note_jsonld_schema(): void {
+	if ( ! is_singular( 'note' ) ) {
+		return;
+	}
+
+	$post    = get_queried_object();
+	$author  = get_the_author_meta( 'display_name', $post->post_author );
+	$excerpt = has_excerpt( $post->ID )
+		? wp_strip_all_tags( get_the_excerpt( $post ) )
+		: wp_trim_words( wp_strip_all_tags( $post->post_content ), 40, ' …' );
+
+	$schema = [
+		'@context'      => 'https://schema.org',
+		'@type'         => 'BlogPosting',
+		'headline'      => get_the_title( $post ),
+		'datePublished' => get_the_date( 'c', $post ),
+		'dateModified'  => get_the_modified_date( 'c', $post ),
+		'description'   => $excerpt,
+		'author'        => [
+			'@type' => 'Person',
+			'name'  => $author,
+		],
+		'publisher'     => [
+			'@id' => home_url( '/' ) . '#organization',
+		],
+		'mainEntityOfPage' => [
+			'@type' => 'WebPage',
+			'@id'   => get_permalink( $post ),
+		],
+		'url'           => get_permalink( $post ),
+		'inLanguage'    => get_locale(),
+	];
+
+	$word_count = str_word_count( wp_strip_all_tags( $post->post_content ) );
+	if ( $word_count > 0 ) {
+		$schema['wordCount'] = $word_count;
+	}
+
+	echo "\n<!-- Hasim Üner: Note BlogPosting JSON-LD -->\n";
+	echo '<script type="application/ld+json">';
+	echo wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT );
+	echo "</script>\n";
+}
+add_action( 'wp_head', 'hp_note_jsonld_schema', 5 );
