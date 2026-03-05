@@ -90,3 +90,20 @@ function hp_strip_gp_meta_items( $items ) {
 }
 add_filter( 'generate_header_entry_meta_items', 'hp_strip_gp_meta_items' );
 add_filter( 'generate_footer_entry_meta_items', 'hp_strip_gp_meta_items' );
+
+/* -----------------------------------------
+   GP-Footer-Credits + RSS-Link entfernen
+   ----------------------------------------- */
+
+/**
+ * Entfernt die GP-Credits im Footer (enthält u. a. RSS-Link).
+ * Das Child-Theme nutzt einen eigenen Kolophon-Footer.
+ */
+add_filter( 'generate_copyright', '__return_empty_string' );
+add_action( 'after_setup_theme', function (): void {
+	remove_action( 'generate_credits', 'generate_add_footer_info' );
+}, 15 );
+
+/** WordPress-eigene Feed-Links aus wp_head entfernen. */
+remove_action( 'wp_head', 'feed_links', 2 );
+remove_action( 'wp_head', 'feed_links_extra', 3 );
