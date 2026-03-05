@@ -2930,6 +2930,13 @@ a.footnote-backref:hover {
    WISSENSGRAPH
    ========================================= */
 
+/* --- Puls-Animation --- */
+
+@keyframes hp-graph-pulse {
+    0%, 100% { opacity: 0.25; }
+    50%       { opacity: 0.55; }
+}
+
 /* --- Layout --- */
 
 .hp-graph {
@@ -2984,6 +2991,17 @@ a.footnote-backref:hover {
     padding: 0.6rem var(--hj-gutter);
     background: var(--hj-graph-bg);
     border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.hp-graph__toolbar-title {
+    font-family: var(--hj-sans);
+    font-size: var(--hj-fs-sm);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+    margin: 0;
+    white-space: nowrap;
 }
 
 .hp-graph__controls {
@@ -3115,10 +3133,11 @@ a.footnote-backref:hover {
     text-shadow: 0 1px 3px rgba(0,0,0,0.7);
 }
 
-/* --- Glow --- */
+/* --- Glow (Puls) --- */
 
 .hp-graph__glow {
     pointer-events: none;
+    animation: hp-graph-pulse 2.8s ease-in-out infinite;
 }
 
 /* --- Node Hover --- */
@@ -3134,6 +3153,51 @@ a.footnote-backref:hover {
 .hp-graph__node:focus .hp-graph__circle {
     stroke: #fff;
     stroke-width: 2.5;
+}
+
+/* --- Tooltip --- */
+
+.hp-graph__tooltip {
+    position: absolute;
+    pointer-events: none;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+    background: rgba(10,15,26,0.92);
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 4px;
+    padding: 0.3em 0.7em 0.3em 0.4em;
+    white-space: nowrap;
+    backdrop-filter: blur(4px);
+    transition: opacity 0.1s ease;
+}
+
+.hp-graph__tooltip[hidden] {
+    display: none;
+}
+
+.hp-graph__tooltip-badge {
+    display: inline-block;
+    font-family: var(--hj-sans);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    padding: 0.1em 0.4em;
+    border-radius: 2px;
+    color: #fff;
+}
+
+.hp-graph__tooltip-badge--essay   { background: var(--hj-graph-essay); }
+.hp-graph__tooltip-badge--note    { background: var(--hj-graph-note); }
+.hp-graph__tooltip-badge--glossar { background: var(--hj-graph-glossar); }
+.hp-graph__tooltip-badge--topic   { background: var(--hj-graph-topic); }
+
+.hp-graph__tooltip-label {
+    font-family: var(--hj-sans);
+    font-size: 12px;
+    color: rgba(255,255,255,0.88);
 }
 
 /* --- Footer (Legende + SR) --- */
@@ -3361,6 +3425,10 @@ a.footnote-backref:hover {
 /* --- Reduced Motion --- */
 
 @media (prefers-reduced-motion: reduce) {
+    .hp-graph__glow {
+        animation: none;
+    }
+
     .hp-graph__canvas svg * {
         transition: none !important;
     }
