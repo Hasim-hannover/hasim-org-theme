@@ -285,6 +285,9 @@
     function init() {
         var toggle = document.querySelector( '.hp-nav__toggle' );
         var mobile = document.getElementById( 'hp-nav-mobile' );
+        var searchToggle = document.querySelector( '.hp-nav__search-toggle' );
+        var searchPanel = document.getElementById( 'hp-nav-search' );
+        var header = document.querySelector( '.hp-site-header' );
 
         if ( ! toggle || ! mobile ) return;
 
@@ -296,15 +299,23 @@
             if ( expanded ) {
                 // Schließen
                 mobile.setAttribute( 'data-open', 'false' );
+                if ( header ) header.classList.remove( 'hp-site-header--menu-open' );
                 setTimeout( function () {
                     mobile.setAttribute( 'hidden', '' );
                 }, 300 );
             } else {
+                if ( searchToggle && searchPanel && searchToggle.getAttribute( 'aria-expanded' ) === 'true' ) {
+                    searchToggle.setAttribute( 'aria-expanded', 'false' );
+                    searchToggle.setAttribute( 'aria-label', 'Suche öffnen' );
+                    searchPanel.setAttribute( 'hidden', '' );
+                    if ( header ) header.classList.remove( 'hp-site-header--search-open' );
+                }
                 // Öffnen
                 mobile.removeAttribute( 'hidden' );
                 // Force reflow für Animation
                 void mobile.offsetHeight;
                 mobile.setAttribute( 'data-open', 'true' );
+                if ( header ) header.classList.add( 'hp-site-header--menu-open' );
             }
         } );
 
@@ -335,6 +346,9 @@
     function init() {
         var toggle = document.querySelector( '.hp-nav__search-toggle' );
         var panel  = document.getElementById( 'hp-nav-search' );
+        var menuToggle = document.querySelector( '.hp-nav__toggle' );
+        var menuPanel = document.getElementById( 'hp-nav-mobile' );
+        var header = document.querySelector( '.hp-site-header' );
 
         if ( ! toggle || ! panel ) return;
 
@@ -345,8 +359,17 @@
 
             if ( expanded ) {
                 panel.setAttribute( 'hidden', '' );
+                if ( header ) header.classList.remove( 'hp-site-header--search-open' );
             } else {
+                if ( menuToggle && menuPanel && menuToggle.getAttribute( 'aria-expanded' ) === 'true' ) {
+                    menuToggle.setAttribute( 'aria-expanded', 'false' );
+                    menuToggle.setAttribute( 'aria-label', 'Menü öffnen' );
+                    menuPanel.setAttribute( 'data-open', 'false' );
+                    menuPanel.setAttribute( 'hidden', '' );
+                    if ( header ) header.classList.remove( 'hp-site-header--menu-open' );
+                }
                 panel.removeAttribute( 'hidden' );
+                if ( header ) header.classList.add( 'hp-site-header--search-open' );
                 var input = panel.querySelector( 'input[type="search"]' );
                 if ( input ) input.focus();
             }
@@ -357,9 +380,51 @@
                 toggle.setAttribute( 'aria-expanded', 'false' );
                 toggle.setAttribute( 'aria-label', 'Suche öffnen' );
                 panel.setAttribute( 'hidden', '' );
+                if ( header ) header.classList.remove( 'hp-site-header--search-open' );
                 toggle.focus();
             }
         } );
+    }
+
+    if ( document.readyState === 'loading' ) {
+        document.addEventListener( 'DOMContentLoaded', init );
+    } else {
+        init();
+    }
+} )();
+
+/* =========================================
+   HEADER SCROLL STATE
+   =========================================
+   Lässt die Navigationsleiste beim Scrollen als
+   eigenständige schwebende Leiste auftreten.
+*/
+( function () {
+    'use strict';
+
+    function init() {
+        var header = document.querySelector( '.hp-site-header' );
+        var masthead = document.querySelector( '.hp-masthead' );
+        var ticking = false;
+
+        if ( ! header || ! masthead ) return;
+
+        function update() {
+            var threshold = Math.max( 24, masthead.offsetHeight - 16 );
+            var scrollY = window.pageYOffset || window.scrollY || 0;
+            header.classList.toggle( 'hp-site-header--scrolled', scrollY > threshold );
+            ticking = false;
+        }
+
+        function onScroll() {
+            if ( ticking ) return;
+            ticking = true;
+            window.requestAnimationFrame( update );
+        }
+
+        update();
+        window.addEventListener( 'scroll', onScroll, { passive: true } );
+        window.addEventListener( 'resize', update );
     }
 
     if ( document.readyState === 'loading' ) {
