@@ -361,7 +361,7 @@ function hp_graph_enqueue_assets(): void {
 
 	$theme_version = wp_get_theme()->get( 'Version' );
 
-	// D3.js per CDN
+	// D3.js lokal aus dem Theme laden
 	wp_enqueue_script(
 		'hp-d3',
 		get_stylesheet_directory_uri() . '/assets/js/d3.min.js',

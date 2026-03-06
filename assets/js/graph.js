@@ -4,7 +4,7 @@
  * Immersive, ganzseitige Visualisierung der Beziehungen zwischen
  * Essays, Notizen, Glossar-Einträgen und Themenfeldern.
  *
- * Abhängigkeit: D3.js v7 (per CDN geladen).
+ * Abhängigkeit: D3.js v7 (lokal im Theme eingebunden).
  * Daten: REST-Endpoint /wp-json/hp/v1/graph
  *
  * @package Hasimuener_Journal
