@@ -85,9 +85,25 @@
 		if ( ! canvas ) { return; }
 
 		if ( typeof d3 === 'undefined' || typeof hpGraph === 'undefined' || ! hpGraph.data ) {
-			if ( loading ) { loading.hidden = true; }
-			if ( error )   { error.hidden = false; }
-			return;
+				if ( typeof d3 === 'undefined' ) {
+					if ( loading ) { loading.hidden = true; }
+					if ( error )   { error.hidden = false; }
+					return;
+				}
+				// Fallback: Daten per REST nachladen
+				if ( typeof hpGraph === 'undefined' || !hpGraph.data ) {
+					fetch('/wp-json/hp/v1/graph')
+						.then(function(resp) { return resp.json(); })
+						.then(function(json) {
+							window.hpGraph = { data: json };
+							init();
+						})
+						.catch(function() {
+							if ( loading ) { loading.hidden = true; }
+							if ( error )   { error.hidden = false; }
+						});
+					return;
+				}
 		}
 
 		bindControls();

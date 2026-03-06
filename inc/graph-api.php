@@ -364,7 +364,7 @@ function hp_graph_enqueue_assets(): void {
 	// D3.js per CDN
 	wp_enqueue_script(
 		'hp-d3',
-		'https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js',
+		get_stylesheet_directory_uri() . '/assets/js/d3.min.js',
 		[],
 		'7.9.0',
 		true
