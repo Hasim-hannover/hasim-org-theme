@@ -152,9 +152,12 @@ function hp_render_journal_header(): void {
 
 					<!-- Hamburger (Mobile) -->
 					<button class="hp-nav__toggle" aria-label="Menü öffnen" aria-expanded="false" aria-controls="hp-nav-mobile">
-						<span class="hp-nav__toggle-bar" aria-hidden="true"></span>
-						<span class="hp-nav__toggle-bar" aria-hidden="true"></span>
-						<span class="hp-nav__toggle-bar" aria-hidden="true"></span>
+						<span class="hp-nav__toggle-icon" aria-hidden="true">
+							<span class="hp-nav__toggle-bar"></span>
+							<span class="hp-nav__toggle-bar"></span>
+							<span class="hp-nav__toggle-bar"></span>
+						</span>
+						<span class="hp-nav__toggle-label">Menü</span>
 					</button>
 				</div>
 

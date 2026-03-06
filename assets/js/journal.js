@@ -288,6 +288,7 @@
         var searchToggle = document.querySelector( '.hp-nav__search-toggle' );
         var searchPanel = document.getElementById( 'hp-nav-search' );
         var headerBar = document.querySelector( '.hp-header-bar' );
+        var toggleLabel = toggle ? toggle.querySelector( '.hp-nav__toggle-label' ) : null;
 
         if ( ! toggle || ! mobile ) return;
 
@@ -295,6 +296,9 @@
             var expanded = toggle.getAttribute( 'aria-expanded' ) === 'true';
             toggle.setAttribute( 'aria-expanded', String( ! expanded ) );
             toggle.setAttribute( 'aria-label', expanded ? 'Menü öffnen' : 'Menü schließen' );
+            if ( toggleLabel ) {
+                toggleLabel.textContent = expanded ? 'Menü' : 'Schließen';
+            }
 
             if ( expanded ) {
                 // Schließen
