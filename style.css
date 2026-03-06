@@ -1122,8 +1122,8 @@ a.footnote-backref:hover {
 
 .hp-colophon__links {
     display: flex;
-    align-items: center;
-    gap: 1rem;
+    align-items: flex-start;
+    gap: 0.4rem;
     margin-top: 0.6rem;
 }
 
@@ -1134,13 +1134,22 @@ a.footnote-backref:hover {
 .hp-colophon__social {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    color: var(--hj-text-muted);
-    transition: color 0.15s ease;
+    gap: 0.45rem;
+    margin-top: 1.4rem;
+    padding: 0.45rem 0.85rem;
+    border: 1px solid var(--hj-border);
+    border-radius: 3px;
+    font-family: var(--hj-sans);
+    font-size: var(--hj-fs-sm);
+    font-weight: 500;
+    color: var(--hj-text);
+    letter-spacing: 0.02em;
+    transition: color 0.15s ease, border-color 0.15s ease;
 }
 
 .hp-colophon__social:hover {
     color: var(--hj-accent);
+    border-color: var(--hj-accent);
     text-decoration: none;
 }
 
