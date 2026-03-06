@@ -82,6 +82,8 @@
 		var graphConfig = window.hpGraph || {};
 
 		if ( ! canvas ) { return; }
+		canvas.classList.add( 'is-loading' );
+		canvas.classList.remove( 'is-error', 'is-ready', 'is-empty' );
 
 		if ( typeof d3 === 'undefined' ) {
 			showError( 'Die lokale D3-Datei konnte nicht geladen werden.' );
@@ -127,30 +129,46 @@
 
 		if ( loading ) { loading.hidden = true; }
 		if ( error )   { error.hidden = true; }
+		canvas.classList.remove( 'is-loading', 'is-error' );
+		canvas.classList.add( 'is-ready' );
 
 		state.nodes = data.nodes || [];
 		state.edges = data.edges || [];
 
 		if ( state.nodes.length === 0 ) {
 			var empty = document.createElement( 'div' );
-			empty.className = 'hp-graph__loading';
+			empty.className = 'hp-graph__loading hp-graph__loading--empty';
 			empty.innerHTML = '<p>Noch keine Inhalte für den Wissensgraph vorhanden.</p>';
+			canvas.classList.add( 'is-empty' );
 			canvas.appendChild( empty );
+			updateSRSummary();
 			return;
 		}
 
+		canvas.classList.remove( 'is-empty' );
 		buildGraph();
 		updateSRSummary();
 	}
 
 	function showError( message ) {
+		var canvas  = document.getElementById( 'hp-graph-canvas' );
 		var loading = document.getElementById( 'hp-graph-loading' );
 		var error   = document.getElementById( 'hp-graph-error' );
 		var text    = error ? error.querySelector( 'p' ) : null;
+		var summaryEl = document.getElementById( 'hp-graph-summary' );
+		var nodesEl   = document.getElementById( 'hp-graph-stat-nodes' );
+		var edgesEl   = document.getElementById( 'hp-graph-stat-edges' );
 
+		if ( canvas ) {
+			canvas.classList.remove( 'is-loading', 'is-ready' );
+			canvas.classList.add( 'is-error' );
+		}
 		if ( loading ) { loading.hidden = true; }
 		if ( text && message ) { text.textContent = message; }
 		if ( error ) { error.hidden = false; }
+		if ( summaryEl && message ) { summaryEl.textContent = message; }
+		if ( nodesEl ) { nodesEl.textContent = '0'; }
+		if ( edgesEl ) { edgesEl.textContent = '0'; }
 	}
 
 	/* =========================================
@@ -711,8 +729,11 @@
 	   ========================================= */
 
 	function updateSRSummary() {
-		var el = document.getElementById( 'hp-graph-sr-summary' );
-		if ( ! el ) { return; }
+		var el        = document.getElementById( 'hp-graph-sr-summary' );
+		var summaryEl = document.getElementById( 'hp-graph-summary' );
+		var nodesEl   = document.getElementById( 'hp-graph-stat-nodes' );
+		var edgesEl   = document.getElementById( 'hp-graph-stat-edges' );
+		var typesEl   = document.getElementById( 'hp-graph-stat-types' );
 
 		var counts = { essay: 0, note: 0, glossar: 0, topic: 0 };
 		state.nodes.forEach( function( n ) {
@@ -721,13 +742,45 @@
 			}
 		} );
 
+		var visibleEdges = 0;
+		state.edges.forEach( function( e ) {
+			var src = typeof e.source === 'object' ? e.source : findNode( e.source );
+			var tgt = typeof e.target === 'object' ? e.target : findNode( e.target );
+			if ( src && tgt && state.activeTypes[ src.type ] && state.activeTypes[ tgt.type ] ) {
+				visibleEdges++;
+			}
+		} );
+
+		var activeTypeCount = 0;
+		Object.keys( state.activeTypes ).forEach( function( type ) {
+			if ( state.activeTypes[ type ] ) {
+				activeTypeCount++;
+			}
+		} );
+
 		var total = counts.essay + counts.note + counts.glossar + counts.topic;
-		el.textContent = 'Wissensgraph: ' + total + ' Knoten sichtbar — ' +
-			counts.essay + ' Essays, ' +
-			counts.note + ' Notizen, ' +
-			counts.glossar + ' Glossar-Einträge, ' +
-			counts.topic + ' Themenfelder. ' +
-			state.edges.length + ' Verbindungen insgesamt.';
+
+		if ( el ) {
+			el.textContent = 'Wissensgraph: ' + total + ' Knoten sichtbar — ' +
+				counts.essay + ' Essays, ' +
+				counts.note + ' Notizen, ' +
+				counts.glossar + ' Glossar-Einträge, ' +
+				counts.topic + ' Themenfelder. ' +
+				visibleEdges + ' Verbindungen sichtbar.';
+		}
+
+		if ( summaryEl ) {
+			summaryEl.textContent = total + ' sichtbare Knoten und ' + visibleEdges + ' aktive Verbindungen.';
+		}
+		if ( nodesEl ) {
+			nodesEl.textContent = String( total );
+		}
+		if ( edgesEl ) {
+			edgesEl.textContent = String( visibleEdges );
+		}
+		if ( typesEl ) {
+			typesEl.textContent = String( activeTypeCount );
+		}
 	}
 
 	/* =========================================

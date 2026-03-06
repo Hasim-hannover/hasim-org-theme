@@ -16,75 +16,105 @@ get_header(); ?>
 
 <main id="main-content" class="hp-graph">
 
-	<!-- Toolbar: Titel + Filter + Zoom -->
-	<div class="hp-graph__toolbar" role="toolbar" aria-label="Wissensgraph-Steuerung">
-		<h1 class="hp-graph__toolbar-title">Wissensgraph</h1>
-		<div class="hp-graph__controls" aria-label="Graph-Filter">
-			<button class="hp-graph__filter hp-graph__filter--active" data-type="essay" type="button" aria-pressed="true">
-				<span class="hp-graph__filter-dot hp-graph__filter-dot--essay" aria-hidden="true"></span>
-				Essays
-			</button>
-			<button class="hp-graph__filter hp-graph__filter--active" data-type="note" type="button" aria-pressed="true">
-				<span class="hp-graph__filter-dot hp-graph__filter-dot--note" aria-hidden="true"></span>
-				Notizen
-			</button>
-			<button class="hp-graph__filter hp-graph__filter--active" data-type="glossar" type="button" aria-pressed="true">
-				<span class="hp-graph__filter-dot hp-graph__filter-dot--glossar" aria-hidden="true"></span>
-				Glossar
-			</button>
-			<button class="hp-graph__filter hp-graph__filter--active" data-type="topic" type="button" aria-pressed="true">
-				<span class="hp-graph__filter-dot hp-graph__filter-dot--topic" aria-hidden="true"></span>
-				Themenfelder
-			</button>
+	<section class="hp-graph__hero" aria-label="Einführung in den Wissensgraph">
+		<div class="hp-graph__hero-copy">
+			<p class="hp-graph__eyebrow">Signal Atlas</p>
+			<h1 class="hp-graph__headline">Wissensgraph</h1>
+			<p class="hp-graph__lede">
+				Ein interaktives Netzwerk aus Essays, Notizen, Glossar und Themenfeldern.
+				Zoome hinein, filtere Knotentypen und öffne Details direkt neben der Visualisierung.
+			</p>
 		</div>
-		<div class="hp-graph__zoom" role="group" aria-label="Zoom-Steuerung">
-			<button class="hp-graph__zoom-btn" id="hp-graph-zoom-in" type="button" aria-label="Hineinzoomen">+</button>
-			<button class="hp-graph__zoom-btn" id="hp-graph-zoom-out" type="button" aria-label="Herauszoomen">−</button>
-			<button class="hp-graph__zoom-btn" id="hp-graph-zoom-reset" type="button" aria-label="Zoom zurücksetzen">⟳</button>
+		<div class="hp-graph__hero-panel">
+			<p class="hp-graph__hero-label">Live-Status</p>
+			<p class="hp-graph__summary" id="hp-graph-summary">Graph wird lokal vorbereitet …</p>
+			<div class="hp-graph__hero-stats" aria-label="Zusammenfassung des Graphen">
+				<div class="hp-graph__stat">
+					<span class="hp-graph__stat-label">Knoten</span>
+					<strong class="hp-graph__stat-value" id="hp-graph-stat-nodes">0</strong>
+				</div>
+				<div class="hp-graph__stat">
+					<span class="hp-graph__stat-label">Verbindungen</span>
+					<strong class="hp-graph__stat-value" id="hp-graph-stat-edges">0</strong>
+				</div>
+				<div class="hp-graph__stat">
+					<span class="hp-graph__stat-label">Aktive Typen</span>
+					<strong class="hp-graph__stat-value" id="hp-graph-stat-types">4</strong>
+				</div>
+			</div>
 		</div>
-	</div>
+	</section>
 
-	<!-- Graph Container -->
-	<div class="hp-graph__canvas" id="hp-graph-canvas" role="img" aria-label="Interaktiver Wissensgraph: Visualisiert Verbindungen zwischen Inhalten">
-		<div class="hp-graph__loading" id="hp-graph-loading">
-			<p>Graph wird geladen …</p>
+	<section class="hp-graph__workspace" aria-label="Arbeitsbereich des Wissensgraphen">
+		<div class="hp-graph__toolbar" role="toolbar" aria-label="Wissensgraph-Steuerung">
+			<h2 class="hp-graph__toolbar-title">Filter und Navigation</h2>
+			<div class="hp-graph__controls" aria-label="Graph-Filter">
+				<button class="hp-graph__filter hp-graph__filter--active" data-type="essay" type="button" aria-pressed="true">
+					<span class="hp-graph__filter-dot hp-graph__filter-dot--essay" aria-hidden="true"></span>
+					Essays
+				</button>
+				<button class="hp-graph__filter hp-graph__filter--active" data-type="note" type="button" aria-pressed="true">
+					<span class="hp-graph__filter-dot hp-graph__filter-dot--note" aria-hidden="true"></span>
+					Notizen
+				</button>
+				<button class="hp-graph__filter hp-graph__filter--active" data-type="glossar" type="button" aria-pressed="true">
+					<span class="hp-graph__filter-dot hp-graph__filter-dot--glossar" aria-hidden="true"></span>
+					Glossar
+				</button>
+				<button class="hp-graph__filter hp-graph__filter--active" data-type="topic" type="button" aria-pressed="true">
+					<span class="hp-graph__filter-dot hp-graph__filter-dot--topic" aria-hidden="true"></span>
+					Themenfelder
+				</button>
+			</div>
+			<div class="hp-graph__zoom" role="group" aria-label="Zoom-Steuerung">
+				<button class="hp-graph__zoom-btn" id="hp-graph-zoom-in" type="button" aria-label="Hineinzoomen">+</button>
+				<button class="hp-graph__zoom-btn" id="hp-graph-zoom-out" type="button" aria-label="Herauszoomen">−</button>
+				<button class="hp-graph__zoom-btn" id="hp-graph-zoom-reset" type="button" aria-label="Zoom zurücksetzen">⟳</button>
+			</div>
 		</div>
-		<div class="hp-graph__error" id="hp-graph-error" hidden>
-			<p>Der Graph konnte nicht geladen werden. Bitte später erneut versuchen.</p>
-		</div>
-		<div class="hp-graph__tooltip" id="hp-graph-tooltip" aria-hidden="true" hidden></div>
-	</div>
 
-	<!-- Legende + SR-Zusammenfassung -->
-	<div class="hp-graph__footer">
-		<div class="hp-graph__legend" role="img" aria-label="Legende: Farbcodes der Knotentypen">
-			<div class="hp-graph__legend-item">
-				<span class="hp-graph__legend-circle hp-graph__legend-circle--essay" aria-hidden="true"></span>
-				<span>Essay</span>
+		<div class="hp-graph__stage">
+			<div class="hp-graph__canvas" id="hp-graph-canvas" role="img" aria-label="Interaktiver Wissensgraph: Visualisiert Verbindungen zwischen Inhalten">
+				<div class="hp-graph__loading" id="hp-graph-loading">
+					<p>Graph wird geladen …</p>
+				</div>
+				<div class="hp-graph__error" id="hp-graph-error" hidden>
+					<p>Der Graph konnte nicht geladen werden. Bitte später erneut versuchen.</p>
+				</div>
+				<div class="hp-graph__tooltip" id="hp-graph-tooltip" aria-hidden="true" hidden></div>
 			</div>
-			<div class="hp-graph__legend-item">
-				<span class="hp-graph__legend-circle hp-graph__legend-circle--note" aria-hidden="true"></span>
-				<span>Notiz</span>
-			</div>
-			<div class="hp-graph__legend-item">
-				<span class="hp-graph__legend-circle hp-graph__legend-circle--glossar" aria-hidden="true"></span>
-				<span>Glossar</span>
-			</div>
-			<div class="hp-graph__legend-item">
-				<span class="hp-graph__legend-circle hp-graph__legend-circle--topic" aria-hidden="true"></span>
-				<span>Themenfeld</span>
-			</div>
-		</div>
-		<p class="hp-graph__sr-summary screen-reader-text" id="hp-graph-sr-summary" aria-live="polite"></p>
-	</div>
 
-	<!-- Detail-Panel (unterhalb des Canvas) -->
-	<section class="hp-graph__detail" id="hp-graph-detail" hidden aria-live="polite">
-		<div class="hp-graph__detail-inner">
-			<div class="hp-graph__detail-content" id="hp-graph-detail-content">
-				<!-- Wird von JS befüllt -->
+			<aside class="hp-graph__detail" id="hp-graph-detail" hidden aria-live="polite">
+				<div class="hp-graph__detail-inner">
+					<div class="hp-graph__detail-content" id="hp-graph-detail-content">
+						<!-- Wird von JS befüllt -->
+					</div>
+					<button class="hp-graph__detail-close" id="hp-graph-detail-close" type="button" aria-label="Details schließen">&times;</button>
+				</div>
+			</aside>
+		</div>
+
+		<div class="hp-graph__footer">
+			<div class="hp-graph__legend" role="img" aria-label="Legende: Farbcodes der Knotentypen">
+				<div class="hp-graph__legend-item">
+					<span class="hp-graph__legend-circle hp-graph__legend-circle--essay" aria-hidden="true"></span>
+					<span>Essay</span>
+				</div>
+				<div class="hp-graph__legend-item">
+					<span class="hp-graph__legend-circle hp-graph__legend-circle--note" aria-hidden="true"></span>
+					<span>Notiz</span>
+				</div>
+				<div class="hp-graph__legend-item">
+					<span class="hp-graph__legend-circle hp-graph__legend-circle--glossar" aria-hidden="true"></span>
+					<span>Glossar</span>
+				</div>
+				<div class="hp-graph__legend-item">
+					<span class="hp-graph__legend-circle hp-graph__legend-circle--topic" aria-hidden="true"></span>
+					<span>Themenfeld</span>
+				</div>
 			</div>
-			<button class="hp-graph__detail-close" id="hp-graph-detail-close" type="button" aria-label="Details schließen">&times;</button>
+			<p class="hp-graph__footer-note">Knoten ziehen, filtern und den Fokus im Panel rechts vertiefen.</p>
+			<p class="hp-graph__sr-summary screen-reader-text" id="hp-graph-sr-summary" aria-live="polite"></p>
 		</div>
 	</section>
 
