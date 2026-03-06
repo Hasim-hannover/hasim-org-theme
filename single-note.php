@@ -45,13 +45,11 @@ get_header(); ?>
 
 </article>
 
-<?php if ( comments_open() || get_comments_number() ) : ?>
     <section class="hp-comments" aria-label="Kommentare">
         <div class="hp-comments__inner">
             <?php comments_template(); ?>
         </div>
     </section>
-<?php endif; ?>
 
     <!-- Prev / Next Navigation -->
     <?php

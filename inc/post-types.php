@@ -65,7 +65,7 @@ function hp_register_post_types(): void {
 		'rewrite'       => [ 'slug' => 'notizen', 'with_front' => false ],
 		'menu_icon'     => 'dashicons-edit-page',
 		'menu_position' => 6,
-		'supports'      => [ 'title', 'editor', 'excerpt', 'revisions', 'custom-fields' ],
+		'supports'      => [ 'title', 'editor', 'excerpt', 'revisions', 'custom-fields', 'comments' ],
 		'taxonomies'    => [ 'topic' ],
 		'show_in_rest'  => true,
 	] );
