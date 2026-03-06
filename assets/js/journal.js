@@ -287,7 +287,7 @@
         var mobile = document.getElementById( 'hp-nav-mobile' );
         var searchToggle = document.querySelector( '.hp-nav__search-toggle' );
         var searchPanel = document.getElementById( 'hp-nav-search' );
-        var header = document.querySelector( '.hp-site-header' );
+        var headerBar = document.querySelector( '.hp-header-bar' );
 
         if ( ! toggle || ! mobile ) return;
 
@@ -299,7 +299,7 @@
             if ( expanded ) {
                 // Schließen
                 mobile.setAttribute( 'data-open', 'false' );
-                if ( header ) header.classList.remove( 'hp-site-header--menu-open' );
+                if ( headerBar ) headerBar.classList.remove( 'hp-header-bar--menu-open' );
                 setTimeout( function () {
                     mobile.setAttribute( 'hidden', '' );
                 }, 300 );
@@ -308,14 +308,14 @@
                     searchToggle.setAttribute( 'aria-expanded', 'false' );
                     searchToggle.setAttribute( 'aria-label', 'Suche öffnen' );
                     searchPanel.setAttribute( 'hidden', '' );
-                    if ( header ) header.classList.remove( 'hp-site-header--search-open' );
+                    if ( headerBar ) headerBar.classList.remove( 'hp-header-bar--search-open' );
                 }
                 // Öffnen
                 mobile.removeAttribute( 'hidden' );
                 // Force reflow für Animation
                 void mobile.offsetHeight;
                 mobile.setAttribute( 'data-open', 'true' );
-                if ( header ) header.classList.add( 'hp-site-header--menu-open' );
+                if ( headerBar ) headerBar.classList.add( 'hp-header-bar--menu-open' );
             }
         } );
 
@@ -348,7 +348,7 @@
         var panel  = document.getElementById( 'hp-nav-search' );
         var menuToggle = document.querySelector( '.hp-nav__toggle' );
         var menuPanel = document.getElementById( 'hp-nav-mobile' );
-        var header = document.querySelector( '.hp-site-header' );
+        var headerBar = document.querySelector( '.hp-header-bar' );
 
         if ( ! toggle || ! panel ) return;
 
@@ -359,17 +359,17 @@
 
             if ( expanded ) {
                 panel.setAttribute( 'hidden', '' );
-                if ( header ) header.classList.remove( 'hp-site-header--search-open' );
+                if ( headerBar ) headerBar.classList.remove( 'hp-header-bar--search-open' );
             } else {
                 if ( menuToggle && menuPanel && menuToggle.getAttribute( 'aria-expanded' ) === 'true' ) {
                     menuToggle.setAttribute( 'aria-expanded', 'false' );
                     menuToggle.setAttribute( 'aria-label', 'Menü öffnen' );
                     menuPanel.setAttribute( 'data-open', 'false' );
                     menuPanel.setAttribute( 'hidden', '' );
-                    if ( header ) header.classList.remove( 'hp-site-header--menu-open' );
+                    if ( headerBar ) headerBar.classList.remove( 'hp-header-bar--menu-open' );
                 }
                 panel.removeAttribute( 'hidden' );
-                if ( header ) header.classList.add( 'hp-site-header--search-open' );
+                if ( headerBar ) headerBar.classList.add( 'hp-header-bar--search-open' );
                 var input = panel.querySelector( 'input[type="search"]' );
                 if ( input ) input.focus();
             }
@@ -380,7 +380,7 @@
                 toggle.setAttribute( 'aria-expanded', 'false' );
                 toggle.setAttribute( 'aria-label', 'Suche öffnen' );
                 panel.setAttribute( 'hidden', '' );
-                if ( header ) header.classList.remove( 'hp-site-header--search-open' );
+                if ( headerBar ) headerBar.classList.remove( 'hp-header-bar--search-open' );
                 toggle.focus();
             }
         } );
@@ -403,16 +403,16 @@
     'use strict';
 
     function init() {
-        var header = document.querySelector( '.hp-site-header' );
+        var headerBar = document.querySelector( '.hp-header-bar' );
         var masthead = document.querySelector( '.hp-masthead' );
         var ticking = false;
 
-        if ( ! header || ! masthead ) return;
+        if ( ! headerBar || ! masthead ) return;
 
         function update() {
             var threshold = Math.max( 24, masthead.offsetHeight - 16 );
             var scrollY = window.pageYOffset || window.scrollY || 0;
-            header.classList.toggle( 'hp-site-header--scrolled', scrollY > threshold );
+            headerBar.classList.toggle( 'hp-header-bar--scrolled', scrollY > threshold );
             ticking = false;
         }
 

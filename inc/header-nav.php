@@ -112,78 +112,78 @@ function hp_render_journal_header(): void {
 				<p class="hp-masthead__tagline">Macht. Medien. Gesellschaft.</p>
 			</div>
 		</div>
+	</header>
 
-		<div class="hp-header-bar">
-			<!-- Navigation -->
-			<nav class="hp-nav" aria-label="Hauptnavigation">
-				<div class="hp-nav__inner">
+	<div class="hp-header-bar">
+		<!-- Navigation -->
+		<nav class="hp-nav" aria-label="Hauptnavigation">
+			<div class="hp-nav__inner">
 
-					<?php if ( has_nav_menu( 'hp-primary' ) ) : ?>
-						<?php
-						wp_nav_menu( [
-							'theme_location'  => 'hp-primary',
-							'container'       => false,
-							'menu_class'      => 'hp-nav__list',
-							'depth'           => 1,
-							'fallback_cb'     => false,
-						] );
-						?>
-					<?php else : ?>
-						<!-- Automatische Navigation aus CPT-Archiven -->
-						<ul class="hp-nav__list">
-							<?php foreach ( $hp_nav_items as $item ) :
-								$is_active = hp_nav_is_active( $item['match'] );
-							?>
-								<li class="hp-nav__item<?php echo $is_active ? ' hp-nav__item--active' : ''; ?>">
-									<a class="hp-nav__link" href="<?php echo esc_url( $item['url'] ); ?>"<?php echo $is_active ? ' aria-current="page"' : ''; ?>>
-										<?php echo esc_html( $item['label'] ); ?>
-									</a>
-								</li>
-							<?php endforeach; ?>
-						</ul>
-					<?php endif; ?>
-
-					<div class="hp-nav__actions">
-						<!-- Suche -->
-						<button class="hp-nav__search-toggle" aria-label="Suche öffnen" aria-expanded="false" aria-controls="hp-nav-search" type="button">
-							<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-						</button>
-
-						<!-- Hamburger (Mobile) -->
-						<button class="hp-nav__toggle" aria-label="Menü öffnen" aria-expanded="false" aria-controls="hp-nav-mobile">
-							<span class="hp-nav__toggle-bar" aria-hidden="true"></span>
-							<span class="hp-nav__toggle-bar" aria-hidden="true"></span>
-							<span class="hp-nav__toggle-bar" aria-hidden="true"></span>
-						</button>
-					</div>
-
-				</div>
-			</nav>
-
-			<!-- Suchfeld (ausklappbar) -->
-			<div class="hp-nav-search" id="hp-nav-search" hidden>
-				<div class="hp-nav-search__inner">
-					<?php get_search_form(); ?>
-				</div>
-			</div>
-
-			<!-- Mobile-Menü (ausklappbar) -->
-			<div class="hp-nav-mobile" id="hp-nav-mobile" hidden>
-				<ul class="hp-nav-mobile__list">
-					<?php foreach ( $hp_nav_items as $item ) :
-						$is_active = hp_nav_is_active( $item['match'] );
+				<?php if ( has_nav_menu( 'hp-primary' ) ) : ?>
+					<?php
+					wp_nav_menu( [
+						'theme_location'  => 'hp-primary',
+						'container'       => false,
+						'menu_class'      => 'hp-nav__list',
+						'depth'           => 1,
+						'fallback_cb'     => false,
+					] );
 					?>
-						<li class="hp-nav-mobile__item<?php echo $is_active ? ' hp-nav-mobile__item--active' : ''; ?>">
-							<a href="<?php echo esc_url( $item['url'] ); ?>"<?php echo $is_active ? ' aria-current="page"' : ''; ?>>
-								<?php echo esc_html( $item['label'] ); ?>
-							</a>
-						</li>
-					<?php endforeach; ?>
-				</ul>
+				<?php else : ?>
+					<!-- Automatische Navigation aus CPT-Archiven -->
+					<ul class="hp-nav__list">
+						<?php foreach ( $hp_nav_items as $item ) :
+							$is_active = hp_nav_is_active( $item['match'] );
+						?>
+							<li class="hp-nav__item<?php echo $is_active ? ' hp-nav__item--active' : ''; ?>">
+								<a class="hp-nav__link" href="<?php echo esc_url( $item['url'] ); ?>"<?php echo $is_active ? ' aria-current="page"' : ''; ?>>
+									<?php echo esc_html( $item['label'] ); ?>
+								</a>
+							</li>
+						<?php endforeach; ?>
+					</ul>
+				<?php endif; ?>
+
+				<div class="hp-nav__actions">
+					<!-- Suche -->
+					<button class="hp-nav__search-toggle" aria-label="Suche öffnen" aria-expanded="false" aria-controls="hp-nav-search" type="button">
+						<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+					</button>
+
+					<!-- Hamburger (Mobile) -->
+					<button class="hp-nav__toggle" aria-label="Menü öffnen" aria-expanded="false" aria-controls="hp-nav-mobile">
+						<span class="hp-nav__toggle-bar" aria-hidden="true"></span>
+						<span class="hp-nav__toggle-bar" aria-hidden="true"></span>
+						<span class="hp-nav__toggle-bar" aria-hidden="true"></span>
+					</button>
+				</div>
+
+			</div>
+		</nav>
+
+		<!-- Suchfeld (ausklappbar) -->
+		<div class="hp-nav-search" id="hp-nav-search" hidden>
+			<div class="hp-nav-search__inner">
+				<?php get_search_form(); ?>
 			</div>
 		</div>
 
-	</header>
+		<!-- Mobile-Menü (ausklappbar) -->
+		<div class="hp-nav-mobile" id="hp-nav-mobile" hidden>
+			<ul class="hp-nav-mobile__list">
+				<?php foreach ( $hp_nav_items as $item ) :
+					$is_active = hp_nav_is_active( $item['match'] );
+				?>
+					<li class="hp-nav-mobile__item<?php echo $is_active ? ' hp-nav-mobile__item--active' : ''; ?>">
+						<a href="<?php echo esc_url( $item['url'] ); ?>"<?php echo $is_active ? ' aria-current="page"' : ''; ?>>
+							<?php echo esc_html( $item['label'] ); ?>
+						</a>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+		</div>
+
+	</div>
 
 	<?php
 }

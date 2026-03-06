@@ -296,14 +296,14 @@ h4 {
     transition: box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
 
-.hp-site-header--scrolled .hp-nav {
+.hp-header-bar--scrolled .hp-nav {
     background: rgba(248, 244, 239, 0.92);
     border-color: rgba(20, 24, 29, 0.10);
     box-shadow: 0 16px 42px rgba(27, 31, 35, 0.12);
 }
 
-.hp-site-header--search-open .hp-nav,
-.hp-site-header--menu-open .hp-nav {
+.hp-header-bar--search-open .hp-nav,
+.hp-header-bar--menu-open .hp-nav {
     border-color: rgba(20, 24, 29, 0.12);
     box-shadow: 0 16px 42px rgba(27, 31, 35, 0.12);
 }
@@ -2996,8 +2996,8 @@ a.footnote-backref:hover {
     border-color: rgba(20, 24, 29, 0.12);
 }
 
-.hp-site-header--search-open .hp-nav__search-toggle,
-.hp-site-header--menu-open .hp-nav__toggle {
+.hp-header-bar--search-open .hp-nav__search-toggle,
+.hp-header-bar--menu-open .hp-nav__toggle {
     color: var(--hj-accent);
     background: rgba(189, 78, 47, 0.08);
     border-color: rgba(189, 78, 47, 0.16);
