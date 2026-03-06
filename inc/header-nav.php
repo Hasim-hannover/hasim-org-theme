@@ -60,7 +60,7 @@ add_action( 'after_setup_theme', 'hp_remove_gp_header', 50 );
  *
  * Struktur:
  * ┌──────────────────────────────────────┐
- * │          HASIM ÜNER                  │  ← Titel, zentriert
+ * │          HAŞIM ÜNER                  │  ← Titel, zentriert
  * │   Macht. Medien. Gesellschaft.       │  ← Claim
  * ├──────────────────────────────────────┤
  * │  Essays · Notizen · Glossar · Über   │  ← Nav-Leiste
@@ -107,7 +107,7 @@ function hp_render_journal_header(): void {
 		<div class="hp-masthead">
 			<div class="hp-masthead__inner">
 				<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="hp-masthead__link" rel="home">
-					<span class="hp-masthead__title">Hasim Üner</span>
+					<span class="hp-masthead__title">Haşim Üner</span>
 				</a>
 				<p class="hp-masthead__tagline">Macht. Medien. Gesellschaft.</p>
 			</div>
