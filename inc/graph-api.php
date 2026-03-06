@@ -360,13 +360,17 @@ function hp_graph_enqueue_assets(): void {
 	}
 
 	$theme_version = wp_get_theme()->get( 'Version' );
+	$d3_path       = get_stylesheet_directory() . '/assets/js/d3.min.js';
+	$graph_path    = get_stylesheet_directory() . '/assets/js/graph.js';
+	$d3_version    = file_exists( $d3_path ) ? (string) filemtime( $d3_path ) : $theme_version;
+	$graph_version = file_exists( $graph_path ) ? (string) filemtime( $graph_path ) : $theme_version;
 
 	// D3.js lokal aus dem Theme laden
 	wp_enqueue_script(
 		'hp-d3',
 		get_stylesheet_directory_uri() . '/assets/js/d3.min.js',
 		[],
-		'7.9.0',
+		$d3_version,
 		true
 	);
 
@@ -375,7 +379,7 @@ function hp_graph_enqueue_assets(): void {
 		'hp-graph-js',
 		get_stylesheet_directory_uri() . '/assets/js/graph.js',
 		[ 'hp-d3' ],
-		$theme_version,
+		$graph_version,
 		true
 	);
 
@@ -394,7 +398,8 @@ function hp_graph_enqueue_assets(): void {
 	}
 
 	wp_localize_script( 'hp-graph-js', 'hpGraph', [
-		'data' => $data,
+		'data'    => $data,
+		'restUrl' => esc_url_raw( rest_url( 'hp/v1/graph' ) ),
 	] );
 }
 add_action( 'wp_enqueue_scripts', 'hp_graph_enqueue_assets' );

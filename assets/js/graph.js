@@ -79,40 +79,57 @@
 
 	function init() {
 		var canvas  = document.getElementById( 'hp-graph-canvas' );
+		var graphConfig = window.hpGraph || {};
+
+		if ( ! canvas ) { return; }
+
+		if ( typeof d3 === 'undefined' ) {
+			showError( 'Die lokale D3-Datei konnte nicht geladen werden.' );
+			return;
+		}
+
+		if ( graphConfig.data && Array.isArray( graphConfig.data.nodes ) && Array.isArray( graphConfig.data.edges ) ) {
+			applyGraphData( graphConfig.data );
+			return;
+		}
+
+		if ( ! graphConfig.restUrl ) {
+			showError( 'Es wurde keine lokale Datenquelle fuer den Graph gefunden.' );
+			return;
+		}
+
+		fetch( graphConfig.restUrl, { credentials: 'same-origin' } )
+			.then( function( resp ) {
+				if ( ! resp.ok ) {
+					throw new Error( 'HTTP ' + resp.status );
+				}
+				return resp.json();
+			} )
+			.then( function( json ) {
+				window.hpGraph = graphConfig;
+				window.hpGraph.data = json;
+				applyGraphData( json );
+			} )
+			.catch( function( err ) {
+				console.error( '[hp-graph] REST fallback failed:', err );
+				showError( 'Die Graph-Daten konnten lokal nicht geladen werden.' );
+			} );
+	}
+
+	function applyGraphData( data ) {
+		var canvas  = document.getElementById( 'hp-graph-canvas' );
 		var loading = document.getElementById( 'hp-graph-loading' );
 		var error   = document.getElementById( 'hp-graph-error' );
 
 		if ( ! canvas ) { return; }
 
-		if ( typeof d3 === 'undefined' || typeof hpGraph === 'undefined' || ! hpGraph.data ) {
-				if ( typeof d3 === 'undefined' ) {
-					if ( loading ) { loading.hidden = true; }
-					if ( error )   { error.hidden = false; }
-					return;
-				}
-				// Fallback: Daten per REST nachladen
-				if ( typeof hpGraph === 'undefined' || !hpGraph.data ) {
-					fetch('/wp-json/hp/v1/graph')
-						.then(function(resp) { return resp.json(); })
-						.then(function(json) {
-							window.hpGraph = { data: json };
-							init();
-						})
-						.catch(function() {
-							if ( loading ) { loading.hidden = true; }
-							if ( error )   { error.hidden = false; }
-						});
-					return;
-				}
-		}
-
 		bindControls();
 
-		// Daten direkt aus Inline-JSON lesen (kein Fetch nötig)
 		if ( loading ) { loading.hidden = true; }
+		if ( error )   { error.hidden = true; }
 
-		state.nodes = hpGraph.data.nodes || [];
-		state.edges = hpGraph.data.edges || [];
+		state.nodes = data.nodes || [];
+		state.edges = data.edges || [];
 
 		if ( state.nodes.length === 0 ) {
 			var empty = document.createElement( 'div' );
@@ -124,6 +141,16 @@
 
 		buildGraph();
 		updateSRSummary();
+	}
+
+	function showError( message ) {
+		var loading = document.getElementById( 'hp-graph-loading' );
+		var error   = document.getElementById( 'hp-graph-error' );
+		var text    = error ? error.querySelector( 'p' ) : null;
+
+		if ( loading ) { loading.hidden = true; }
+		if ( text && message ) { text.textContent = message; }
+		if ( error ) { error.hidden = false; }
 	}
 
 	/* =========================================
