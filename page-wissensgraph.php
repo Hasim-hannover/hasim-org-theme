@@ -16,82 +16,75 @@ get_header(); ?>
 
 <main id="main-content" class="hp-graph">
 
-	<section class="hp-graph__hero" aria-label="Einführung in den Wissensgraph">
-		<div class="hp-graph__hero-copy">
-			<p class="hp-graph__eyebrow">Signal Atlas</p>
-			<h1 class="hp-graph__headline">Wissensgraph</h1>
+	<header class="hp-graph__intro" aria-label="Einführung in den Wissensgraph">
+		<div class="hp-graph__intro-copy">
+			<p class="hp-graph__eyebrow">Wissensgraph</p>
+			<h1 class="hp-graph__headline">Verbindungen statt Kästen.</h1>
 			<p class="hp-graph__lede">
-				Ein interaktives Netzwerk aus Essays, Notizen, Glossar und Themenfeldern.
-				Zoome hinein, filtere Knotentypen und öffne Details direkt neben der Visualisierung.
+				Essays, Notizen, Glossar und Themenfelder als ruhiges, direkt navigierbares Netz.
 			</p>
 		</div>
-		<div class="hp-graph__hero-panel">
-			<p class="hp-graph__hero-label">Live-Status</p>
+		<div class="hp-graph__meta" aria-label="Aktueller Graph-Status">
 			<p class="hp-graph__summary" id="hp-graph-summary">Graph wird lokal vorbereitet …</p>
-			<div class="hp-graph__hero-stats" aria-label="Zusammenfassung des Graphen">
-				<div class="hp-graph__stat">
-					<span class="hp-graph__stat-label">Knoten</span>
-					<strong class="hp-graph__stat-value" id="hp-graph-stat-nodes">0</strong>
-				</div>
-				<div class="hp-graph__stat">
-					<span class="hp-graph__stat-label">Verbindungen</span>
-					<strong class="hp-graph__stat-value" id="hp-graph-stat-edges">0</strong>
-				</div>
-				<div class="hp-graph__stat">
-					<span class="hp-graph__stat-label">Aktive Typen</span>
-					<strong class="hp-graph__stat-value" id="hp-graph-stat-types">4</strong>
-				</div>
+			<div class="hp-graph__stats">
+				<span class="hp-graph__stat-pill"><span class="hp-graph__stat-pill-label">Knoten</span><strong id="hp-graph-stat-nodes">0</strong></span>
+				<span class="hp-graph__stat-pill"><span class="hp-graph__stat-pill-label">Verbindungen</span><strong id="hp-graph-stat-edges">0</strong></span>
+				<span class="hp-graph__stat-pill"><span class="hp-graph__stat-pill-label">Typen</span><strong id="hp-graph-stat-types">4</strong></span>
 			</div>
 		</div>
-	</section>
+	</header>
 
 	<section class="hp-graph__workspace" aria-label="Arbeitsbereich des Wissensgraphen">
-		<div class="hp-graph__toolbar" role="toolbar" aria-label="Wissensgraph-Steuerung">
-			<h2 class="hp-graph__toolbar-title">Filter und Navigation</h2>
-			<div class="hp-graph__controls" aria-label="Graph-Filter">
-				<button class="hp-graph__filter hp-graph__filter--active" data-type="essay" type="button" aria-pressed="true">
-					<span class="hp-graph__filter-dot hp-graph__filter-dot--essay" aria-hidden="true"></span>
-					Essays
-				</button>
-				<button class="hp-graph__filter hp-graph__filter--active" data-type="note" type="button" aria-pressed="true">
-					<span class="hp-graph__filter-dot hp-graph__filter-dot--note" aria-hidden="true"></span>
-					Notizen
-				</button>
-				<button class="hp-graph__filter hp-graph__filter--active" data-type="glossar" type="button" aria-pressed="true">
-					<span class="hp-graph__filter-dot hp-graph__filter-dot--glossar" aria-hidden="true"></span>
-					Glossar
-				</button>
-				<button class="hp-graph__filter hp-graph__filter--active" data-type="topic" type="button" aria-pressed="true">
-					<span class="hp-graph__filter-dot hp-graph__filter-dot--topic" aria-hidden="true"></span>
-					Themenfelder
-				</button>
-			</div>
-			<div class="hp-graph__zoom" role="group" aria-label="Zoom-Steuerung">
-				<button class="hp-graph__zoom-btn" id="hp-graph-zoom-in" type="button" aria-label="Hineinzoomen">+</button>
-				<button class="hp-graph__zoom-btn" id="hp-graph-zoom-out" type="button" aria-label="Herauszoomen">−</button>
-				<button class="hp-graph__zoom-btn" id="hp-graph-zoom-reset" type="button" aria-label="Zoom zurücksetzen">⟳</button>
-			</div>
-		</div>
-
 		<div class="hp-graph__stage">
-			<div class="hp-graph__canvas" id="hp-graph-canvas" role="img" aria-label="Interaktiver Wissensgraph: Visualisiert Verbindungen zwischen Inhalten">
-				<div class="hp-graph__loading" id="hp-graph-loading">
-					<p>Graph wird geladen …</p>
-				</div>
-				<div class="hp-graph__error" id="hp-graph-error" hidden>
-					<p>Der Graph konnte nicht geladen werden. Bitte später erneut versuchen.</p>
-				</div>
-				<div class="hp-graph__tooltip" id="hp-graph-tooltip" aria-hidden="true" hidden></div>
-			</div>
-
-			<aside class="hp-graph__detail" id="hp-graph-detail" hidden aria-live="polite">
-				<div class="hp-graph__detail-inner">
-					<div class="hp-graph__detail-content" id="hp-graph-detail-content">
-						<!-- Wird von JS befüllt -->
+			<div class="hp-graph__canvas-shell">
+				<div class="hp-graph__toolbar" role="toolbar" aria-label="Wissensgraph-Steuerung">
+					<div class="hp-graph__toolbar-group hp-graph__toolbar-group--label">
+						<h2 class="hp-graph__toolbar-title">Netzwerk</h2>
 					</div>
-					<button class="hp-graph__detail-close" id="hp-graph-detail-close" type="button" aria-label="Details schließen">&times;</button>
+					<div class="hp-graph__toolbar-group hp-graph__controls" aria-label="Graph-Filter">
+						<button class="hp-graph__filter hp-graph__filter--active" data-type="essay" type="button" aria-pressed="true">
+							<span class="hp-graph__filter-dot hp-graph__filter-dot--essay" aria-hidden="true"></span>
+							Essays
+						</button>
+						<button class="hp-graph__filter hp-graph__filter--active" data-type="note" type="button" aria-pressed="true">
+							<span class="hp-graph__filter-dot hp-graph__filter-dot--note" aria-hidden="true"></span>
+							Notizen
+						</button>
+						<button class="hp-graph__filter hp-graph__filter--active" data-type="glossar" type="button" aria-pressed="true">
+							<span class="hp-graph__filter-dot hp-graph__filter-dot--glossar" aria-hidden="true"></span>
+							Glossar
+						</button>
+						<button class="hp-graph__filter hp-graph__filter--active" data-type="topic" type="button" aria-pressed="true">
+							<span class="hp-graph__filter-dot hp-graph__filter-dot--topic" aria-hidden="true"></span>
+							Themenfelder
+						</button>
+					</div>
+					<div class="hp-graph__toolbar-group hp-graph__zoom" role="group" aria-label="Zoom-Steuerung">
+						<button class="hp-graph__zoom-btn" id="hp-graph-zoom-in" type="button" aria-label="Hineinzoomen">+</button>
+						<button class="hp-graph__zoom-btn" id="hp-graph-zoom-out" type="button" aria-label="Herauszoomen">−</button>
+						<button class="hp-graph__zoom-btn" id="hp-graph-zoom-reset" type="button" aria-label="Zoom zurücksetzen">⟳</button>
+					</div>
 				</div>
-			</aside>
+
+				<div class="hp-graph__canvas" id="hp-graph-canvas" role="img" aria-label="Interaktiver Wissensgraph: Visualisiert Verbindungen zwischen Inhalten">
+					<div class="hp-graph__loading" id="hp-graph-loading">
+						<p>Graph wird geladen …</p>
+					</div>
+					<div class="hp-graph__error" id="hp-graph-error" hidden>
+						<p>Der Graph konnte nicht geladen werden. Bitte später erneut versuchen.</p>
+					</div>
+					<div class="hp-graph__tooltip" id="hp-graph-tooltip" aria-hidden="true" hidden></div>
+				</div>
+
+				<aside class="hp-graph__detail" id="hp-graph-detail" hidden aria-live="polite">
+					<div class="hp-graph__detail-inner">
+						<div class="hp-graph__detail-content" id="hp-graph-detail-content">
+							<!-- Wird von JS befüllt -->
+						</div>
+						<button class="hp-graph__detail-close" id="hp-graph-detail-close" type="button" aria-label="Details schließen">&times;</button>
+					</div>
+				</aside>
+			</div>
 		</div>
 
 		<div class="hp-graph__footer">

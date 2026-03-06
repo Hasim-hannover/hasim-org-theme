@@ -43,6 +43,9 @@
 		minRadius:      8,
 		maxRadius:      32,
 		labelOffset:    6,
+		labelOpacity:   0.12,
+		labelOpacityStrong: 0.28,
+		labelMinLinks:  4,
 		mobileBreak:    768,
 		// Force-Simulation
 		chargeStrength: -400,
@@ -309,7 +312,7 @@
 			.attr( 'class', 'hp-graph__label' )
 			.attr( 'dy', function( d ) { return -d._radius - CONFIG.labelOffset; } )
 			.attr( 'text-anchor', 'middle' )
-			.attr( 'opacity', 0.7 )
+			.attr( 'opacity', function( d ) { return getBaseLabelOpacity( d ); } )
 			.attr( 'aria-hidden', 'true' );
 
 		// Interaktionen
@@ -485,7 +488,9 @@
 			.attr( 'stroke', CONFIG.edgeColor )
 			.attr( 'stroke-opacity', 0.6 )
 			.attr( 'stroke-width', function( d ) { return Math.max( 1, d.weight || 1 ); } );
-		state.labelSel.transition().duration( 250 ).attr( 'opacity', 0.7 );
+		state.labelSel
+			.transition().duration( 250 )
+			.attr( 'opacity', function( d ) { return getBaseLabelOpacity( d ); } );
 		hideTooltip();
 	}
 
@@ -503,6 +508,7 @@
 	function showDetail( d ) {
 		var panel   = document.getElementById( 'hp-graph-detail' );
 		var content = document.getElementById( 'hp-graph-detail-content' );
+		var shell   = document.querySelector( '.hp-graph__canvas-shell' );
 		if ( ! panel || ! content ) { return; }
 
 		var typeLabel = { essay: 'Essay', note: 'Notiz', glossar: 'Glossar-Eintrag', topic: 'Themenfeld' };
@@ -551,12 +557,15 @@
 
 		content.innerHTML = html;
 		panel.hidden = false;
+		if ( shell ) { shell.classList.add( 'has-detail' ); }
 		panel.scrollIntoView( { behavior: 'smooth', block: 'nearest' } );
 	}
 
 	function hideDetail() {
 		var panel = document.getElementById( 'hp-graph-detail' );
+		var shell = document.querySelector( '.hp-graph__canvas-shell' );
 		if ( panel ) { panel.hidden = true; }
+		if ( shell ) { shell.classList.remove( 'has-detail' ); }
 		state.selectedNode = null;
 	}
 
@@ -577,7 +586,11 @@
 			var tgt = typeof e.target === 'object' ? e.target : findNode( e.target );
 			var visible = src && tgt && state.activeTypes[ src.type ] && state.activeTypes[ tgt.type ];
 			d3.select( this ).attr( 'visibility', visible ? 'visible' : 'hidden' );
-		} );
+			} );
+
+		if ( state.selectedNode && ! state.activeTypes[ state.selectedNode.type ] ) {
+			hideDetail();
+		}
 
 		updateSRSummary();
 	}
@@ -781,6 +794,22 @@
 		if ( typesEl ) {
 			typesEl.textContent = String( activeTypeCount );
 		}
+	}
+
+	function getBaseLabelOpacity( d ) {
+		if ( window.innerWidth < CONFIG.mobileBreak ) {
+			return 0;
+		}
+
+		if ( d._linkCount >= CONFIG.labelMinLinks + 2 ) {
+			return CONFIG.labelOpacityStrong;
+		}
+
+		if ( d._linkCount >= CONFIG.labelMinLinks ) {
+			return CONFIG.labelOpacity;
+		}
+
+		return 0;
 	}
 
 	/* =========================================
