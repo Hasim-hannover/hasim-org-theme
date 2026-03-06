@@ -205,7 +205,7 @@ function hp_output_seo_meta_tags(): void {
 	$locale    = get_locale();
 	$image     = hp_get_seo_image();
 
-	echo "\n<!-- Hasim Üner: SEO-Meta -->\n";
+	echo "\n<!-- Haşim Üner: SEO-Meta -->\n";
 
 	// Canonical URL
 	printf( '<link rel="canonical" href="%s" />' . "\n", esc_url( $url ) );
@@ -258,7 +258,7 @@ function hp_output_seo_meta_tags(): void {
 	}
 
 	if ( is_singular() ) {
-		echo '<meta property="article:author" content="Hasim Üner" />' . "\n";
+		echo '<meta property="article:author" content="Haşim Üner" />' . "\n";
 	}
 
 	// Twitter Card

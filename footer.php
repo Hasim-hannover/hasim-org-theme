@@ -23,11 +23,11 @@ $hp_year    = gmdate( 'Y' );
             <!-- Spalte 1: Herausgeber -->
             <div class="hp-colophon__col hp-colophon__mission">
                 <span class="hp-colophon__label">Herausgeber</span>
-                <p>Hasim Üner — Medienwissenschaftler. Publizist.</p>
+                <p>Haşim Üner — Medienwissenschaftler. Publizist.</p>
                 <div class="hp-colophon__links">
                     <a class="hp-colophon__mission-link" href="<?php echo esc_url( home_url( '/mission/' ) ); ?>">Wer hier schreibt &rarr;</a>
                 </div>
-                <a class="hp-colophon__social" href="https://x.com/_0239983326111" target="_blank" rel="noopener noreferrer" aria-label="Hasim Üner auf X">
+                <a class="hp-colophon__social" href="https://x.com/_0239983326111" target="_blank" rel="noopener noreferrer" aria-label="Haşim Üner auf X">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                     <span>Auf X folgen</span>
                 </a>
@@ -58,7 +58,7 @@ $hp_year    = gmdate( 'Y' );
             <!-- Spalte 3: Meta / Legal -->
             <div class="hp-colophon__col hp-colophon__meta">
                 <span class="hp-colophon__label">Meta</span>
-                <p>&copy; <?php echo esc_html( $hp_year ); ?> Hasim Üner</p>
+                <p>&copy; <?php echo esc_html( $hp_year ); ?> Haşim Üner</p>
                 <ul class="hp-colophon__legal">
                     <li><a href="<?php echo esc_url( get_post_type_archive_link( 'glossar' ) ); ?>">Glossar</a></li>
                     <li><a href="<?php echo esc_url( home_url( '/impressum/' ) ); ?>">Impressum</a></li>

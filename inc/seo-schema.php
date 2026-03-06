@@ -73,7 +73,7 @@ function hp_essay_jsonld_schema(): void {
 		$schema['wordCount'] = $word_count;
 	}
 
-	echo "\n<!-- Hasim Üner: JSON-LD -->\n";
+	echo "\n<!-- Haşim Üner: JSON-LD -->\n";
 	echo '<script type="application/ld+json">';
 	echo wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT );
 	echo "</script>\n";
@@ -111,10 +111,10 @@ function hp_org_website_jsonld_schema(): void {
 		'@id'         => $site_url . '#organization',
 		'name'        => $site_name,
 		'url'         => $site_url,
-		'description' => $site_desc ?: 'Essays und Analysen zu Macht, Medien und Gesellschaft. Von Hasim Üner.',
+		'description' => $site_desc ?: 'Essays und Analysen zu Macht, Medien und Gesellschaft. Von Haşim Üner.',
 		'founder'     => [
 			'@type'  => 'Person',
-			'name'   => 'Hasim Üner',
+			'name'   => 'Haşim Üner',
 			'jobTitle' => 'Medienwissenschaftler & Publizist',
 		],
 		'foundingDate'    => '2024',
@@ -165,7 +165,7 @@ function hp_org_website_jsonld_schema(): void {
 
 	$graph['@graph'][] = $website;
 
-	echo "\n<!-- Hasim Üner: Organization + WebSite JSON-LD -->\n";
+	echo "\n<!-- Haşim Üner: Organization + WebSite JSON-LD -->\n";
 	echo '<script type="application/ld+json">';
 	echo wp_json_encode( $graph, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT );
 	echo "</script>\n";
@@ -206,7 +206,7 @@ function hp_glossar_jsonld_schema(): void {
 		],
 	];
 
-	echo "\n<!-- Hasim Üner: Glossar DefinedTerm JSON-LD -->\n";
+	echo "\n<!-- Haşim Üner: Glossar DefinedTerm JSON-LD -->\n";
 	echo '<script type="application/ld+json">';
 	echo wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT );
 	echo "</script>\n";
@@ -261,7 +261,7 @@ function hp_note_jsonld_schema(): void {
 		$schema['wordCount'] = $word_count;
 	}
 
-	echo "\n<!-- Hasim Üner: Note BlogPosting JSON-LD -->\n";
+	echo "\n<!-- Haşim Üner: Note BlogPosting JSON-LD -->\n";
 	echo '<script type="application/ld+json">';
 	echo wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT );
 	echo "</script>\n";
