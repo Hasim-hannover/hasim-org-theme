@@ -39,7 +39,7 @@ get_header(); ?>
 
             <p>Kurdisch ist die Sprache, die mir gehört und die ein Staat mir nehmen wollte. Türkisch ist die Sprache, die an ihre Stelle gesetzt wurde — in Nordkurdistan war selbst das Sprechen des Kurdischen lange verboten. Deutsch ist die Sprache, in der ich gelernt habe, beides zu benennen. Jede dieser Sprachen trägt eine Machtgeschichte. Zusammen formen sie den Blick, aus dem heraus ich schreibe.</p>
 
-            <p>Ich bin politisch — lokal, auf der Straße und am Schreibtisch. Was mich antreibt, beginnt beim eigenen Dasein: bei der Erfahrung, dass die Welt, in die man geworfen wird, nicht zufällig geordnet ist, sondern hierarchisch. Aus dieser Erfahrung werden Fragen: Was geschieht mit Erinnerung in hierarchisch organisierten Gesellschaften? Wie formt staatliche Macht, was gedacht und gesagt werden darf?</p>
+            <p>Was mich antreibt, beginnt beim eigenen Dasein: bei der Erfahrung, dass die Welt, in die man geworfen wird, nicht zufällig geordnet ist, sondern hierarchisch. Aus dieser Erfahrung werden Fragen: Was geschieht mit Erinnerung in hierarchisch organisierten Gesellschaften? Wie formt staatliche Macht, was gedacht und gesagt werden darf?</p>
 
             <p>Und dann ist da die Frage nach der Freiheit — nicht als Ideal, sondern als Problem. Was bedeutet Freiheit, wenn die Realität, in der sie stattfinden soll, monopolistisch und hierarchisch verfasst ist? Ein System, das Ordnung durch Unterordnung herstellt, beeinflusst nicht nur, wer frei ist — es formt, was Freiheit überhaupt bedeuten darf. Der Begriff selbst wird zum Produkt der Verhältnisse, die ihn begrenzen.</p>
 
