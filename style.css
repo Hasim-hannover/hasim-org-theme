@@ -1660,11 +1660,18 @@ a.footnote-backref:hover {
     align-self: start;
 }
 
-.hp-comment__avatar .avatar {
-    display: block;
+.hp-comment__avatar-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     width: 56px;
     height: 56px;
     border-radius: 50%;
+    background: linear-gradient(135deg, rgba(24, 28, 34, 0.94), rgba(63, 73, 84, 0.88));
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
 }
 
 .hp-comment__body {
@@ -1758,6 +1765,7 @@ a.footnote-backref:hover {
 .hp-comments__closed,
 .hp-comments__empty p,
 .hp-comments__form-note,
+.hp-comments__form-privacy,
 .hp-comments__form-footnote,
 .hp-comments .logged-in-as,
 .hp-comments .comment-notes {
@@ -1823,9 +1831,26 @@ a.footnote-backref:hover {
     color: var(--hj-text-primary);
 }
 
+.hp-comments__form-privacy a {
+    color: var(--hj-accent);
+    text-decoration: none;
+}
+
+.hp-comments__form-privacy a:hover {
+    text-decoration: underline;
+}
+
 .hp-comments .comment-form {
     display: grid;
     gap: 0.95rem;
+}
+
+.hp-comment-antispam {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
 }
 
 .hp-comments .comment-form-comment {
@@ -1842,14 +1867,19 @@ a.footnote-backref:hover {
     color: var(--hj-text-secondary);
 }
 
-.hp-comments .comment-form-author,
-.hp-comments .comment-form-email {
+.hp-comment-field__required {
+    font-size: 0.72rem;
+    letter-spacing: normal;
+    text-transform: none;
+    color: var(--hj-accent);
+}
+
+.hp-comments .comment-form-author {
     display: inline-block;
     width: 100%;
 }
 
 .hp-comments .comment-form input[type="text"],
-.hp-comments .comment-form input[type="email"],
 .hp-comments .comment-form textarea {
     width: 100%;
     padding: 0.82rem 0.95rem;
@@ -1876,6 +1906,14 @@ a.footnote-backref:hover {
     resize: vertical;
 }
 
+.hp-comment-field__hint {
+    display: block;
+    margin-top: 0.45rem;
+    font-size: 0.8rem;
+    line-height: 1.55;
+    color: var(--hj-text-muted);
+}
+
 .hp-comments .comment-form-cookies-consent {
     display: flex;
     align-items: flex-start;
@@ -1887,6 +1925,14 @@ a.footnote-backref:hover {
 
 .hp-comments .comment-form-cookies-consent input {
     margin-top: 0.25rem;
+}
+
+.hp-comments .comment-form-cookies-consent label {
+    margin: 0;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: normal;
+    text-transform: none;
 }
 
 .hp-comments .form-submit {
@@ -1936,6 +1982,7 @@ a.footnote-backref:hover {
     }
 
     .hp-comments .comment-form-comment,
+    .hp-comments .comment-form-author,
     .hp-comments .comment-form-cookies-consent,
     .hp-comments .form-submit,
     .hp-comments__form-footnote,
