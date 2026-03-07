@@ -212,6 +212,13 @@ function hp_get_contact_autoreply_subject(): string {
 }
 
 /**
+ * Liefert einen zustellungsfreundlichen Absendernamen.
+ */
+function hp_get_contact_mail_sender_name(): string {
+	return 'Hasim Uener';
+}
+
+/**
  * Baut das HTML-Template der automatischen Eingangsbestätigung.
  *
  * @param array<string, string> $fields Validierte Formularfelder.
@@ -288,24 +295,65 @@ function hp_get_contact_autoreply_html( array $fields ): string {
 }
 
 /**
+ * Baut die Textversion der automatischen Eingangsbestätigung.
+ *
+ * @param array<string, string> $fields Validierte Formularfelder.
+ */
+function hp_get_contact_autoreply_text( array $fields ): string {
+	$contact_email = hp_get_contact_email();
+	$site_url      = home_url( '/' );
+	$imprint_url   = home_url( '/impressum/' );
+	$privacy_url   = home_url( '/datenschutz/' );
+	$subject_line  = '' !== $fields['subject'] ? $fields['subject'] : 'Nicht angegeben';
+	$name_line     = '' !== $fields['name'] ? $fields['name'] : 'Guten Tag';
+
+	return implode(
+		"\n\n",
+		[
+			'Ihre Nachricht ist eingegangen.',
+			$name_line . ', vielen Dank für Ihre Nachricht über hasimuener.org. Sie wurde direkt weitergeleitet.',
+			'Ich melde mich, sobald ich inhaltlich antworten kann. Wenn Sie in der Zwischenzeit etwas ergänzen möchten, können Sie direkt auf diese E-Mail antworten.',
+			'Zusammenfassung',
+			'Betreff: ' . $subject_line . "\n" . 'Antwortadresse: ' . $contact_email,
+			'Mit freundlichen Grüßen' . "\n" . 'Haşim Üner',
+			'Kontakt: ' . $contact_email . "\n" . 'Website: ' . $site_url . "\n" . 'Impressum: ' . $imprint_url . "\n" . 'Datenschutz: ' . $privacy_url,
+			'Diese E-Mail wurde automatisch nach dem Absenden des Kontaktformulars erzeugt.',
+		]
+	);
+}
+
+/**
  * Versendet die automatische Eingangsbestätigung.
  *
  * @param array<string, string> $fields Validierte Formularfelder.
  */
 function hp_send_contact_autoreply( array $fields ): bool {
 	$contact_email = hp_get_contact_email();
+	$text_body     = hp_get_contact_autoreply_text( $fields );
 	$headers       = [
 		'Content-Type: text/html; charset=UTF-8',
-		'From: Haşim Üner <' . $contact_email . '>',
-		'Reply-To: Haşim Üner <' . $contact_email . '>',
+		'From: ' . hp_get_contact_mail_sender_name() . ' <' . $contact_email . '>',
+		'Reply-To: ' . hp_get_contact_mail_sender_name() . ' <' . $contact_email . '>',
+		'Auto-Submitted: auto-replied',
+		'X-Auto-Response-Suppress: All',
 	];
 
-	return wp_mail(
+	$alt_body_setter = static function ( PHPMailer\PHPMailer\PHPMailer $phpmailer ) use ( $text_body ): void {
+		$phpmailer->AltBody = $text_body;
+	};
+
+	add_action( 'phpmailer_init', $alt_body_setter );
+
+	$mail_sent = wp_mail(
 		$fields['email'],
 		hp_get_contact_autoreply_subject(),
 		hp_get_contact_autoreply_html( $fields ),
 		$headers
 	);
+
+	remove_action( 'phpmailer_init', $alt_body_setter );
+
+	return $mail_sent;
 }
 
 /**
