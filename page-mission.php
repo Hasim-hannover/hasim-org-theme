@@ -24,6 +24,7 @@ $hp_home_url       = home_url( '/' );
 $hp_essay_url      = get_post_type_archive_link( 'essay' );
 $hp_note_url       = get_post_type_archive_link( 'note' );
 $hp_contact_url    = hp_get_contact_page_url();
+$hp_newsletter_url = hp_get_newsletter_anchor_url();
 ?>
 
 <article id="main-content" class="hp-mission" aria-label="<?php the_title_attribute(); ?>" role="main">
@@ -123,6 +124,11 @@ $hp_contact_url    = hp_get_contact_page_url();
                     <a class="hp-mission__cta-card" href="<?php echo esc_url( $hp_note_url ); ?>">
                         <span class="hp-mission__cta-title">Zu den Notizen</span>
                         <span class="hp-mission__cta-copy">Kürzere Beobachtungen, Quellen und Fragmente aus der laufenden Arbeit.</span>
+                    </a>
+
+                    <a class="hp-mission__cta-card" href="<?php echo esc_url( $hp_newsletter_url ); ?>">
+                        <span class="hp-mission__cta-title">Neue Texte per E-Mail</span>
+                        <span class="hp-mission__cta-copy">Kurze Hinweise, sobald ein neuer Essay erscheint oder ein Text weiterführt.</span>
                     </a>
 
                     <a class="hp-mission__cta-card" href="<?php echo esc_url( $hp_contact_url ); ?>">

@@ -55,6 +55,7 @@ $hp_year    = gmdate( 'Y' );
                 <span class="hp-colophon__label">Meta</span>
                 <ul class="hp-colophon__legal">
                     <li><a href="<?php echo esc_url( get_post_type_archive_link( 'glossar' ) ); ?>">Glossar</a></li>
+                    <li><a href="<?php echo esc_url( hp_get_newsletter_anchor_url() ); ?>">Neue Texte per E-Mail</a></li>
                     <li><a href="<?php echo esc_url( hp_get_contact_page_url() ); ?>">Kontakt</a></li>
                     <li><a href="<?php echo esc_url( home_url( '/impressum/' ) ); ?>">Impressum</a></li>
                     <li><a href="<?php echo esc_url( home_url( '/datenschutz/' ) ); ?>">Datenschutz</a></li>

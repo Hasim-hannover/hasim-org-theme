@@ -118,6 +118,18 @@ get_header(); ?>
                 <?php the_content(); ?>
             </div>
 
+            <?php
+            hp_render_newsletter_form( [
+                'id'           => 'newsletter-signup-essay',
+                'context'      => 'essay',
+                'variant'      => 'essay',
+                'eyebrow'      => 'Neue Texte nicht verpassen',
+                'title'        => 'Wenn Sie bis hier gelesen haben, sollten die nächsten Texte Sie erreichen.',
+                'lede'         => 'Sie erhalten eine kurze Nachricht, wenn ein neuer Essay erscheint oder eine Notiz den Gedanken dieses Journals sinnvoll erweitert.',
+                'submit_label' => 'Eintragen',
+            ] );
+            ?>
+
             <!-- Artikel-Fußzeile -->
             <footer class="essay-footer">
                 <hr class="journal-rule" aria-hidden="true">

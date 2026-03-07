@@ -49,4 +49,5 @@ require_once $hp_inc_dir . '/breadcrumbs.php';
 require_once $hp_inc_dir . '/header-nav.php';
 require_once $hp_inc_dir . '/comments.php';
 require_once $hp_inc_dir . '/contact.php';
+require_once $hp_inc_dir . '/newsletter.php';
 require_once $hp_inc_dir . '/graph-api.php';

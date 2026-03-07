@@ -28,6 +28,10 @@ get_header(); ?>
                 Diese Website verzichtet vollständig auf Tracking, Werbung, externe Analysedienste
                 und nicht notwendige Cookies. Die folgende Erklärung legt offen, welche Daten
                 beim Besuch dieser Seite technisch verarbeitet werden und welche Rechte dir zustehen.
+                Für den serverseitigen Versand von Kontakt-, Bestätigungs- und Newsletter-E-Mails
+                wird zusätzlich der E-Mail-Dienst <strong>Brevo</strong> als technischer
+                Auftragsverarbeiter eingesetzt. Auf der Website selbst werden dafür keine
+                Brevo-Skripte, Tracker oder Marketing-Cookies geladen.
             </p>
 
             <p>
@@ -88,7 +92,39 @@ get_header(); ?>
                 die Bearbeitung und eine mögliche Anschlusskorrespondenz erforderlich ist.
             </p>
 
-            <h2>4. Cookies</h2>
+            <p>
+                Für die Zustellung dieser E-Mails wird der Dienst <strong>Brevo</strong> als
+                technischer Versanddienstleister genutzt. Die Übermittlung erfolgt ausschließlich
+                serverseitig; beim Besuch der Website werden dadurch keine zusätzlichen Cookies
+                oder Tracking-Skripte gesetzt.
+            </p>
+
+            <h2>4. Newsletter / Hinweise auf neue Texte</h2>
+
+            <p>
+                Wenn du dich für <strong>„Neue Texte per E-Mail“</strong> einträgst, verarbeite ich
+                deine E-Mail-Adresse, die gewählte Quelle der Anmeldung, Zeitpunkte von Anmeldung,
+                Bestätigung und Abmeldung sowie technische Prüfdaten in gekürzter bzw. gehashter Form,
+                um die Einwilligung nachweisen und Missbrauch abwehren zu können.
+            </p>
+
+            <p>
+                Die Anmeldung erfolgt im <strong>Double-Opt-in-Verfahren</strong>: Erst nach dem Klick
+                auf den Bestätigungslink ist die Eintragung aktiv. Rechtsgrundlage ist
+                Art. 6 Abs. 1 lit. a DSGVO. Technische Schutzmaßnahmen gegen Missbrauch stütze ich
+                zusätzlich auf Art. 6 Abs. 1 lit. f DSGVO.
+            </p>
+
+            <p>
+                Die Versandzustellung der Bestätigungs- und späteren Hinweismails erfolgt über
+                <strong>Brevo</strong> als technischen E-Mail-Dienstleister. Auf der Website selbst
+                wird dafür kein Brevo-Tracking eingebunden. Du kannst deine Einwilligung jederzeit über
+                den Abmeldelink in jeder entsprechenden E-Mail widerrufen. Nach einer Abmeldung wird die
+                Adresse nicht weiter für den Versand genutzt; eine Sperrnotiz kann gespeichert bleiben,
+                um erneute ungewollte Zusendungen zu verhindern.
+            </p>
+
+            <h2>5. Cookies</h2>
 
             <p>
                 Diese Website setzt keine Tracking- oder Marketing-Cookies ein.
@@ -97,7 +133,7 @@ get_header(); ?>
                 oder Profilbildung genutzt und nach dem Schließen des Browsers gelöscht.
             </p>
 
-            <h2>5. Keine Analytics, kein Tracking</h2>
+            <h2>6. Keine Analytics, kein Tracking</h2>
 
             <p>
                 Es werden keine Analyse- oder Trackingdienste verwendet (kein Google Analytics,
@@ -105,7 +141,7 @@ get_header(); ?>
                 Profil erstellt.
             </p>
 
-            <h2>6. Eingebettete externe Inhalte</h2>
+            <h2>7. Eingebettete externe Inhalte</h2>
 
             <p>
                 Artikel können Links zu externen Websites enthalten. Für deren Datenschutzpraktiken
@@ -113,7 +149,7 @@ get_header(); ?>
                 verlässt du den Geltungsbereich dieser Erklärung.
             </p>
 
-            <h2>7. Schriftarten</h2>
+            <h2>8. Schriftarten</h2>
 
             <p>
                 Die auf dieser Seite verwendete Schriftart (Merriweather) wird
@@ -121,7 +157,7 @@ get_header(); ?>
                 Es findet keine Verbindung zu Google Fonts oder anderen externen Schriftanbietern statt.
             </p>
 
-            <h2>8. Deine Rechte (Art. 15–21 DSGVO)</h2>
+            <h2>9. Deine Rechte (Art. 15–21 DSGVO)</h2>
 
             <p>Du hast das Recht auf:</p>
 
@@ -144,7 +180,7 @@ get_header(); ?>
                 </a>.
             </p>
 
-            <h2>9. Änderungen dieser Erklärung</h2>
+            <h2>10. Änderungen dieser Erklärung</h2>
 
             <p>
                 Bei wesentlichen Änderungen am Betrieb dieser Website — etwa neuen Publikations-

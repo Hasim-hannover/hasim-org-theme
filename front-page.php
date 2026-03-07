@@ -116,7 +116,22 @@ get_header(); ?>
     <hr class="journal-rule" aria-hidden="true">
 
     <!-- ==========================================
-         3. THEMENFELDER (Taxonomie)
+         3. NEWSLETTER / UPDATE-ABO
+         ========================================== -->
+    <?php
+    hp_render_newsletter_form( [
+        'id'      => 'newsletter-signup',
+        'context' => 'front_page',
+        'variant' => 'home',
+        'title'   => 'Neue Texte direkt ins Postfach.',
+        'lede'    => 'Wenn ein neuer Essay erscheint oder eine Notiz einen Gedanken weiterführt, erhalten Sie eine kurze Nachricht. Nicht täglich. Nur wenn wirklich etwas erschienen ist.',
+    ] );
+    ?>
+
+    <hr class="journal-rule" aria-hidden="true">
+
+    <!-- ==========================================
+         4. THEMENFELDER (Taxonomie)
          ========================================== -->
     <?php
     $hp_topics = hp_get_curated_topics();
