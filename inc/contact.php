@@ -6,7 +6,7 @@
  * - automatische Anlage einer Kontakt-Seite
  * - serverseitige Validierung
  * - stiller Spam-Schutz
- * - Mailversand via wp_mail()
+ * - Mailversand via Brevo API mit wp_mail()-Fallback
  *
  * @package Hasimuener_Journal
  * @since   6.3.0
@@ -14,11 +14,44 @@
 
 defined( 'ABSPATH' ) || exit;
 
+$hp_contact_local_config = __DIR__ . '/contact-local.php';
+
+if ( file_exists( $hp_contact_local_config ) ) {
+	require_once $hp_contact_local_config;
+}
+
 /**
  * Liefert die primäre Kontaktadresse.
  */
 function hp_get_contact_email(): string {
 	return 'hallo@hasimuener.de';
+}
+
+/**
+ * Liefert den optionalen Brevo API-Key.
+ */
+function hp_get_brevo_api_key(): string {
+	if ( defined( 'HP_BREVO_API_KEY' ) && is_string( HP_BREVO_API_KEY ) ) {
+		return trim( HP_BREVO_API_KEY );
+	}
+
+	$key = getenv( 'HP_BREVO_API_KEY' );
+
+	return is_string( $key ) ? trim( $key ) : '';
+}
+
+/**
+ * Prüft, ob Brevo als Versandweg verfügbar ist.
+ */
+function hp_has_brevo_api_key(): bool {
+	return '' !== hp_get_brevo_api_key();
+}
+
+/**
+ * Liefert einen API-tauglichen Sendernamen.
+ */
+function hp_get_contact_brevo_sender_name(): string {
+	return 'Hasim Uener';
 }
 
 /**
@@ -328,6 +361,23 @@ function hp_get_contact_autoreply_text( array $fields ): string {
  * @param array<string, string> $fields Validierte Formularfelder.
  */
 function hp_send_contact_autoreply( array $fields ): bool {
+	if ( hp_has_brevo_api_key() ) {
+		$response = hp_send_brevo_transactional_email( [
+			'to_email'      => $fields['email'],
+			'to_name'       => $fields['name'],
+			'subject'       => hp_get_contact_autoreply_subject(),
+			'html_content'  => hp_get_contact_autoreply_html( $fields ),
+			'text_content'  => hp_get_contact_autoreply_text( $fields ),
+			'reply_to_email'=> hp_get_contact_email(),
+			'reply_to_name' => hp_get_contact_brevo_sender_name(),
+			'tags'          => [ 'contact-form', 'contact-autoreply' ],
+		] );
+
+		if ( ! empty( $response['success'] ) ) {
+			return true;
+		}
+	}
+
 	$contact_email = hp_get_contact_email();
 	$text_body     = hp_get_contact_autoreply_text( $fields );
 	$headers       = [
@@ -354,6 +404,157 @@ function hp_send_contact_autoreply( array $fields ): bool {
 	remove_action( 'phpmailer_init', $alt_body_setter );
 
 	return $mail_sent;
+}
+
+/**
+ * Baut die Textversion der internen Kontaktbenachrichtigung.
+ *
+ * @param array<string, string> $fields Validierte Formularfelder.
+ */
+function hp_get_contact_notification_text( array $fields ): string {
+	return implode(
+		"\n\n",
+		[
+			'Neue Nachricht über das Kontaktformular von hasimuener.org',
+			'Name: ' . $fields['name'],
+			'E-Mail: ' . $fields['email'],
+			'Betreff: ' . ( '' !== $fields['subject'] ? $fields['subject'] : 'Nicht angegeben' ),
+			'Nachricht:',
+			$fields['message'],
+		]
+	);
+}
+
+/**
+ * Versendet die interne Benachrichtigung über eine neue Kontaktanfrage.
+ *
+ * @param array<string, string> $fields Validierte Formularfelder.
+ */
+function hp_send_contact_notification( array $fields ): bool {
+	$reply_name = preg_replace( '/[\r\n]+/', ' ', $fields['name'] );
+	$subject    = '' !== $fields['subject'] ? $fields['subject'] : 'Neue Nachricht über das Kontaktformular';
+	$mail_body  = hp_get_contact_notification_text( $fields );
+
+	if ( hp_has_brevo_api_key() ) {
+		$response = hp_send_brevo_transactional_email( [
+			'to_email'       => hp_get_contact_email(),
+			'to_name'        => hp_get_contact_brevo_sender_name(),
+			'subject'        => '[hasimuener.org] ' . $subject,
+			'text_content'   => $mail_body,
+			'reply_to_email' => $fields['email'],
+			'reply_to_name'  => is_string( $reply_name ) && '' !== $reply_name ? $reply_name : $fields['email'],
+			'tags'           => [ 'contact-form', 'contact-notification' ],
+		] );
+
+		if ( ! empty( $response['success'] ) ) {
+			return true;
+		}
+	}
+
+	$headers = [
+		'Content-Type: text/plain; charset=UTF-8',
+		'Reply-To: ' . $reply_name . ' <' . $fields['email'] . '>',
+	];
+
+	return wp_mail(
+		hp_get_contact_email(),
+		'[hasimuener.org] ' . $subject,
+		$mail_body,
+		$headers
+	);
+}
+
+/**
+ * Versendet eine transaktionale E-Mail über die Brevo API.
+ *
+ * @param array<string, mixed> $args Versanddaten.
+ * @return array{success:bool,message_id?:string,error?:string}
+ */
+function hp_send_brevo_transactional_email( array $args ): array {
+	$api_key = hp_get_brevo_api_key();
+
+	if ( '' === $api_key ) {
+		return [
+			'success' => false,
+			'error'   => 'missing_api_key',
+		];
+	}
+
+	$payload = [
+		'sender'  => [
+			'name'  => hp_get_contact_brevo_sender_name(),
+			'email' => hp_get_contact_email(),
+		],
+		'to'      => [
+			[
+				'email' => (string) ( $args['to_email'] ?? '' ),
+				'name'  => (string) ( $args['to_name'] ?? '' ),
+			],
+		],
+		'subject' => (string) ( $args['subject'] ?? '' ),
+	];
+
+	if ( ! empty( $args['reply_to_email'] ) ) {
+		$payload['replyTo'] = [
+			'email' => (string) $args['reply_to_email'],
+			'name'  => (string) ( $args['reply_to_name'] ?? $args['reply_to_email'] ),
+		];
+	}
+
+	if ( ! empty( $args['html_content'] ) ) {
+		$payload['htmlContent'] = (string) $args['html_content'];
+	}
+
+	if ( ! empty( $args['text_content'] ) ) {
+		$payload['textContent'] = (string) $args['text_content'];
+	}
+
+	if ( ! empty( $args['tags'] ) && is_array( $args['tags'] ) ) {
+		$payload['tags'] = array_values(
+			array_filter(
+				array_map( 'strval', $args['tags'] ),
+				static function ( string $tag ): bool {
+					return '' !== $tag;
+				}
+			)
+		);
+	}
+
+	$response = wp_remote_post(
+		'https://api.brevo.com/v3/smtp/email',
+		[
+			'headers' => [
+				'accept'       => 'application/json',
+				'api-key'      => $api_key,
+				'content-type' => 'application/json',
+			],
+			'body'        => wp_json_encode( $payload ),
+			'timeout'     => 20,
+			'data_format' => 'body',
+		]
+	);
+
+	if ( is_wp_error( $response ) ) {
+		return [
+			'success' => false,
+			'error'   => $response->get_error_message(),
+		];
+	}
+
+	$status_code = (int) wp_remote_retrieve_response_code( $response );
+	$body        = json_decode( (string) wp_remote_retrieve_body( $response ), true );
+
+	if ( $status_code >= 200 && $status_code < 300 ) {
+		return [
+			'success'    => true,
+			'message_id' => is_array( $body ) && isset( $body['messageId'] ) ? (string) $body['messageId'] : '',
+		];
+	}
+
+	return [
+		'success' => false,
+		'error'   => is_array( $body ) && isset( $body['message'] ) ? (string) $body['message'] : 'brevo_api_error',
+	];
 }
 
 /**
@@ -442,31 +643,7 @@ function hp_handle_contact_form_submission(): void {
 		hp_redirect_contact_form( $flash );
 	}
 
-	$reply_name = preg_replace( '/[\r\n]+/', ' ', $fields['name'] );
-	$subject    = '' !== $fields['subject'] ? $fields['subject'] : 'Neue Nachricht über das Kontaktformular';
-	$mail_body  = implode(
-		"\n\n",
-		[
-			'Neue Nachricht über das Kontaktformular von hasimuener.org',
-			'Name: ' . $fields['name'],
-			'E-Mail: ' . $fields['email'],
-			'Betreff: ' . ( '' !== $fields['subject'] ? $fields['subject'] : 'Nicht angegeben' ),
-			'Nachricht:',
-			$fields['message'],
-		]
-	);
-
-	$headers = [
-		'Content-Type: text/plain; charset=UTF-8',
-		'Reply-To: ' . $reply_name . ' <' . $fields['email'] . '>',
-	];
-
-	$mail_sent = wp_mail(
-		hp_get_contact_email(),
-		'[hasimuener.org] ' . $subject,
-		$mail_body,
-		$headers
-	);
+	$mail_sent = hp_send_contact_notification( $fields );
 
 	if ( ! $mail_sent ) {
 		$flash['message'] = 'Die Nachricht konnte technisch nicht versendet werden. Du kannst alternativ direkt an ' . hp_get_contact_email() . ' schreiben.';

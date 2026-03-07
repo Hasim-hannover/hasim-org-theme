@@ -1,0 +1,9 @@
+<?php
+/**
+ * Lokale, nicht versionierte Kontakt-Konfiguration.
+ *
+ * Diese Datei nur als Vorlage. Die echte Datei
+ * `inc/contact-local.php` ist in `.gitignore`.
+ */
+
+define( 'HP_BREVO_API_KEY', 'your-brevo-api-key-here' );
