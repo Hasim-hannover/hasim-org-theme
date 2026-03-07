@@ -1307,6 +1307,25 @@ a.footnote-backref:hover {
     border-color: var(--hj-accent);
 }
 
+.hp-colophon__slogan {
+    grid-column: 1 / -1;
+    margin-top: 0.35rem;
+    padding-top: var(--hj-space-lg);
+    border-top: 1px solid var(--hj-border);
+    text-align: center;
+}
+
+.hp-colophon__slogan p {
+    margin: 0 auto;
+    max-width: 34rem;
+    font-family: var(--hj-serif);
+    font-size: clamp(1.2rem, 2.1vw, 1.7rem);
+    line-height: 1.45;
+    font-style: italic;
+    color: var(--hj-rule);
+    text-wrap: balance;
+}
+
 .hp-colophon__version {
     font-family: var(--hj-mono);
     font-size: 0.7rem;
