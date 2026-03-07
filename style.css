@@ -1087,7 +1087,7 @@ a.footnote-backref:hover {
     font-family: var(--hj-serif);
     font-size: clamp(1.05rem, 2vw, 1.25rem);
     line-height: 1.5;
-    color: var(--hj-meta);
+    color: var(--hj-text-secondary);
     margin-top: var(--hj-space-sm);
     font-style: italic;
 }
@@ -1095,14 +1095,14 @@ a.footnote-backref:hover {
 .hp-mission__body {
     display: grid;
     grid-template-columns: 1fr;
-    gap: var(--hj-space-xl);
-    padding-top: var(--hj-space-2xl);
+    gap: var(--hj-space-lg);
+    padding-top: 0;
     padding-bottom: var(--hj-space-2xl);
 }
 
 @media (min-width: 768px) {
     .hp-mission__body {
-        grid-template-columns: 200px 1fr;
+        grid-template-columns: 220px minmax(0, 1fr);
         gap: var(--hj-space-xl);
         align-items: start;
     }
@@ -1110,36 +1110,99 @@ a.footnote-backref:hover {
 
 .hp-mission__portrait {
     margin: 0;
+    order: 2;
 }
 
 .hp-mission__portrait img {
     display: block;
-    width: 200px;
-    height: 200px;
+    width: min(220px, 100%);
+    height: auto;
+    aspect-ratio: 1 / 1;
     object-fit: cover;
     border-radius: 2px;
     filter: grayscale(20%);
 }
 
 .hp-mission__prose {
-    max-width: 65ch;
+    max-width: 68ch;
+    order: 1;
 }
 
-.hp-mission__prose h3 {
+@media (min-width: 768px) {
+    .hp-mission__portrait {
+        order: 1;
+        position: sticky;
+        top: 7rem;
+    }
+
+    .hp-mission__prose {
+        order: 2;
+    }
+}
+
+.hp-mission__intro {
+    margin-bottom: var(--hj-space-xl);
+    padding: 1.35rem 1.45rem;
+    border: 1px solid rgba(17, 17, 17, 0.12);
+    border-left: 4px solid var(--hj-accent);
+    background: var(--hj-callout-bg);
+    box-shadow: 0 14px 30px rgba(17, 17, 17, 0.05);
+}
+
+.hp-mission__intro-label {
+    margin: 0 0 0.8rem;
     font-family: var(--hj-sans);
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 2.5px;
+    letter-spacing: 0.16em;
     color: var(--hj-text-muted);
-    margin-top: var(--hj-space-lg);
-    margin-bottom: var(--hj-space-sm);
-    border-bottom: none;
-    padding-bottom: 0;
 }
 
-.hp-mission__prose h3:first-child {
+.hp-mission__intro p {
+    margin-bottom: 0.9rem;
+    text-align: left;
+    hyphens: none;
+    -webkit-hyphens: none;
+}
+
+.hp-mission__intro p:last-child {
     margin-top: 0;
+    margin-bottom: 0;
+}
+
+.hp-mission__section + .hp-mission__section {
+    margin-top: var(--hj-space-xl);
+}
+
+.hp-mission__section h2 {
+    margin-top: 0;
+}
+
+.hp-mission__section p:last-child {
+    margin-bottom: 0;
+}
+
+.hp-mission__quote {
+    margin: var(--hj-space-lg) 0;
+    padding: 1.4rem 1.5rem;
+    border-left: 4px solid var(--hj-accent);
+    background: rgba(255, 255, 255, 0.72);
+    box-shadow: 0 10px 24px rgba(17, 17, 17, 0.04);
+    color: var(--hj-rule);
+    font-style: normal;
+    font-size: clamp(1.15rem, 2.1vw, 1.45rem);
+    line-height: 1.6;
+}
+
+.hp-mission__quote p {
+    margin: 0;
+    font-style: italic;
+    text-align: left;
+}
+
+.hp-mission__prose strong {
+    color: var(--hj-rule);
 }
 
 .hp-mission__prose p {
@@ -1150,6 +1213,68 @@ a.footnote-backref:hover {
     color: var(--hj-text);
     margin-bottom: 1.2em;
     text-align: left;
+}
+
+.hp-mission__cta {
+    margin-top: var(--hj-space-2xl);
+    padding-top: var(--hj-space-lg);
+    border-top: 1px solid var(--hj-rule-light);
+}
+
+.hp-mission__cta h2 {
+    margin-top: 0;
+}
+
+.hp-mission__cta-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.95rem;
+    margin-top: var(--hj-space-md);
+}
+
+@media (min-width: 640px) {
+    .hp-mission__cta-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.hp-mission__cta-card {
+    display: block;
+    padding: 1rem 1.1rem;
+    border: 1px solid rgba(17, 17, 17, 0.12);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.82);
+    color: var(--hj-text);
+    text-decoration: none;
+    box-shadow: 0 10px 24px rgba(17, 17, 17, 0.04);
+    transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.hp-mission__cta-card:hover,
+.hp-mission__cta-card:focus-visible {
+    border-color: var(--hj-accent);
+    box-shadow: 0 18px 34px rgba(17, 17, 17, 0.08);
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+
+.hp-mission__cta-title {
+    display: block;
+    margin-bottom: 0.45rem;
+    font-family: var(--hj-sans);
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--hj-rule);
+}
+
+.hp-mission__cta-copy {
+    display: block;
+    font-family: var(--hj-serif);
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--hj-text-secondary);
 }
 
 /* --- 5. Kolophon-Footer --- */
