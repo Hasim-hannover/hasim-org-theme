@@ -88,8 +88,10 @@ get_header(); ?>
 
             <p>
                 Die über das Formular übermittelten Inhalte werden nicht auf dieser Website veröffentlicht,
-                sondern direkt per E-Mail weitergeleitet. Sie werden nur so lange gespeichert, wie es für
-                die Bearbeitung und eine mögliche Anschlusskorrespondenz erforderlich ist.
+                sondern direkt per E-Mail weitergeleitet und zusätzlich in der internen
+                WordPress-Verwaltung dokumentiert. Sie werden nur so lange gespeichert, wie es für
+                die Bearbeitung, eine mögliche Anschlusskorrespondenz und die nachvollziehbare
+                Dokumentation der Anfrage erforderlich ist.
             </p>
 
             <p>

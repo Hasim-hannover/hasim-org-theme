@@ -1200,7 +1200,8 @@ function hp_get_recent_newsletter_subscribers( int $limit = 50 ): array {
  * Management-Seite registrieren.
  */
 function hp_register_newsletter_management_page(): void {
-	add_management_page(
+	add_submenu_page(
+		'hp-contacts',
 		'Newsletter',
 		'Newsletter',
 		'manage_options',
@@ -1208,7 +1209,7 @@ function hp_register_newsletter_management_page(): void {
 		'hp_render_newsletter_management_page'
 	);
 }
-add_action( 'admin_menu', 'hp_register_newsletter_management_page' );
+add_action( 'admin_menu', 'hp_register_newsletter_management_page', 20 );
 
 /**
  * CSV-Export der Newsletter-Einträge.

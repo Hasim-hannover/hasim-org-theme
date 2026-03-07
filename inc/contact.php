@@ -764,18 +764,22 @@ function hp_handle_contact_form_submission(): void {
 
 	$mail_sent = hp_send_contact_notification( $fields );
 
+	$autoresponse_sent = false;
+
+	if ( $mail_sent && strtolower( $fields['email'] ) !== strtolower( hp_get_contact_email() ) ) {
+		$autoresponse_sent = hp_send_contact_autoreply( $fields );
+	}
+
+	if ( function_exists( 'hp_store_contact_submission' ) ) {
+		hp_store_contact_submission( $fields, $mail_sent, $autoresponse_sent );
+	}
+
 	if ( ! $mail_sent ) {
 		$flash['message'] = 'Die Nachricht konnte technisch nicht versendet werden. Du kannst alternativ direkt an ' . hp_get_contact_email() . ' schreiben.';
 		hp_redirect_contact_form( $flash );
 	}
 
 	set_transient( $rate_key, time(), $settings['rate_window'] );
-
-	$autoresponse_sent = false;
-
-	if ( strtolower( $fields['email'] ) !== strtolower( hp_get_contact_email() ) ) {
-		$autoresponse_sent = hp_send_contact_autoreply( $fields );
-	}
 
 	hp_redirect_contact_form( [
 		'status'  => 'success',

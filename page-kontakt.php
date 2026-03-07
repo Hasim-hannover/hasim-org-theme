@@ -78,7 +78,7 @@ $hp_render_token         = hp_get_contact_form_render_token( $hp_rendered_at );
 				<div class="hp-contact__form-header">
 					<p class="hp-contact__form-eyebrow">Nachricht senden</p>
 					<h2 id="kontakt-formular-title" class="hp-contact__form-title">Direkter Kontakt ohne Plugin-Overhead.</h2>
-					<p class="hp-contact__form-lede">Deine Nachricht wird nicht auf der Website veröffentlicht, sondern direkt per E-Mail weitergeleitet.</p>
+					<p class="hp-contact__form-lede">Deine Nachricht wird nicht auf der Website veröffentlicht, sondern direkt per E-Mail weitergeleitet und intern in der Website-Verwaltung dokumentiert.</p>
 				</div>
 
 				<?php if ( '' !== $hp_contact_message ) : ?>
