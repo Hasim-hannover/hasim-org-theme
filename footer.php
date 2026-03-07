@@ -37,14 +37,9 @@ $hp_year    = gmdate( 'Y' );
             <nav class="hp-colophon__col hp-colophon__index" aria-label="Themenindex">
                 <span class="hp-colophon__label">Themenfelder</span>
                 <?php
-                $hp_footer_topics = get_terms( [
-                    'taxonomy'   => 'topic',
-                    'hide_empty' => false,
-                    'orderby'    => 'name',
-                    'order'      => 'ASC',
-                ] );
+                $hp_footer_topics = hp_get_curated_topics();
 
-                if ( $hp_footer_topics && ! is_wp_error( $hp_footer_topics ) ) : ?>
+                if ( $hp_footer_topics ) : ?>
                     <ul class="hp-colophon__topic-list">
                         <?php foreach ( $hp_footer_topics as $ft ) : ?>
                             <li><a href="<?php echo esc_url( get_term_link( $ft ) ); ?>"><?php echo esc_html( $ft->name ); ?></a></li>

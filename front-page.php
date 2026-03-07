@@ -119,12 +119,9 @@ get_header(); ?>
          3. THEMENFELDER (Taxonomie)
          ========================================== -->
     <?php
-    $hp_topics = get_terms( [
-        'taxonomy'   => 'topic',
-        'hide_empty' => false,
-    ] );
+    $hp_topics = hp_get_curated_topics();
 
-    if ( $hp_topics && ! is_wp_error( $hp_topics ) ) : ?>
+    if ( $hp_topics ) : ?>
     <section class="topics-section" aria-label="Themenfelder">
         <header>
             <h2 class="hp-section-title">Themenfelder</h2>
