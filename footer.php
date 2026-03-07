@@ -61,7 +61,7 @@ $hp_year    = gmdate( 'Y' );
             </div>
 
         </div><!-- .hp-colophon__inner -->
-        <p class="hp-colophon__closing">Wer die Ordnung versteht, muss sie nicht hinnehmen.</p>
+        <p class="hp-colophon__closing">Zwischen Sprachen und Perspektiven beginnt Verständigung.</p>
     </footer>
 
 </div><!-- .site (GeneratePress) -->
