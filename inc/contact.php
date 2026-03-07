@@ -189,6 +189,99 @@ function hp_redirect_contact_form( array $payload ): void {
 }
 
 /**
+ * Betreff der automatischen Eingangsbestätigung.
+ */
+function hp_get_contact_autoreply_subject(): string {
+	return 'Ihre Nachricht an hasimuener.org ist eingegangen';
+}
+
+/**
+ * Baut das HTML-Template der automatischen Eingangsbestätigung.
+ *
+ * @param array<string, string> $fields Validierte Formularfelder.
+ */
+function hp_get_contact_autoreply_html( array $fields ): string {
+	$site_name      = wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
+	$contact_email  = hp_get_contact_email();
+	$contact_mailto = 'mailto:' . $contact_email;
+	$site_url       = home_url( '/' );
+	$subject_line   = '' !== $fields['subject'] ? esc_html( $fields['subject'] ) : 'Nicht angegeben';
+	$name_line      = '' !== $fields['name'] ? esc_html( $fields['name'] ) : 'Guten Tag';
+
+	return '<!doctype html>
+<html lang="de">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>' . esc_html( hp_get_contact_autoreply_subject() ) . '</title>
+</head>
+<body style="margin:0;padding:0;background:#f4f5f7;color:#222222;">
+	<table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background:#f4f5f7;margin:0;padding:24px 0;">
+		<tr>
+			<td align="center">
+				<table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="max-width:640px;background:#ffffff;border:1px solid rgba(17,17,17,0.08);border-radius:18px;overflow:hidden;">
+					<tr>
+						<td style="padding:28px 32px 14px;border-top:4px solid #b12a2a;">
+							<p style="margin:0 0 10px;font-family:Georgia,Times New Roman,serif;font-size:12px;line-height:1.5;letter-spacing:1.8px;text-transform:uppercase;color:#696969;">' . esc_html( $site_name ) . '</p>
+							<h1 style="margin:0;font-family:Georgia,Times New Roman,serif;font-size:30px;line-height:1.2;color:#111111;font-weight:700;">Ihre Nachricht ist eingegangen.</h1>
+						</td>
+					</tr>
+					<tr>
+						<td style="padding:0 32px 8px;">
+							<p style="margin:0 0 14px;font-family:Georgia,Times New Roman,serif;font-size:17px;line-height:1.75;color:#333333;">' . $name_line . ', vielen Dank für Ihre Nachricht über hasimuener.org. Sie wurde direkt weitergeleitet.</p>
+							<p style="margin:0 0 14px;font-family:Georgia,Times New Roman,serif;font-size:17px;line-height:1.75;color:#333333;">Ich melde mich, sobald ich inhaltlich antworten kann. Wenn Sie in der Zwischenzeit etwas ergänzen möchten, können Sie direkt auf diese E-Mail antworten.</p>
+						</td>
+					</tr>
+					<tr>
+						<td style="padding:8px 32px 8px;">
+							<table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="border:1px solid #e6e1d8;border-radius:14px;background:#faf8f5;">
+								<tr>
+									<td style="padding:16px 18px;">
+										<p style="margin:0 0 8px;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:1.4;letter-spacing:1.5px;text-transform:uppercase;color:#696969;">Zusammenfassung</p>
+										<p style="margin:0 0 6px;font-family:Georgia,Times New Roman,serif;font-size:15px;line-height:1.6;color:#222222;"><strong>Betreff:</strong> ' . $subject_line . '</p>
+										<p style="margin:0;font-family:Georgia,Times New Roman,serif;font-size:15px;line-height:1.6;color:#222222;"><strong>Antwortadresse:</strong> <a href="' . esc_url( $contact_mailto ) . '" style="color:#b12a2a;text-decoration:none;">' . esc_html( $contact_email ) . '</a></p>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<td style="padding:16px 32px 30px;">
+								<p style="margin:0 0 16px;font-family:Georgia,Times New Roman,serif;font-size:16px;line-height:1.7;color:#333333;">Mit freundlichen Grüßen<br>Haşim Üner</p>
+							<p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.6;color:#696969;">Diese E-Mail wurde automatisch nach dem Absenden des Kontaktformulars erzeugt.</p>
+							<p style="margin:12px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.6;color:#696969;"><a href="' . esc_url( $site_url ) . '" style="color:#b12a2a;text-decoration:none;">Zur Website</a></p>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>';
+}
+
+/**
+ * Versendet die automatische Eingangsbestätigung.
+ *
+ * @param array<string, string> $fields Validierte Formularfelder.
+ */
+function hp_send_contact_autoreply( array $fields ): bool {
+	$contact_email = hp_get_contact_email();
+	$headers       = [
+		'Content-Type: text/html; charset=UTF-8',
+		'From: Haşim Üner <' . $contact_email . '>',
+		'Reply-To: Haşim Üner <' . $contact_email . '>',
+	];
+
+	return wp_mail(
+		$fields['email'],
+		hp_get_contact_autoreply_subject(),
+		hp_get_contact_autoreply_html( $fields ),
+		$headers
+	);
+}
+
+/**
  * Verarbeitet native Kontaktanfragen.
  */
 function hp_handle_contact_form_submission(): void {
@@ -307,9 +400,17 @@ function hp_handle_contact_form_submission(): void {
 
 	set_transient( $rate_key, time(), $settings['rate_window'] );
 
+	$autoresponse_sent = false;
+
+	if ( strtolower( $fields['email'] ) !== strtolower( hp_get_contact_email() ) ) {
+		$autoresponse_sent = hp_send_contact_autoreply( $fields );
+	}
+
 	hp_redirect_contact_form( [
 		'status'  => 'success',
-		'message' => 'Danke. Deine Nachricht wurde versendet.',
+		'message' => $autoresponse_sent
+			? 'Danke. Deine Nachricht wurde versendet. Eine kurze Bestätigung ist per E-Mail unterwegs.'
+			: 'Danke. Deine Nachricht wurde versendet.',
 	] );
 }
 add_action( 'admin_post_nopriv_hp_send_contact', 'hp_handle_contact_form_submission' );
