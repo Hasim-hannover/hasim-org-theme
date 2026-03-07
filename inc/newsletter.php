@@ -323,6 +323,30 @@ function hp_get_newsletter_subscriber_by_email( string $email ): ?array {
 }
 
 /**
+ * Newsletter-Eintrag per ID laden.
+ *
+ * @return array<string, string>|null
+ */
+function hp_get_newsletter_subscriber_by_id( int $subscriber_id ): ?array {
+	global $wpdb;
+
+	if ( $subscriber_id <= 0 ) {
+		return null;
+	}
+
+	$table_name = hp_get_newsletter_table_name();
+	$row        = $wpdb->get_row(
+		$wpdb->prepare(
+			"SELECT * FROM {$table_name} WHERE id = %d LIMIT 1",
+			$subscriber_id
+		),
+		ARRAY_A
+	);
+
+	return is_array( $row ) ? array_map( 'strval', $row ) : null;
+}
+
+/**
  * Newsletter-Eintrag per Token laden.
  *
  * @return array<string, string>|null
@@ -700,6 +724,57 @@ function hp_get_newsletter_welcome_text( array $subscriber ): string {
 }
 
 /**
+ * Betreff der Austragungsbestätigung.
+ */
+function hp_get_newsletter_unsubscribed_subject(): string {
+	return 'Ihre Adresse wurde aus dem Verteiler ausgetragen';
+}
+
+/**
+ * HTML der Austragungsbestätigung.
+ *
+ * @param array<string, string> $subscriber Datensatz.
+ */
+function hp_get_newsletter_unsubscribed_html( array $subscriber ): string {
+	$resubscribe_url = hp_get_newsletter_anchor_url();
+	$intro_html      = '<p style="margin:0 0 16px;font-family:Georgia,Times New Roman,serif;font-size:17px;line-height:1.75;color:#333333;">Die Adresse <strong>' . esc_html( $subscriber['email'] ) . '</strong> wurde aus dem Verteiler für neue Texte ausgetragen.</p>';
+	$body_html       = '<table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="border:1px solid #e6e1d8;border-radius:16px;background:#faf8f5;">
+		<tr>
+			<td style="padding:18px 20px;">
+				<p style="margin:0 0 12px;font-family:Georgia,Times New Roman,serif;font-size:16px;line-height:1.7;color:#333333;">Sie erhalten an diese Adresse keine weiteren Hinweise auf neue Essays oder Notizen mehr.</p>
+				<p style="margin:0;font-family:Georgia,Times New Roman,serif;font-size:16px;line-height:1.7;color:#333333;">Wenn das ein Irrtum war, können Sie sich jederzeit erneut eintragen: <a href="' . esc_url( $resubscribe_url ) . '" style="color:#b12a2a;text-decoration:none;">Zur Anmeldung</a>.</p>
+			</td>
+		</tr>
+	</table>';
+	$footnote_html   = '<p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.7;color:#696969;">Wenn Sie diese Austragung nicht veranlasst haben, antworten Sie bitte direkt auf diese E-Mail.</p>';
+
+	return hp_get_newsletter_mail_shell(
+		hp_get_newsletter_unsubscribed_subject(),
+		$intro_html,
+		$body_html,
+		$footnote_html
+	);
+}
+
+/**
+ * Textversion der Austragungsbestätigung.
+ *
+ * @param array<string, string> $subscriber Datensatz.
+ */
+function hp_get_newsletter_unsubscribed_text( array $subscriber ): string {
+	return implode(
+		"\n\n",
+		[
+			hp_get_newsletter_unsubscribed_subject(),
+			'Die Adresse ' . $subscriber['email'] . ' wurde aus dem Verteiler für neue Texte ausgetragen.',
+			'Sie erhalten an diese Adresse keine weiteren Hinweise mehr.',
+			'Neu anmelden: ' . hp_get_newsletter_anchor_url(),
+			'Wenn Sie diese Austragung nicht veranlasst haben, antworten Sie bitte direkt auf diese E-Mail.',
+		]
+	);
+}
+
+/**
  * Generischer Versand für Newsletter-Mails.
  */
 function hp_send_newsletter_mail( string $to_email, string $subject, string $html_content, string $text_content, array $tags = [] ): bool {
@@ -782,6 +857,21 @@ function hp_send_newsletter_welcome_mail( array $subscriber ): bool {
 		hp_get_newsletter_welcome_html( $subscriber ),
 		hp_get_newsletter_welcome_text( $subscriber ),
 		[ 'newsletter', 'newsletter-welcome' ]
+	);
+}
+
+/**
+ * Austragungsbestätigung versenden.
+ *
+ * @param array<string, string> $subscriber Datensatz.
+ */
+function hp_send_newsletter_unsubscribed_mail( array $subscriber ): bool {
+	return hp_send_newsletter_mail(
+		$subscriber['email'],
+		hp_get_newsletter_unsubscribed_subject(),
+		hp_get_newsletter_unsubscribed_html( $subscriber ),
+		hp_get_newsletter_unsubscribed_text( $subscriber ),
+		[ 'newsletter', 'newsletter-unsubscribed' ]
 	);
 }
 
@@ -1016,6 +1106,12 @@ function hp_handle_newsletter_unsubscribe(): void {
 		);
 	}
 
+	$unsubscribed_subscriber = hp_get_newsletter_subscriber_by_id( (int) $subscriber['id'] );
+
+	if ( $unsubscribed_subscriber ) {
+		hp_send_newsletter_unsubscribed_mail( $unsubscribed_subscriber );
+	}
+
 	hp_redirect_newsletter(
 		$target_url,
 		[
@@ -1026,6 +1122,98 @@ function hp_handle_newsletter_unsubscribe(): void {
 }
 add_action( 'admin_post_nopriv_hp_unsubscribe_newsletter', 'hp_handle_newsletter_unsubscribe' );
 add_action( 'admin_post_hp_unsubscribe_newsletter', 'hp_handle_newsletter_unsubscribe' );
+
+/**
+ * Verarbeitet manuelle Austragungen im Admin.
+ */
+function hp_handle_newsletter_admin_unsubscribe(): void {
+	if ( ! current_user_can( 'manage_options' ) ) {
+		wp_die( esc_html__( 'Sie haben nicht die erforderlichen Rechte.', 'hasimuener-journal' ) );
+	}
+
+	$subscriber_id = isset( $_GET['subscriber'] ) ? absint( $_GET['subscriber'] ) : 0;
+	$redirect_url  = admin_url( 'admin.php?page=hp-newsletter' );
+
+	if ( $subscriber_id <= 0 ) {
+		wp_safe_redirect( add_query_arg( 'notice', 'invalid', $redirect_url ) );
+		exit;
+	}
+
+	check_admin_referer( 'hp_newsletter_admin_unsubscribe_' . $subscriber_id );
+
+	$subscriber = hp_get_newsletter_subscriber_by_id( $subscriber_id );
+
+	if ( ! $subscriber ) {
+		wp_safe_redirect( add_query_arg( 'notice', 'missing', $redirect_url ) );
+		exit;
+	}
+
+	if ( 'unsubscribed' !== $subscriber['status'] ) {
+		hp_update_newsletter_subscriber_status(
+			$subscriber_id,
+			'unsubscribed',
+			[
+				'unsubscribed_at' => current_time( 'mysql' ),
+			]
+		);
+	}
+
+	$updated_subscriber = hp_get_newsletter_subscriber_by_id( $subscriber_id );
+
+	if ( $updated_subscriber ) {
+		hp_send_newsletter_unsubscribed_mail( $updated_subscriber );
+	}
+
+	wp_safe_redirect( add_query_arg( 'notice', 'manual_unsubscribed', $redirect_url ) );
+	exit;
+}
+add_action( 'admin_post_hp_admin_unsubscribe_newsletter', 'hp_handle_newsletter_admin_unsubscribe' );
+
+/**
+ * Lädt Newsletter-Einträge für die Verwaltung.
+ *
+ * @return array<int, array<string, string>>
+ */
+function hp_get_recent_newsletter_subscribers( int $limit = 50, string $search = '', string $status = 'all' ): array {
+	global $wpdb;
+
+	$table_name = hp_get_newsletter_table_name();
+	$limit      = max( 1, min( 100, $limit ) );
+	$status     = in_array( $status, [ 'all', 'active', 'pending', 'unsubscribed' ], true ) ? $status : 'all';
+	$search     = trim( $search );
+	$sql        = "SELECT id, email, status, source, source_url, subscribed_at, confirmed_at, unsubscribed_at
+		FROM {$table_name}
+		WHERE 1=1";
+	$params     = [];
+
+	if ( 'all' !== $status ) {
+		$sql      .= ' AND status = %s';
+		$params[] = $status;
+	}
+
+	if ( '' !== $search ) {
+		$like      = '%' . $wpdb->esc_like( $search ) . '%';
+		$sql      .= ' AND (email LIKE %s OR source LIKE %s)';
+		$params[]  = $like;
+		$params[]  = $like;
+	}
+
+	$sql      .= ' ORDER BY updated_at DESC LIMIT %d';
+	$params[]  = $limit;
+	$query     = $wpdb->prepare( $sql, ...$params );
+	$rows      = $wpdb->get_results( $query, ARRAY_A );
+
+	if ( ! is_array( $rows ) ) {
+		return [];
+	}
+
+	return array_map(
+		static function ( array $row ): array {
+			return array_map( 'strval', $row );
+		},
+		$rows
+	);
+}
 
 /**
  * Rendert das Newsletter-Formular.
@@ -1164,39 +1352,6 @@ function hp_get_newsletter_admin_counts(): array {
 }
 
 /**
- * Letzte Newsletter-Einträge für die Verwaltung.
- *
- * @return array<int, array<string, string>>
- */
-function hp_get_recent_newsletter_subscribers( int $limit = 50 ): array {
-	global $wpdb;
-
-	$table_name = hp_get_newsletter_table_name();
-	$limit      = max( 1, min( 100, $limit ) );
-	$rows       = $wpdb->get_results(
-		$wpdb->prepare(
-			"SELECT email, status, source, subscribed_at, confirmed_at, unsubscribed_at
-			FROM {$table_name}
-			ORDER BY updated_at DESC
-			LIMIT %d",
-			$limit
-		),
-		ARRAY_A
-	);
-
-	if ( ! is_array( $rows ) ) {
-		return [];
-	}
-
-	return array_map(
-		static function ( array $row ): array {
-			return array_map( 'strval', $row );
-		},
-		$rows
-	);
-}
-
-/**
  * Management-Seite registrieren.
  */
 function hp_register_newsletter_management_page(): void {
@@ -1294,8 +1449,12 @@ function hp_render_newsletter_management_page(): void {
 		return;
 	}
 
-	$counts      = hp_get_newsletter_admin_counts();
-	$subscribers = hp_get_recent_newsletter_subscribers( 40 );
+	$counts        = hp_get_newsletter_admin_counts();
+	$status_filter = isset( $_GET['status'] ) ? sanitize_key( (string) wp_unslash( $_GET['status'] ) ) : 'all';
+	$search        = isset( $_GET['s'] ) ? sanitize_text_field( (string) wp_unslash( $_GET['s'] ) ) : '';
+	$notice        = isset( $_GET['notice'] ) ? sanitize_key( (string) wp_unslash( $_GET['notice'] ) ) : '';
+	$status_filter = in_array( $status_filter, [ 'all', 'active', 'pending', 'unsubscribed' ], true ) ? $status_filter : 'all';
+	$subscribers   = hp_get_recent_newsletter_subscribers( 80, $search, $status_filter );
 	$export_url  = wp_nonce_url(
 		add_query_arg(
 			[
@@ -1320,6 +1479,12 @@ function hp_render_newsletter_management_page(): void {
 	<div class="wrap">
 		<h1>Newsletter</h1>
 		<p>Lokale Double-Opt-in-Liste für Hinweise auf neue Texte. Die E-Mails selbst laufen serverseitig über denselben Versandweg wie das Kontaktformular.</p>
+
+		<?php if ( 'manual_unsubscribed' === $notice ) : ?>
+			<div class="notice notice-success is-dismissible"><p>Die Adresse wurde aus dem Verteiler ausgetragen. Eine Bestätigung wurde versendet.</p></div>
+		<?php elseif ( 'missing' === $notice || 'invalid' === $notice ) : ?>
+			<div class="notice notice-error is-dismissible"><p>Die gewünschte Newsletter-Adresse konnte nicht gefunden werden.</p></div>
+		<?php endif; ?>
 
 		<table class="widefat striped" style="max-width:760px;margin:20px 0;">
 			<tbody>
@@ -1347,6 +1512,26 @@ function hp_render_newsletter_management_page(): void {
 			<a class="button" href="<?php echo esc_url( $export_all_url ); ?>">Alle Einträge exportieren</a>
 		</p>
 
+		<form method="get" action="<?php echo esc_url( admin_url( 'admin.php' ) ); ?>" style="display:flex;flex-wrap:wrap;gap:10px;align-items:end;max-width:980px;margin:20px 0;">
+			<input type="hidden" name="page" value="hp-newsletter">
+			<p style="margin:0;">
+				<label for="hp-newsletter-status" style="display:block;font-weight:600;margin-bottom:6px;">Status</label>
+				<select id="hp-newsletter-status" name="status">
+					<option value="all"<?php selected( 'all', $status_filter ); ?>>Alle</option>
+					<option value="active"<?php selected( 'active', $status_filter ); ?>>Aktiv</option>
+					<option value="pending"<?php selected( 'pending', $status_filter ); ?>>Ausstehend</option>
+					<option value="unsubscribed"<?php selected( 'unsubscribed', $status_filter ); ?>>Abgemeldet</option>
+				</select>
+			</p>
+			<p style="margin:0;min-width:280px;flex:1 1 320px;">
+				<label for="hp-newsletter-search" style="display:block;font-weight:600;margin-bottom:6px;">Suche</label>
+				<input id="hp-newsletter-search" class="regular-text" type="search" name="s" value="<?php echo esc_attr( $search ); ?>" placeholder="E-Mail oder Quelle">
+			</p>
+			<p style="margin:0;">
+				<button class="button button-secondary" type="submit">Filtern</button>
+			</p>
+		</form>
+
 		<h2>Letzte Einträge</h2>
 		<table class="widefat striped">
 			<thead>
@@ -1356,6 +1541,7 @@ function hp_render_newsletter_management_page(): void {
 					<th>Quelle</th>
 					<th>Eingetragen</th>
 					<th>Bestätigt</th>
+					<th>Aktionen</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -1367,11 +1553,18 @@ function hp_render_newsletter_management_page(): void {
 							<td><?php echo esc_html( $subscriber['source'] ); ?></td>
 							<td><?php echo esc_html( $subscriber['subscribed_at'] ); ?></td>
 							<td><?php echo esc_html( $subscriber['confirmed_at'] ); ?></td>
+							<td>
+								<?php if ( 'unsubscribed' !== $subscriber['status'] ) : ?>
+									<a class="button button-small" href="<?php echo esc_url( wp_nonce_url( add_query_arg( [ 'action' => 'hp_admin_unsubscribe_newsletter', 'subscriber' => absint( $subscriber['id'] ) ], admin_url( 'admin-post.php' ) ), 'hp_newsletter_admin_unsubscribe_' . absint( $subscriber['id'] ) ) ); ?>">Abmelden</a>
+								<?php else : ?>
+									<span>Bereits abgemeldet</span>
+								<?php endif; ?>
+							</td>
 						</tr>
 					<?php endforeach; ?>
 				<?php else : ?>
 					<tr>
-						<td colspan="5">Noch keine Newsletter-Einträge vorhanden.</td>
+						<td colspan="6">Keine Newsletter-Einträge für diese Auswahl gefunden.</td>
 					</tr>
 				<?php endif; ?>
 			</tbody>

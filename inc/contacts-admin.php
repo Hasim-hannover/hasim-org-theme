@@ -186,21 +186,30 @@ function hp_get_contact_submission( int $submission_id ): ?array {
  *
  * @return array<int, array<string, string>>
  */
-function hp_get_recent_contact_submissions( int $limit = 40 ): array {
+function hp_get_recent_contact_submissions( int $limit = 40, string $search = '' ): array {
 	global $wpdb;
 
 	$table_name = hp_get_contact_submissions_table_name();
 	$limit      = max( 1, min( 100, $limit ) );
-	$rows       = $wpdb->get_results(
-		$wpdb->prepare(
-			"SELECT id, status, name, email, subject, message, mail_sent, autoresponse_sent, created_at
-			FROM {$table_name}
-			ORDER BY created_at DESC
-			LIMIT %d",
-			$limit
-		),
-		ARRAY_A
-	);
+	$search     = trim( $search );
+	$sql        = "SELECT id, status, name, email, subject, message, mail_sent, autoresponse_sent, created_at
+		FROM {$table_name}
+		WHERE 1=1";
+	$params     = [];
+
+	if ( '' !== $search ) {
+		$like      = '%' . $wpdb->esc_like( $search ) . '%';
+		$sql      .= ' AND (name LIKE %s OR email LIKE %s OR subject LIKE %s OR message LIKE %s)';
+		$params[]  = $like;
+		$params[]  = $like;
+		$params[]  = $like;
+		$params[]  = $like;
+	}
+
+	$sql      .= ' ORDER BY created_at DESC LIMIT %d';
+	$params[]  = $limit;
+	$query     = $wpdb->prepare( $sql, ...$params );
+	$rows      = $wpdb->get_results( $query, ARRAY_A );
 
 	if ( ! is_array( $rows ) ) {
 		return [];
@@ -378,6 +387,7 @@ function hp_render_contact_submissions_page(): void {
 	}
 
 	$submission_id = isset( $_GET['submission'] ) ? absint( $_GET['submission'] ) : 0;
+	$search        = isset( $_GET['s'] ) ? sanitize_text_field( (string) wp_unslash( $_GET['s'] ) ) : '';
 	$submission    = $submission_id > 0 ? hp_get_contact_submission( $submission_id ) : null;
 
 	if ( $submission && 'new' === $submission['status'] ) {
@@ -385,7 +395,7 @@ function hp_render_contact_submissions_page(): void {
 		$submission = hp_get_contact_submission( (int) $submission['id'] );
 	}
 
-	$submissions = hp_get_recent_contact_submissions( 50 );
+	$submissions = hp_get_recent_contact_submissions( 80, $search );
 	$export_url  = wp_nonce_url(
 		add_query_arg(
 			[
@@ -401,6 +411,17 @@ function hp_render_contact_submissions_page(): void {
 		<p>Die Nachrichten werden zusätzlich zu den E-Mails intern gespeichert, damit du sie im Admin durchsuchen und nachverfolgen kannst.</p>
 
 		<p><a class="button button-secondary" href="<?php echo esc_url( $export_url ); ?>">Alle Anfragen als CSV exportieren</a></p>
+
+		<form method="get" action="<?php echo esc_url( admin_url( 'admin.php' ) ); ?>" style="display:flex;flex-wrap:wrap;gap:10px;align-items:end;max-width:980px;margin:20px 0;">
+			<input type="hidden" name="page" value="hp-contact-submissions">
+			<p style="margin:0;min-width:320px;flex:1 1 420px;">
+				<label for="hp-contact-search" style="display:block;font-weight:600;margin-bottom:6px;">Suche</label>
+				<input id="hp-contact-search" class="regular-text" type="search" name="s" value="<?php echo esc_attr( $search ); ?>" placeholder="Name, E-Mail, Betreff oder Text">
+			</p>
+			<p style="margin:0;">
+				<button class="button button-secondary" type="submit">Suchen</button>
+			</p>
+		</form>
 
 		<?php if ( $submission ) : ?>
 			<div style="max-width:900px;background:#fff;border:1px solid #dcdcde;border-radius:12px;padding:20px;margin:20px 0 28px;">
@@ -441,7 +462,7 @@ function hp_render_contact_submissions_page(): void {
 					<?php endforeach; ?>
 				<?php else : ?>
 					<tr>
-						<td colspan="6">Noch keine Kontaktanfragen gespeichert.</td>
+						<td colspan="6">Keine Kontaktanfragen für diese Auswahl gefunden.</td>
 					</tr>
 				<?php endif; ?>
 			</tbody>
