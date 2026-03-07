@@ -1,5 +1,7 @@
 <?php
 /**
+ * Template Name: Kontakt
+ *
  * Template: Kontakt
  *
  * Native Kontaktseite mit E-Mail-Option und reduziertem Formular.

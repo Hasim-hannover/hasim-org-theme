@@ -28,17 +28,32 @@ function hp_get_contact_page_id(): int {
 	$page_id = (int) get_option( 'hp_contact_page_id', 0 );
 
 	if ( $page_id > 0 && 'page' === get_post_type( $page_id ) ) {
+		hp_assign_contact_page_template( $page_id );
 		return $page_id;
 	}
 
 	$page = get_page_by_path( 'kontakt', OBJECT, 'page' );
 
 	if ( $page instanceof WP_Post ) {
+		hp_assign_contact_page_template( (int) $page->ID );
 		update_option( 'hp_contact_page_id', (int) $page->ID, false );
 		return (int) $page->ID;
 	}
 
 	return 0;
+}
+
+/**
+ * Stellt sicher, dass die Kontaktseite das richtige Template nutzt.
+ */
+function hp_assign_contact_page_template( int $page_id ): void {
+	if ( $page_id <= 0 ) {
+		return;
+	}
+
+	if ( 'page-kontakt.php' !== get_page_template_slug( $page_id ) ) {
+		update_post_meta( $page_id, '_wp_page_template', 'page-kontakt.php' );
+	}
 }
 
 /**
@@ -96,6 +111,7 @@ function hp_bootstrap_contact_page(): void {
 	] );
 
 	if ( ! is_wp_error( $page_id ) && $page_id > 0 ) {
+		hp_assign_contact_page_template( (int) $page_id );
 		update_option( 'hp_contact_page_id', (int) $page_id, false );
 	}
 }
@@ -205,6 +221,8 @@ function hp_get_contact_autoreply_html( array $fields ): string {
 	$contact_email  = hp_get_contact_email();
 	$contact_mailto = 'mailto:' . $contact_email;
 	$site_url       = home_url( '/' );
+	$imprint_url    = home_url( '/impressum/' );
+	$privacy_url    = home_url( '/datenschutz/' );
 	$subject_line   = '' !== $fields['subject'] ? esc_html( $fields['subject'] ) : 'Nicht angegeben';
 	$name_line      = '' !== $fields['name'] ? esc_html( $fields['name'] ) : 'Guten Tag';
 
@@ -247,9 +265,18 @@ function hp_get_contact_autoreply_html( array $fields ): string {
 					</tr>
 					<tr>
 						<td style="padding:16px 32px 30px;">
-								<p style="margin:0 0 16px;font-family:Georgia,Times New Roman,serif;font-size:16px;line-height:1.7;color:#333333;">Mit freundlichen Grüßen<br>Haşim Üner</p>
-							<p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.6;color:#696969;">Diese E-Mail wurde automatisch nach dem Absenden des Kontaktformulars erzeugt.</p>
-							<p style="margin:12px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.6;color:#696969;"><a href="' . esc_url( $site_url ) . '" style="color:#b12a2a;text-decoration:none;">Zur Website</a></p>
+							<p style="margin:0 0 16px;font-family:Georgia,Times New Roman,serif;font-size:16px;line-height:1.7;color:#333333;">Mit freundlichen Grüßen<br>Haşim Üner</p>
+							<table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="border-top:1px solid #ece7df;padding-top:14px;margin-top:14px;">
+								<tr>
+									<td style="padding-top:14px;">
+										<p style="margin:0 0 6px;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.6;color:#696969;">Haşim Üner</p>
+										<p style="margin:0 0 6px;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.6;color:#696969;"><a href="' . esc_url( $contact_mailto ) . '" style="color:#b12a2a;text-decoration:none;">' . esc_html( $contact_email ) . '</a></p>
+										<p style="margin:0 0 6px;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.6;color:#696969;"><a href="' . esc_url( $site_url ) . '" style="color:#b12a2a;text-decoration:none;">hasimuener.org</a></p>
+										<p style="margin:10px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.6;color:#696969;"><a href="' . esc_url( $imprint_url ) . '" style="color:#b12a2a;text-decoration:none;">Impressum</a> · <a href="' . esc_url( $privacy_url ) . '" style="color:#b12a2a;text-decoration:none;">Datenschutz</a></p>
+									</td>
+								</tr>
+							</table>
+							<p style="margin:14px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.6;color:#696969;">Diese E-Mail wurde automatisch nach dem Absenden des Kontaktformulars erzeugt.</p>
 						</td>
 					</tr>
 				</table>
