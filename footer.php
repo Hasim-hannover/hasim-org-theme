@@ -65,11 +65,8 @@ $hp_year    = gmdate( 'Y' );
                 </ul>
             </div>
 
-            <div class="hp-colophon__slogan" aria-label="Leitsatz">
-                <p>Wer die Ordnung versteht, muss sie nicht hinnehmen.</p>
-            </div>
-
         </div><!-- .hp-colophon__inner -->
+        <p class="hp-colophon__closing">Wer die Ordnung versteht, muss sie nicht hinnehmen.</p>
     </footer>
 
 </div><!-- .site (GeneratePress) -->

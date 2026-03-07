@@ -1307,22 +1307,16 @@ a.footnote-backref:hover {
     border-color: var(--hj-accent);
 }
 
-.hp-colophon__slogan {
-    grid-column: 1 / -1;
-    margin-top: 0.35rem;
-    padding-top: var(--hj-space-lg);
-    border-top: 1px solid var(--hj-border);
-    text-align: center;
-}
-
-.hp-colophon__slogan p {
-    margin: 0 auto;
-    max-width: 34rem;
+.hp-colophon__closing {
+    margin: var(--hj-space-md) auto 0;
+    padding: 0 var(--hj-gutter);
+    max-width: var(--hj-content-width);
     font-family: var(--hj-serif);
-    font-size: clamp(1.2rem, 2.1vw, 1.7rem);
-    line-height: 1.45;
+    font-size: clamp(0.95rem, 1.4vw, 1.08rem);
+    line-height: 1.5;
     font-style: italic;
-    color: var(--hj-rule);
+    text-align: center;
+    color: var(--hj-text-secondary);
     text-wrap: balance;
 }
 
