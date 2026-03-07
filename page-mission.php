@@ -23,8 +23,7 @@ get_header(); ?>
 $hp_home_url       = home_url( '/' );
 $hp_essay_url      = get_post_type_archive_link( 'essay' );
 $hp_note_url       = get_post_type_archive_link( 'note' );
-$hp_contact_email  = 'hallo@hasimuener.de';
-$hp_contact_url    = 'mailto:' . $hp_contact_email;
+$hp_contact_url    = hp_get_contact_page_url();
 ?>
 
 <article id="main-content" class="hp-mission" aria-label="<?php the_title_attribute(); ?>" role="main">
@@ -68,7 +67,7 @@ $hp_contact_url    = 'mailto:' . $hp_contact_email;
             <section class="hp-mission__section" aria-labelledby="mission-themen">
                 <h2 id="mission-themen">Was mich antreibt: Themen, Begriffe, Fragen</h2>
                 <p>Meine Themen sind Sprache, <strong>Erinnerung</strong>, Identität, Medien, <strong>Macht</strong> und die Frage, wie Menschen unter unterschiedlichen Bedingungen miteinander leben können, ohne einander die Würde abzusprechen.</p>
-                <p>Begriffe wie <strong>Macht</strong>, <strong>Freiheit</strong>, <strong>Erinnerung</strong> und <strong>Brückenbauen</strong> hebe ich bewusst hervor. Sie sind für mich keine neutralen Schlagworte. In ihnen verdichten sich Erfahrungen, Konflikte und Möglichkeiten; sie helfen mir, sichtbar zu machen, was Menschen prägt, trennt und trotzdem verbinden kann.</p>
+                <p>Begriffe wie <strong>Macht</strong>, <strong>Freiheit</strong>, <strong>Erinnerung</strong> und die Aufgabe, <strong>Brücken zu bauen</strong>, hebe ich bewusst hervor. Sie sind für mich keine neutralen Schlagworte. In ihnen verdichten sich Erfahrungen, Konflikte und Möglichkeiten; sie helfen mir, sichtbar zu machen, was Menschen prägt, trennt und trotzdem verbinden kann.</p>
                 <p>Mich interessieren weniger Parolen als die Strukturen, die Wahrnehmung formen. Ich frage, warum Ideologien Staaten prägen, warum sich bestimmte Muster wiederholen und wie man ihnen mit Klarheit, Haltung und Besonnenheit begegnen kann.</p>
             </section>
 
@@ -77,13 +76,13 @@ $hp_contact_url    = 'mailto:' . $hp_contact_email;
                 <p><strong>Ich verstehe mich als Brückenbauer</strong> zwischen den Welten, die mir vertraut sind. Das heißt nicht, Unterschiede kleinzureden. Es heißt, sie ernst zu nehmen, ohne aus ihnen Feindbilder zu machen.</p>
                 <p>Ich schreibe nicht aus dem Wunsch heraus, Lager zu bedienen. Ich suche den Dialog, auch dort, wo er anstrengend ist: zwischen Gemeinschaften, zwischen politischen Sprachen, zwischen individueller Erfahrung und öffentlicher Ordnung, auch im Gespräch mit staatlichen Institutionen.</p>
                 <p>Konkret kann das bedeuten, die Sprache von Sicherheit und Ordnung mit den Erfahrungen derer zusammenzudenken, die Ohnmacht erleben; oder Konflikte zwischen Gemeinschaften so zu benennen, dass Widerspruch möglich bleibt, ohne das Gegenüber aus dem Gespräch zu drängen.</p>
-                <p>Dafür suche ich eine integrale Sprache: eine Sprache, die Unterschiede benennt, ohne sie zu verhärten, und Kritik formuliert, ohne Menschen oder Institutionen vorschnell zu Gegnern zu erklären.</p>
+                <p>Dafür suche ich eine Sprache, die Zusammenhänge hält: eine Sprache, die Unterschiede benennt, ohne sie zu verhärten, und Kritik formuliert, ohne Menschen oder Institutionen vorschnell zu Gegnern zu erklären.</p>
             </section>
 
             <section class="hp-mission__section" aria-labelledby="mission-freiheit">
                 <h2 id="mission-freiheit">Freiheit als gelebte Praxis</h2>
                 <p><strong>Freiheit ist für mich eine Praxis.</strong> Sie zeigt sich darin, dass Menschen sprechen, zuhören, widersprechen und Verantwortung miteinander teilen können. Sie ist nicht nur ein Recht, sondern auch eine Form des Umgangs: im Privaten, im Politischen und in der Öffentlichkeit.</p>
-                <p>Gerade deshalb beschäftigt mich auch, wie Ohnmacht entsteht. Hierarchische Ordnung kann Menschen ohnmächtig machen, mit Absicht oder ohne. Diese Ohnmacht geht für mich selten nur von einer einzelnen Instanz aus; sie entsteht oft in der Wechselwirkung zwischen Staat, Gesellschaft und Individuum.</p>
+                <p>Gerade deshalb beschäftigt mich auch, wie Ohnmacht entsteht. Hierarchische Ordnung kann Menschen ohnmächtig machen. Diese Ohnmacht geht für mich selten nur von einer einzelnen Instanz aus; sie entsteht oft in der Wechselwirkung zwischen Staat, Gesellschaft und Individuum.</p>
                 <p>Wo Menschen nicht mehr sprechen, widersprechen oder mitgestalten können, gerät Freiheit unter Druck. Sie zu bewahren heißt für mich deshalb auch, die Bedingungen sichtbar zu machen, die Menschen klein halten.</p>
             </section>
 
@@ -98,7 +97,7 @@ $hp_contact_url    = 'mailto:' . $hp_contact_email;
             <section class="hp-mission__section" aria-labelledby="mission-journal">
                 <h2 id="mission-journal">Warum dieses Journal? Ein Raum für Klärung</h2>
                 <p>Dieses Journal ist ein Ort für solche Klärungen. Kein Tribunal, keine ideologische Schule, kein moralischer Hochsitz. Eher ein Raum, in dem Erfahrungen, Begriffe und Perspektiven miteinander ins Gespräch kommen können.</p>
-                <p>Die Gedanken zu <strong>Macht</strong>, <strong>Freiheit</strong>, <strong>Erinnerung</strong> und <strong>Brückenbauen</strong> werden in den Schriften dieses Journals weiter ausgearbeitet. Diese Seite markiert den Ausgangspunkt; die Essays und Notizen gehen in die Tiefe.</p>
+                <p>Die Gedanken zu <strong>Macht</strong>, <strong>Freiheit</strong>, <strong>Erinnerung</strong> und dem <strong>Bauen von Brücken</strong> werden in den Schriften dieses Journals weiter ausgearbeitet. Diese Seite markiert den Ausgangspunkt; die Essays und Notizen gehen in die Tiefe.</p>
                 <p>Kein Tracking, keine Werbung, keine Cookies. Nicht aus Technikfeindlichkeit, sondern weil Aufmerksamkeit für mich keine Ware ist. Dieser Ort soll ruhig genug sein, damit Gedanken sich entfalten können und aus Rede im besten Fall Gespräch wird.</p>
             </section>
 

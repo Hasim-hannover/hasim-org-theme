@@ -65,7 +65,30 @@ get_header(); ?>
                 spätestens 30 Tagen gelöscht.
             </p>
 
-            <h2>3. Cookies</h2>
+            <h2>3. Kontakt per E-Mail und Formular</h2>
+
+            <p>
+                Wenn du per E-Mail oder über das Kontaktformular Kontakt aufnimmst, verarbeite ich die
+                von dir übermittelten Angaben ausschließlich zur Bearbeitung deiner Anfrage. Dazu können
+                Name, E-Mail-Adresse, ein optionaler Betreff und deine Nachricht gehören.
+            </p>
+
+            <p>
+                Beim Kontaktformular werden zusätzlich technische Prüfdaten verarbeitet, um Missbrauch
+                und automatisierte Anfragen abzuwehren. Dazu gehören insbesondere der Zeitpunkt des
+                Formularaufrufs, eine serverseitige Prüfsumme und eine kurze Zugriffsdrosselung.
+                Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO, sofern es um die Anbahnung oder
+                Beantwortung einer konkreten Anfrage geht, sowie Art. 6 Abs. 1 lit. f DSGVO für den
+                Schutz dieser Website vor Missbrauch.
+            </p>
+
+            <p>
+                Die über das Formular übermittelten Inhalte werden nicht auf dieser Website veröffentlicht,
+                sondern direkt per E-Mail weitergeleitet. Sie werden nur so lange gespeichert, wie es für
+                die Bearbeitung und eine mögliche Anschlusskorrespondenz erforderlich ist.
+            </p>
+
+            <h2>4. Cookies</h2>
 
             <p>
                 Diese Website setzt keine Tracking- oder Marketing-Cookies ein.
@@ -74,7 +97,7 @@ get_header(); ?>
                 oder Profilbildung genutzt und nach dem Schließen des Browsers gelöscht.
             </p>
 
-            <h2>4. Keine Analytics, kein Tracking</h2>
+            <h2>5. Keine Analytics, kein Tracking</h2>
 
             <p>
                 Es werden keine Analyse- oder Trackingdienste verwendet (kein Google Analytics,
@@ -82,7 +105,7 @@ get_header(); ?>
                 Profil erstellt.
             </p>
 
-            <h2>5. Eingebettete externe Inhalte</h2>
+            <h2>6. Eingebettete externe Inhalte</h2>
 
             <p>
                 Artikel können Links zu externen Websites enthalten. Für deren Datenschutzpraktiken
@@ -90,7 +113,7 @@ get_header(); ?>
                 verlässt du den Geltungsbereich dieser Erklärung.
             </p>
 
-            <h2>6. Schriftarten</h2>
+            <h2>7. Schriftarten</h2>
 
             <p>
                 Die auf dieser Seite verwendete Schriftart (Merriweather) wird
@@ -98,7 +121,7 @@ get_header(); ?>
                 Es findet keine Verbindung zu Google Fonts oder anderen externen Schriftanbietern statt.
             </p>
 
-            <h2>7. Deine Rechte (Art. 15–21 DSGVO)</h2>
+            <h2>8. Deine Rechte (Art. 15–21 DSGVO)</h2>
 
             <p>Du hast das Recht auf:</p>
 
@@ -121,11 +144,11 @@ get_header(); ?>
                 </a>.
             </p>
 
-            <h2>8. Änderungen dieser Erklärung</h2>
+            <h2>9. Änderungen dieser Erklärung</h2>
 
             <p>
-                Bei wesentlichen Änderungen am Betrieb dieser Website — etwa Hinzunahme eines
-                Kontaktformulars oder Kommentarfunktion — wird diese Erklärung aktualisiert.
+                Bei wesentlichen Änderungen am Betrieb dieser Website — etwa neuen Publikations-
+                oder Interaktionsformen — wird diese Erklärung aktualisiert.
                 Maßgeblich ist jeweils die zum Zeitpunkt des Besuchs gültige Version.
             </p>
 
