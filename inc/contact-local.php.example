@@ -6,4 +6,8 @@
  * `inc/contact-local.php` ist in `.gitignore`.
  */
 
-define( 'HP_BREVO_API_KEY', 'your-brevo-api-key-here' );
+define( 'HP_BREVO_SMTP_LOGIN', 'your-brevo-smtp-login-here' );
+define( 'HP_BREVO_SMTP_KEY', 'your-brevo-smtp-key-here' );
+
+// Optional alternativ zur SMTP-Nutzung:
+// define( 'HP_BREVO_API_KEY', 'your-brevo-api-key-here' );
