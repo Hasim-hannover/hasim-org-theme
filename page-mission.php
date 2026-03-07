@@ -83,14 +83,16 @@ $hp_contact_url    = 'mailto:' . $hp_contact_email;
             <section class="hp-mission__section" aria-labelledby="mission-freiheit">
                 <h2 id="mission-freiheit">Freiheit als gelebte Praxis</h2>
                 <p><strong>Freiheit ist für mich eine Praxis.</strong> Sie zeigt sich darin, dass Menschen sprechen, zuhören, widersprechen und Verantwortung miteinander teilen können. Sie ist nicht nur ein Recht, sondern auch eine Form des Umgangs: im Privaten, im Politischen und in der Öffentlichkeit.</p>
-                <p>Zugleich halte ich fest, dass hierarchische Ordnung Menschen ohnmächtig machen kann, mit Absicht oder ohne. Entscheidend ist für mich, dass diese Ohnmacht oft aus einer Wechselwirkung zwischen Staat, Gesellschaft und Individuum entsteht.</p>
+                <p>Gerade deshalb beschäftigt mich auch, wie Ohnmacht entsteht. Hierarchische Ordnung kann Menschen ohnmächtig machen, mit Absicht oder ohne. Diese Ohnmacht geht für mich selten nur von einer einzelnen Instanz aus; sie entsteht oft in der Wechselwirkung zwischen Staat, Gesellschaft und Individuum.</p>
+                <p>Wo Menschen nicht mehr sprechen, widersprechen oder mitgestalten können, gerät Freiheit unter Druck. Sie zu bewahren heißt für mich deshalb auch, die Bedingungen sichtbar zu machen, die Menschen klein halten.</p>
             </section>
 
             <section class="hp-mission__section" aria-labelledby="mission-ki">
                 <h2 id="mission-ki">Technik, Urteilskraft und Verantwortung</h2>
                 <p>Diese Fragen enden nicht bei Geschichte und Politik. Sie verschieben sich gerade in den technologischen Alltag.</p>
                 <p>Im Zeitalter der Künstlichen Intelligenz wird neu sichtbar, was menschliche Urteilskraft trägt. Wenn Redaktionen, Verwaltungen oder Bildungseinrichtungen Aufgaben an Systeme delegieren, geht es nicht nur um Effizienz, sondern um Urteilskraft, Erinnerung, Empathie und Verantwortung.</p>
-                <p>Technik ist für mich weder Heilsversprechen noch Feindbild. Sie verändert, wie wir über Arbeit, Wert, Öffentlichkeit und Menschsein nachdenken. Gerade deshalb muss man sie ernst nehmen.</p>
+                <p>Technik ist für mich weder Heilsversprechen noch Feindbild. Sie verändert, wie wir über Arbeit, Wert, Öffentlichkeit und Menschsein nachdenken. Gerade deshalb muss man sie nicht nur nutzen, sondern auch gesellschaftlich und ethisch befragen.</p>
+                <p>Auch hier geht es für mich am Ende um dieselbe Frage: wie Urteilskraft, Verantwortung und Freiheit unter neuen Bedingungen bewahrt werden können.</p>
             </section>
 
             <section class="hp-mission__section" aria-labelledby="mission-journal">
