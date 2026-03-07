@@ -35,7 +35,7 @@ get_header(); ?>
 
         <div class="hp-mission__prose prose">
 
-            <p>Geboren in Nordkurdistan, aufgewachsen in Deutschland. Ich lebe und denke zwischen Kurdisch, Türkisch und Deutsch. Diese drei Sprachen haben mich geprägt, und keine von ihnen ist für mich nur ein Werkzeug. In ihnen liegen Erinnerungen, Beziehungen, Verletzungen und Möglichkeiten.</p>
+            <p>Geboren in Nordkurdistan, aufgewachsen in Deutschland. Ich lebe und denke zwischen Deutsch, Kurdisch und Türkisch. Diese drei Sprachen haben mich geprägt, und keine von ihnen ist für mich nur ein Werkzeug. In ihnen liegen Erinnerungen, Beziehungen, Verletzungen und Möglichkeiten.</p>
 
             <p>Kurdisch ist die Sprache meiner Herkunft und meiner Nähe. Türkisch gehört zu meiner Geschichte und zu den Räumen, in denen viele Erfahrungen meines Lebens verhandelt wurden. Deutsch ist die Sprache, in der ich vieles öffentlich ausarbeite. Ich stelle diese Sprachen nicht gegeneinander. Ich versuche, zwischen ihnen zu übersetzen: nicht nur Wörter, sondern Erfahrungen, Empfindlichkeiten und Sichtweisen.</p>
 
