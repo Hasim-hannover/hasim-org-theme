@@ -354,17 +354,20 @@ function hp_render_contacts_overview_page(): void {
 		? hp_get_newsletter_admin_counts()
 		: [ 'active' => 0, 'pending' => 0, 'unsubscribed' => 0, 'total' => 0 ];
 	$contact_counts = hp_get_contact_submission_counts();
+	$newsletter_rows = function_exists( 'hp_get_recent_newsletter_subscribers' )
+		? hp_get_recent_newsletter_subscribers( 6, '', 'active' )
+		: [];
 	?>
 	<div class="wrap">
 		<h1>Kontakte</h1>
 		<p>Hier laufen die bestätigten Newsletter-Abonnements und die über das Kontaktformular eingegangenen Anfragen zusammen.</p>
 
 		<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;max-width:980px;margin:24px 0;">
-			<div style="background:#fff;border:1px solid #dcdcde;border-radius:12px;padding:20px;">
-				<h2 style="margin-top:0;">Newsletter</h2>
-				<p style="margin:0 0 8px;"><strong><?php echo esc_html( (string) $newsletter_counts['active'] ); ?></strong> aktiv bestätigt</p>
-				<p style="margin:0 0 8px;"><strong><?php echo esc_html( (string) $newsletter_counts['pending'] ); ?></strong> warten auf Bestätigung</p>
-				<p style="margin:0;"><a class="button button-primary" href="<?php echo esc_url( admin_url( 'admin.php?page=hp-newsletter' ) ); ?>">Zum Newsletter</a></p>
+				<div style="background:#fff;border:1px solid #dcdcde;border-radius:12px;padding:20px;">
+					<h2 style="margin-top:0;">Newsletter</h2>
+					<p style="margin:0 0 8px;"><strong><?php echo esc_html( (string) $newsletter_counts['active'] ); ?></strong> aktiv bestätigt</p>
+					<p style="margin:0 0 8px;"><strong><?php echo esc_html( (string) $newsletter_counts['pending'] ); ?></strong> warten auf Bestätigung</p>
+					<p style="margin:0;"><a class="button button-primary" href="<?php echo esc_url( admin_url( 'admin.php?page=hp-newsletter' ) ); ?>">Zum Newsletter</a></p>
 			</div>
 
 			<div style="background:#fff;border:1px solid #dcdcde;border-radius:12px;padding:20px;">
@@ -372,10 +375,38 @@ function hp_render_contacts_overview_page(): void {
 				<p style="margin:0 0 8px;"><strong><?php echo esc_html( (string) $contact_counts['new'] ); ?></strong> neu</p>
 				<p style="margin:0 0 8px;"><strong><?php echo esc_html( (string) $contact_counts['total'] ); ?></strong> insgesamt</p>
 				<p style="margin:0;"><a class="button button-primary" href="<?php echo esc_url( admin_url( 'admin.php?page=hp-contact-submissions' ) ); ?>">Zu den Anfragen</a></p>
+				</div>
 			</div>
+
+			<?php if ( $newsletter_rows ) : ?>
+				<div style="max-width:980px;background:#fff;border:1px solid #dcdcde;border-radius:12px;padding:20px;">
+					<h2 style="margin-top:0;">Schnellzugriff: aktive Newsletter-Adressen</h2>
+					<p>Direkt hier abmelden oder in den Unterpunkt <strong>Newsletter</strong> für Suche und Filter wechseln.</p>
+
+					<table class="widefat striped">
+						<thead>
+							<tr>
+								<th>E-Mail</th>
+								<th>Quelle</th>
+								<th>Bestätigt</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+							<?php foreach ( $newsletter_rows as $subscriber ) : ?>
+								<tr>
+									<td><?php echo esc_html( $subscriber['email'] ); ?></td>
+									<td><?php echo esc_html( $subscriber['source'] ); ?></td>
+									<td><?php echo esc_html( $subscriber['confirmed_at'] ); ?></td>
+									<td><a class="button button-small" href="<?php echo esc_url( wp_nonce_url( add_query_arg( [ 'action' => 'hp_admin_unsubscribe_newsletter', 'subscriber' => absint( $subscriber['id'] ) ], admin_url( 'admin-post.php' ) ), 'hp_newsletter_admin_unsubscribe_' . absint( $subscriber['id'] ) ) ); ?>">Abmelden</a></td>
+								</tr>
+							<?php endforeach; ?>
+						</tbody>
+					</table>
+				</div>
+			<?php endif; ?>
 		</div>
-	</div>
-	<?php
+		<?php
 }
 
 /**
