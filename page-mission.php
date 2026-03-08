@@ -132,8 +132,8 @@ $hp_newsletter_url = hp_get_newsletter_anchor_url();
                     </a>
 
                     <a class="hp-mission__cta-card" href="<?php echo esc_url( $hp_contact_url ); ?>">
-                        <span class="hp-mission__cta-title">Kontakt / Dialog beginnen</span>
-                        <span class="hp-mission__cta-copy">Per E-Mail Kontakt aufnehmen und das Gespräch eröffnen.</span>
+                        <span class="hp-mission__cta-title">Anfragen &amp; Zusammenarbeit</span>
+                        <span class="hp-mission__cta-copy">Für redaktionelle Anfragen, Gespräche, Kooperationen oder ausgewählte Schreibprojekte.</span>
                     </a>
                 </div>
             </div>

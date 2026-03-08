@@ -1328,7 +1328,7 @@ a.footnote-backref:hover {
 
 .hp-contact__header {
     padding: var(--hj-space-2xl) 0 var(--hj-space-lg);
-    max-width: 68ch;
+    max-width: 72ch;
 }
 
 .hp-contact__title {
@@ -1349,66 +1349,110 @@ a.footnote-backref:hover {
     color: var(--hj-text-secondary);
 }
 
-.hp-contact__channels {
+.hp-contact__section {
+    margin-bottom: var(--hj-space-xl);
+}
+
+.hp-contact__section-header {
+    max-width: 60ch;
+    margin-bottom: var(--hj-space-md);
+}
+
+.hp-contact__section-eyebrow {
+    margin: 0 0 0.55rem;
+    font-family: var(--hj-sans);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--hj-accent);
+}
+
+.hp-contact__section-title {
+    margin: 0;
+    font-family: var(--hj-serif);
+    font-weight: 700;
+    font-size: clamp(1.45rem, 2.7vw, 1.95rem);
+    line-height: 1.28;
+    color: var(--hj-rule);
+}
+
+.hp-contact__cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+}
+
+.hp-contact__card {
+    min-height: 100%;
+    padding: 1.2rem 1.2rem 1.3rem;
+    border: 1px solid rgba(17, 17, 17, 0.1);
+    border-radius: 18px;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(248, 245, 240, 0.9));
+    box-shadow: 0 14px 32px rgba(17, 17, 17, 0.05);
+}
+
+.hp-contact__card-title {
+    margin: 0 0 0.55rem;
+    font-family: var(--hj-serif);
+    font-size: 1.18rem;
+    line-height: 1.4;
+    color: var(--hj-rule);
+}
+
+.hp-contact__card-copy {
+    margin: 0;
+    font-family: var(--hj-serif);
+    font-size: 0.98rem;
+    line-height: 1.65;
+    color: var(--hj-text-secondary);
+}
+
+.hp-contact__qualify {
     display: grid;
     grid-template-columns: 1fr;
     gap: 1rem;
     margin-bottom: var(--hj-space-xl);
 }
 
-@media (min-width: 820px) {
-    .hp-contact__channels {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+@media (min-width: 860px) {
+    .hp-contact__qualify {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
-.hp-contact__channel {
-    display: block;
-    min-height: 100%;
-    padding: 1.15rem 1.2rem 1.25rem;
-    border: 1px solid rgba(17, 17, 17, 0.12);
-    border-radius: 18px;
-    background: rgba(255, 255, 255, 0.78);
-    box-shadow: 0 12px 28px rgba(17, 17, 17, 0.05);
-    color: var(--hj-text);
-    text-decoration: none;
-    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+.hp-contact__panel {
+    padding: 1.35rem 1.25rem;
+    border: 1px solid rgba(17, 17, 17, 0.09);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.84);
 }
 
-.hp-contact__channel:hover,
-.hp-contact__channel:focus-visible {
-    transform: translateY(-2px);
-    border-color: var(--hj-accent);
-    box-shadow: 0 18px 36px rgba(17, 17, 17, 0.08);
-    text-decoration: none;
+.hp-contact__panel--muted {
+    background: rgba(248, 245, 240, 0.86);
 }
 
-.hp-contact__channel-label {
-    display: block;
-    margin-bottom: 0.6rem;
-    font-family: var(--hj-sans);
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--hj-text-muted);
-}
-
-.hp-contact__channel-title {
-    display: block;
-    margin-bottom: 0.55rem;
+.hp-contact__panel-title {
+    margin: 0;
     font-family: var(--hj-serif);
-    font-size: 1.25rem;
-    line-height: 1.35;
+    font-weight: 700;
+    font-size: 1.3rem;
+    line-height: 1.4;
     color: var(--hj-rule);
 }
 
-.hp-contact__channel-copy {
-    display: block;
+.hp-contact__panel-list {
+    margin: 0.95rem 0 0;
+    padding-left: 1.15rem;
     font-family: var(--hj-serif);
-    font-size: 0.98rem;
-    line-height: 1.65;
+    font-size: 1rem;
+    line-height: 1.72;
     color: var(--hj-text-secondary);
+}
+
+.hp-contact__panel-list li + li {
+    margin-top: 0.6rem;
 }
 
 .hp-contact__layout {
@@ -1428,7 +1472,7 @@ a.footnote-backref:hover {
     padding: 1.2rem 1.15rem;
     border: 1px solid rgba(17, 17, 17, 0.1);
     border-radius: 18px;
-    background: rgba(250, 248, 245, 0.88);
+    background: rgba(250, 248, 245, 0.92);
 }
 
 @media (min-width: 940px) {
@@ -1468,16 +1512,14 @@ a.footnote-backref:hover {
 .hp-contact__aside-links a {
     display: inline-flex;
     align-items: center;
-    min-height: 2.2rem;
-    padding: 0.25rem 0.85rem;
+    min-height: 2.6rem;
+    padding: 0.45rem 0.95rem;
     border: 1px solid rgba(17, 17, 17, 0.12);
-    border-radius: 999px;
+    border-radius: 16px;
     color: var(--hj-rule);
-    font-family: var(--hj-sans);
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+    font-family: var(--hj-serif);
+    font-size: 0.98rem;
+    line-height: 1.5;
     text-decoration: none;
 }
 
@@ -1492,7 +1534,7 @@ a.footnote-backref:hover {
     padding: 1.5rem;
     border: 1px solid rgba(17, 17, 17, 0.1);
     border-radius: 24px;
-    background: rgba(255, 255, 255, 0.85);
+    background: rgba(255, 255, 255, 0.88);
     box-shadow: 0 18px 42px rgba(17, 17, 17, 0.06);
 }
 
@@ -1603,6 +1645,7 @@ a.footnote-backref:hover {
 }
 
 .hp-contact__field input,
+.hp-contact__field select,
 .hp-contact__field textarea {
     width: 100%;
     padding: 0.82rem 0.95rem;
@@ -1618,14 +1661,28 @@ a.footnote-backref:hover {
 }
 
 .hp-contact__field input:focus,
+.hp-contact__field select:focus,
 .hp-contact__field textarea:focus {
     outline: none;
     border-color: rgba(189, 78, 47, 0.42);
     box-shadow: 0 0 0 4px rgba(189, 78, 47, 0.08);
 }
 
+.hp-contact__field select {
+    appearance: none;
+    background-image:
+        linear-gradient(45deg, transparent 50%, rgba(24, 28, 34, 0.45) 50%),
+        linear-gradient(135deg, rgba(24, 28, 34, 0.45) 50%, transparent 50%);
+    background-position:
+        calc(100% - 22px) calc(1.15rem + 1px),
+        calc(100% - 16px) calc(1.15rem + 1px);
+    background-repeat: no-repeat;
+    background-size: 6px 6px;
+    padding-right: 2.8rem;
+}
+
 .hp-contact__field textarea {
-    min-height: 14rem;
+    min-height: 13rem;
     resize: vertical;
 }
 
@@ -1688,6 +1745,15 @@ a.footnote-backref:hover {
 .hp-contact__mail-link:focus-visible {
     color: var(--hj-accent);
     text-decoration: none;
+}
+
+.hp-contact__closing {
+    margin: 1.4rem 0 0;
+    max-width: 60ch;
+    font-family: var(--hj-serif);
+    font-size: 1rem;
+    line-height: 1.75;
+    color: var(--hj-text-secondary);
 }
 
 /* =========================================

@@ -24,7 +24,7 @@ function hp_get_contact_submissions_table_name(): string {
  * Versionskennung der Kontakttabelle.
  */
 function hp_get_contact_submissions_db_version(): string {
-	return '1.0.0';
+	return '1.1.0';
 }
 
 /**
@@ -48,6 +48,10 @@ function hp_maybe_install_contact_submissions_table(): void {
 		status varchar(20) NOT NULL DEFAULT 'new',
 		name varchar(190) NOT NULL DEFAULT '',
 		email varchar(190) NOT NULL DEFAULT '',
+		organization varchar(190) NOT NULL DEFAULT '',
+		website_url varchar(255) NOT NULL DEFAULT '',
+		inquiry_type varchar(40) NOT NULL DEFAULT '',
+		timeframe varchar(190) NOT NULL DEFAULT '',
 		subject varchar(190) NOT NULL DEFAULT '',
 		message longtext NULL,
 		source_url varchar(255) NOT NULL DEFAULT '',
@@ -95,6 +99,10 @@ function hp_store_contact_submission( array $fields, bool $mail_sent, bool $auto
 			'status'            => 'new',
 			'name'              => (string) ( $fields['name'] ?? '' ),
 			'email'             => strtolower( trim( (string) ( $fields['email'] ?? '' ) ) ),
+			'organization'      => (string) ( $fields['organization'] ?? '' ),
+			'website_url'       => (string) ( $fields['website_url'] ?? '' ),
+			'inquiry_type'      => (string) ( $fields['inquiry_type'] ?? '' ),
+			'timeframe'         => (string) ( $fields['timeframe'] ?? '' ),
 			'subject'           => (string) ( $fields['subject'] ?? '' ),
 			'message'           => (string) ( $fields['message'] ?? '' ),
 			'source_url'        => $source_url,
@@ -114,6 +122,10 @@ function hp_store_contact_submission( array $fields, bool $mail_sent, bool $auto
 			'%s',
 			'%s',
 			'%s',
+			'%s',
+			'%s',
+			'%s',
+			'%s',
 			'%d',
 			'%d',
 			'%s',
@@ -122,6 +134,23 @@ function hp_store_contact_submission( array $fields, bool $mail_sent, bool $auto
 	);
 
 	return false !== $inserted;
+}
+
+/**
+ * Liefert die lesbare Anfrageart fuer Backend-Ansichten.
+ *
+ * @param array<string, string> $submission Gespeicherte Anfrage.
+ */
+function hp_get_contact_submission_inquiry_label( array $submission ): string {
+	$inquiry_type = isset( $submission['inquiry_type'] ) ? (string) $submission['inquiry_type'] : '';
+
+	if ( '' !== $inquiry_type ) {
+		return hp_get_contact_inquiry_type_label( $inquiry_type );
+	}
+
+	$subject = isset( $submission['subject'] ) ? trim( (string) $submission['subject'] ) : '';
+
+	return '' !== $subject ? $subject : 'Nicht angegeben';
 }
 
 /**
@@ -209,14 +238,17 @@ function hp_get_recent_contact_submissions( int $limit = 40, string $search = ''
 	$table_name = hp_get_contact_submissions_table_name();
 	$limit      = max( 1, min( 100, $limit ) );
 	$search     = trim( $search );
-	$sql        = "SELECT id, status, name, email, subject, message, mail_sent, autoresponse_sent, created_at
+	$sql        = "SELECT id, status, name, email, organization, website_url, inquiry_type, timeframe, subject, message, mail_sent, autoresponse_sent, created_at
 		FROM {$table_name}
 		WHERE 1=1";
 	$params     = [];
 
 	if ( '' !== $search ) {
 		$like      = '%' . $wpdb->esc_like( $search ) . '%';
-		$sql      .= ' AND (name LIKE %s OR email LIKE %s OR subject LIKE %s OR message LIKE %s)';
+		$sql      .= ' AND (name LIKE %s OR email LIKE %s OR organization LIKE %s OR website_url LIKE %s OR inquiry_type LIKE %s OR subject LIKE %s OR message LIKE %s)';
+		$params[]  = $like;
+		$params[]  = $like;
+		$params[]  = $like;
 		$params[]  = $like;
 		$params[]  = $like;
 		$params[]  = $like;
@@ -313,7 +345,7 @@ function hp_export_contact_submissions(): void {
 
 	$table_name = hp_get_contact_submissions_table_name();
 	$rows       = $wpdb->get_results(
-		"SELECT id, status, name, email, subject, message, source_url, mail_sent, autoresponse_sent, created_at
+		"SELECT id, status, name, email, organization, website_url, inquiry_type, timeframe, subject, message, source_url, mail_sent, autoresponse_sent, created_at
 		FROM {$table_name}
 		ORDER BY created_at DESC",
 		ARRAY_A
@@ -334,7 +366,7 @@ function hp_export_contact_submissions(): void {
 	}
 
 	fprintf( $output, chr( 0xEF ) . chr( 0xBB ) . chr( 0xBF ) );
-	fputcsv( $output, [ 'id', 'status', 'name', 'email', 'subject', 'message', 'source_url', 'mail_sent', 'autoresponse_sent', 'created_at' ] );
+	fputcsv( $output, [ 'id', 'status', 'name', 'email', 'organization', 'website_url', 'inquiry_type', 'timeframe', 'subject', 'message', 'source_url', 'mail_sent', 'autoresponse_sent', 'created_at' ] );
 
 	foreach ( $rows as $row ) {
 		fputcsv(
@@ -344,6 +376,10 @@ function hp_export_contact_submissions(): void {
 				(string) ( $row['status'] ?? '' ),
 				(string) ( $row['name'] ?? '' ),
 				(string) ( $row['email'] ?? '' ),
+				(string) ( $row['organization'] ?? '' ),
+				(string) ( $row['website_url'] ?? '' ),
+				(string) ( $row['inquiry_type'] ?? '' ),
+				(string) ( $row['timeframe'] ?? '' ),
 				(string) ( $row['subject'] ?? '' ),
 				(string) ( $row['message'] ?? '' ),
 				(string) ( $row['source_url'] ?? '' ),
@@ -464,7 +500,7 @@ function hp_render_contact_submissions_page(): void {
 			<input type="hidden" name="page" value="hp-contact-submissions">
 			<p style="margin:0;min-width:320px;flex:1 1 420px;">
 				<label for="hp-contact-search" style="display:block;font-weight:600;margin-bottom:6px;">Suche</label>
-				<input id="hp-contact-search" class="regular-text" type="search" name="s" value="<?php echo esc_attr( $search ); ?>" placeholder="Name, E-Mail, Betreff oder Text">
+				<input id="hp-contact-search" class="regular-text" type="search" name="s" value="<?php echo esc_attr( $search ); ?>" placeholder="Name, E-Mail, Organisation, Anfrageart oder Text">
 			</p>
 			<p style="margin:0;">
 				<button class="button button-secondary" type="submit">Suchen</button>
@@ -475,7 +511,16 @@ function hp_render_contact_submissions_page(): void {
 			<div style="max-width:900px;background:#fff;border:1px solid #dcdcde;border-radius:12px;padding:20px;margin:20px 0 28px;">
 				<h2 style="margin-top:0;">Anfrage von <?php echo esc_html( $submission['name'] ); ?></h2>
 				<p><strong>E-Mail:</strong> <a href="mailto:<?php echo esc_attr( $submission['email'] ); ?>"><?php echo esc_html( $submission['email'] ); ?></a></p>
-				<p><strong>Betreff:</strong> <?php echo '' !== $submission['subject'] ? esc_html( $submission['subject'] ) : 'Nicht angegeben'; ?></p>
+				<p><strong>Art der Anfrage:</strong> <?php echo esc_html( hp_get_contact_submission_inquiry_label( $submission ) ); ?></p>
+				<p><strong>Organisation / Medium / Projekt:</strong> <?php echo '' !== $submission['organization'] ? esc_html( $submission['organization'] ) : 'Nicht angegeben'; ?></p>
+				<p><strong>Website oder Link:</strong>
+					<?php if ( '' !== $submission['website_url'] ) : ?>
+						<a href="<?php echo esc_url( $submission['website_url'] ); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html( $submission['website_url'] ); ?></a>
+					<?php else : ?>
+						Nicht angegeben
+					<?php endif; ?>
+				</p>
+				<p><strong>Zeitraum / Terminbezug:</strong> <?php echo '' !== $submission['timeframe'] ? esc_html( $submission['timeframe'] ) : 'Nicht angegeben'; ?></p>
 				<p><strong>Eingang:</strong> <?php echo esc_html( $submission['created_at'] ); ?></p>
 				<p><strong>Versand an dich:</strong> <?php echo '1' === $submission['mail_sent'] ? 'ja' : 'nein'; ?> | <strong>Bestätigung an Absender:</strong> <?php echo '1' === $submission['autoresponse_sent'] ? 'ja' : 'nein'; ?></p>
 				<?php if ( '' !== $submission['source_url'] ) : ?>
@@ -491,7 +536,8 @@ function hp_render_contact_submissions_page(): void {
 					<th>Status</th>
 					<th>Name</th>
 					<th>E-Mail</th>
-					<th>Betreff</th>
+					<th>Art</th>
+					<th>Organisation / Projekt</th>
 					<th>Eingang</th>
 					<th></th>
 				</tr>
@@ -503,14 +549,15 @@ function hp_render_contact_submissions_page(): void {
 							<td><?php echo esc_html( 'new' === $row['status'] ? 'neu' : 'gelesen' ); ?></td>
 							<td><?php echo esc_html( $row['name'] ); ?></td>
 							<td><a href="mailto:<?php echo esc_attr( $row['email'] ); ?>"><?php echo esc_html( $row['email'] ); ?></a></td>
-							<td><?php echo '' !== $row['subject'] ? esc_html( $row['subject'] ) : '—'; ?></td>
+							<td><?php echo esc_html( hp_get_contact_submission_inquiry_label( $row ) ); ?></td>
+							<td><?php echo '' !== $row['organization'] ? esc_html( $row['organization'] ) : '—'; ?></td>
 							<td><?php echo esc_html( $row['created_at'] ); ?></td>
 							<td><a class="button button-small" href="<?php echo esc_url( admin_url( 'admin.php?page=hp-contact-submissions&submission=' . absint( $row['id'] ) ) ); ?>">Ansehen</a></td>
 						</tr>
 					<?php endforeach; ?>
 				<?php else : ?>
 					<tr>
-						<td colspan="6">Keine Kontaktanfragen für diese Auswahl gefunden.</td>
+						<td colspan="7">Keine Kontaktanfragen für diese Auswahl gefunden.</td>
 					</tr>
 				<?php endif; ?>
 			</tbody>

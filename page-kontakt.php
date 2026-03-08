@@ -4,11 +4,11 @@
  *
  * Template: Kontakt
  *
- * Native Kontaktseite mit E-Mail-Option und reduziertem Formular.
- * Die Seite wird, falls sie im System fehlt, automatisch angelegt.
+ * Kuratierte Seite für Anfragen, redaktionelle Zusammenarbeit
+ * und ausgewählte inhaltliche Projekte.
  *
  * @package Hasimuener_Journal
- * @since   6.3.0
+ * @since   6.6.0
  */
 
 get_header();
@@ -18,67 +18,105 @@ $hp_contact_status  = isset( $hp_contact_flash['status'] ) ? (string) $hp_contac
 $hp_contact_message = isset( $hp_contact_flash['message'] ) ? (string) $hp_contact_flash['message'] : '';
 $hp_contact_fields  = isset( $hp_contact_flash['fields'] ) && is_array( $hp_contact_flash['fields'] ) ? $hp_contact_flash['fields'] : [];
 
-$hp_name_value    = isset( $hp_contact_fields['name'] ) ? (string) $hp_contact_fields['name'] : '';
-$hp_email_value   = isset( $hp_contact_fields['email'] ) ? (string) $hp_contact_fields['email'] : '';
-$hp_subject_value = isset( $hp_contact_fields['subject'] ) ? (string) $hp_contact_fields['subject'] : '';
-$hp_message_value = isset( $hp_contact_fields['message'] ) ? (string) $hp_contact_fields['message'] : '';
+$hp_name_value         = isset( $hp_contact_fields['name'] ) ? (string) $hp_contact_fields['name'] : '';
+$hp_email_value        = isset( $hp_contact_fields['email'] ) ? (string) $hp_contact_fields['email'] : '';
+$hp_organization_value = isset( $hp_contact_fields['organization'] ) ? (string) $hp_contact_fields['organization'] : '';
+$hp_website_value      = isset( $hp_contact_fields['website_url'] ) ? (string) $hp_contact_fields['website_url'] : '';
+$hp_inquiry_value      = isset( $hp_contact_fields['inquiry_type'] ) ? (string) $hp_contact_fields['inquiry_type'] : '';
+$hp_timeframe_value    = isset( $hp_contact_fields['timeframe'] ) ? (string) $hp_contact_fields['timeframe'] : '';
+$hp_message_value      = isset( $hp_contact_fields['message'] ) ? (string) $hp_contact_fields['message'] : '';
 
-$hp_contact_email        = hp_get_contact_email();
-$hp_contact_email_label  = antispambot( $hp_contact_email );
-$hp_contact_mailto       = 'mailto:' . $hp_contact_email;
-$hp_essay_url            = get_post_type_archive_link( 'essay' );
-$hp_note_url             = get_post_type_archive_link( 'note' );
-$hp_privacy_url          = get_privacy_policy_url();
-$hp_rendered_at          = time();
-$hp_render_token         = hp_get_contact_form_render_token( $hp_rendered_at );
+$hp_page_title         = hp_get_contact_page_title();
+$hp_contact_email      = hp_get_contact_email();
+$hp_contact_email_label = antispambot( $hp_contact_email );
+$hp_contact_mailto     = 'mailto:' . $hp_contact_email;
+$hp_privacy_url        = get_privacy_policy_url();
+$hp_rendered_at        = time();
+$hp_render_token       = hp_get_contact_form_render_token( $hp_rendered_at );
+$hp_inquiry_options    = hp_get_contact_inquiry_type_options();
 ?>
 
-<main id="main-content" class="hp-contact">
+<main id="main-content" class="hp-contact" aria-label="<?php echo esc_attr( $hp_page_title ); ?>">
 	<div class="hp-contact__inner">
 
 		<header class="hp-contact__header">
-			<span class="hp-kicker">Kontakt</span>
-			<h1 class="hp-contact__title"><?php the_title(); ?></h1>
-			<p class="hp-contact__subline">Für Hinweise, Fragen, Anfragen oder begründeten Widerspruch. Öffentliche Einwände gehören meist unter die Texte; für Vertrauliches gibt es diese Seite.</p>
+			<span class="hp-kicker">Anfragen</span>
+			<h1 class="hp-contact__title"><?php echo esc_html( $hp_page_title ); ?></h1>
+			<p class="hp-contact__subline">hasimuener.org ist ein publizistisches Projekt. Diese Seite ist für redaktionelle Anfragen, Gespräche, Kooperationen und ausgewählte Schreib- oder Strategievorhaben gedacht, die inhaltlich zu dieser Arbeit passen.</p>
 		</header>
 
-		<section class="hp-contact__channels" aria-label="Kontaktwege">
-			<a class="hp-contact__channel" href="<?php echo esc_url( $hp_contact_mailto ); ?>">
-				<span class="hp-contact__channel-label">Direkt per E-Mail</span>
-				<strong class="hp-contact__channel-title"><?php echo wp_kses_post( $hp_contact_email_label ); ?></strong>
-				<span class="hp-contact__channel-copy">Für direkte Rückfragen, Hinweise und Anfragen ohne Umweg.</span>
-			</a>
+		<section class="hp-contact__section" aria-labelledby="anfragebereiche">
+			<div class="hp-contact__section-header">
+				<p class="hp-contact__section-eyebrow">Orientierung</p>
+				<h2 id="anfragebereiche" class="hp-contact__section-title">Wofür Sie mich kontaktieren können</h2>
+			</div>
 
-			<a class="hp-contact__channel" href="<?php echo esc_url( $hp_essay_url ); ?>">
-				<span class="hp-contact__channel-label">Öffentliche Diskussion</span>
-				<strong class="hp-contact__channel-title">Im Journal antworten</strong>
-				<span class="hp-contact__channel-copy">Wenn es um Argumente, Ergänzungen oder Widerspruch zu einem Text geht, ist der Kommentar unter Essays oder Notizen meist der passendere Ort.</span>
-			</a>
+			<div class="hp-contact__cards">
+				<article class="hp-contact__card">
+					<h3 class="hp-contact__card-title">Redaktionelle Anfragen</h3>
+					<p class="hp-contact__card-copy">Für Anfragen von Redaktionen, Herausgebern oder Formaten, die an einer publizistischen Einordnung, einem Beitrag oder einem sachlichen Austausch interessiert sind.</p>
+				</article>
 
-			<a class="hp-contact__channel" href="#kontakt-formular">
-				<span class="hp-contact__channel-label">Vertraulich schreiben</span>
-				<strong class="hp-contact__channel-title">Formular öffnen</strong>
-				<span class="hp-contact__channel-copy">Für Nachrichten, die nicht öffentlich erscheinen sollen und direkt als E-Mail ankommen.</span>
-			</a>
+				<article class="hp-contact__card">
+					<h3 class="hp-contact__card-title">Gastbeiträge und Essays</h3>
+					<p class="hp-contact__card-copy">Für Einladungen zu Essays, Kommentaren oder Gastbeiträgen, wenn Thema, Medium und editorischer Rahmen erkennbar sind.</p>
+				</article>
+
+				<article class="hp-contact__card">
+					<h3 class="hp-contact__card-title">Interviews, Gespräche, Vorträge</h3>
+					<p class="hp-contact__card-copy">Für Interviews, moderierte Gespräche, Podien oder Vorträge in journalistischen, kulturellen oder bildungsbezogenen Zusammenhängen.</p>
+				</article>
+
+				<article class="hp-contact__card">
+					<h3 class="hp-contact__card-title">Kooperationen</h3>
+					<p class="hp-contact__card-copy">Für Kooperationen mit Journalen, Medien, Kultur- oder Bildungsprojekten, wenn ein gemeinsamer inhaltlicher Fokus erkennbar ist.</p>
+				</article>
+
+				<article class="hp-contact__card">
+					<h3 class="hp-contact__card-title">Ausgewählte Schreib- und Strategieprojekte</h3>
+					<p class="hp-contact__card-copy">Für einzelne Vorhaben, bei denen Sprache, Perspektive, konzeptionelle Klarheit und publizistische Sorgfalt eine tragende Rolle spielen.</p>
+				</article>
+			</div>
+		</section>
+
+		<section class="hp-contact__qualify" aria-labelledby="passung">
+			<div class="hp-contact__panel">
+				<p class="hp-contact__section-eyebrow">Passung</p>
+				<h2 id="passung" class="hp-contact__panel-title">Was gut passt</h2>
+				<ul class="hp-contact__panel-list">
+					<li>Projekte mit inhaltlicher Substanz und einer klaren Frage, die mehr verlangt als routinierte Abwicklung.</li>
+					<li>Publizistische, kulturelle, gesellschaftliche oder bildungsbezogene Formate mit erkennbarem Kontext.</li>
+					<li>Vorhaben, bei denen Sprache, Perspektive, Argumentation und Klarheit nicht blo&szlig; Verpackung sind.</li>
+				</ul>
+			</div>
+
+			<div class="hp-contact__panel hp-contact__panel--muted">
+				<p class="hp-contact__section-eyebrow">Abgrenzung</p>
+				<h2 class="hp-contact__panel-title">Was weniger gut passt</h2>
+				<ul class="hp-contact__panel-list">
+					<li>Rein werbliche Anfragen oder Formate, die in erster Linie Promotion leisten sollen.</li>
+					<li>Generische SEO-, Ghostwriting- oder Massencontent-Anfragen ohne erkennbare inhaltliche Linie.</li>
+					<li>Unklare oder rein transaktionale Projekte, bei denen Thema, Kontext oder Ziel des Vorhabens offen bleiben.</li>
+				</ul>
+			</div>
 		</section>
 
 		<div class="hp-contact__layout">
-			<aside class="hp-contact__aside" aria-label="Hinweise zur Kontaktaufnahme">
-				<h2 class="hp-contact__aside-title">Welcher Weg ist der richtige?</h2>
-				<p>Öffentliche Einwände, Nachfragen und Ergänzungen sind im Journal selbst oft produktiver, weil sie das Gespräch sichtbar machen.</p>
-				<p>Private Hinweise, Anfragen, Einladungen oder persönliche Rückmeldungen gehören eher hierher.</p>
-				<p>Das Formular ist bewusst schlicht gehalten: keine CRM-Strecke, kein Newsletter-Opt-in, keine unnötigen Pflichtfelder.</p>
+			<aside class="hp-contact__aside" aria-label="Hinweise zur Anfrage">
+				<h2 class="hp-contact__aside-title">Was bei einer Anfrage hilft</h2>
+				<p>Ein kurzer Hinweis auf Medium, Format, Kontext und Anlass reicht meist aus, um die Passung einschätzen zu können.</p>
+				<p>Wenn bereits ein Link, eine Ausschreibung oder ein Terminkontext vorliegt, kann er direkt im Formular ergänzt werden.</p>
+				<p>Für kürzere oder direkte Rückfragen ist auch eine E-Mail möglich.</p>
 				<div class="hp-contact__aside-links">
-					<a href="<?php echo esc_url( $hp_essay_url ); ?>">Zu den Essays</a>
-					<a href="<?php echo esc_url( $hp_note_url ); ?>">Zu den Notizen</a>
+					<a href="<?php echo esc_url( $hp_contact_mailto ); ?>"><?php echo wp_kses_post( $hp_contact_email_label ); ?></a>
 				</div>
 			</aside>
 
 			<section class="hp-contact__form-shell" aria-labelledby="kontakt-formular-title">
 				<div class="hp-contact__form-header">
-					<p class="hp-contact__form-eyebrow">Nachricht senden</p>
-					<h2 id="kontakt-formular-title" class="hp-contact__form-title">Direkter Kontakt ohne Plugin-Overhead.</h2>
-					<p class="hp-contact__form-lede">Deine Nachricht wird nicht auf der Website veröffentlicht, sondern direkt per E-Mail weitergeleitet und intern in der Website-Verwaltung dokumentiert.</p>
+					<p class="hp-contact__form-eyebrow">Anfragebereich</p>
+					<h2 id="kontakt-formular-title" class="hp-contact__form-title">Anfrage senden</h2>
+					<p class="hp-contact__form-lede">Das Formular ist bewusst knapp gehalten. Ein kurzer, konkreter Hinweis auf Anliegen, Rahmen und gegebenenfalls Terminbezug ist hilfreicher als allgemeine Selbstdarstellungen.</p>
 				</div>
 
 				<?php if ( '' !== $hp_contact_message ) : ?>
@@ -108,18 +146,38 @@ $hp_render_token         = hp_get_contact_form_render_token( $hp_rendered_at );
 						<input id="hp-contact-email" name="hp_contact_email" type="email" maxlength="190" autocomplete="email" value="<?php echo esc_attr( $hp_email_value ); ?>" required>
 					</p>
 
-					<p class="hp-contact__field hp-contact__field--full">
-						<label for="hp-contact-subject">Betreff <span class="hp-contact__field-optional">optional</span></label>
-						<input id="hp-contact-subject" name="hp_contact_subject" type="text" maxlength="160" value="<?php echo esc_attr( $hp_subject_value ); ?>">
+					<p class="hp-contact__field">
+						<label for="hp-contact-organization">Organisation / Medium / Projekt <span class="hp-contact__field-optional">optional</span></label>
+						<input id="hp-contact-organization" name="hp_contact_organization" type="text" maxlength="190" value="<?php echo esc_attr( $hp_organization_value ); ?>">
+					</p>
+
+					<p class="hp-contact__field">
+						<label for="hp-contact-website-url">Website oder Link <span class="hp-contact__field-optional">optional</span></label>
+						<input id="hp-contact-website-url" name="hp_contact_website_url" type="text" maxlength="255" inputmode="url" placeholder="https://..." value="<?php echo esc_attr( $hp_website_value ); ?>">
+					</p>
+
+					<p class="hp-contact__field">
+						<label for="hp-contact-inquiry-type">Art der Anfrage</label>
+						<select id="hp-contact-inquiry-type" name="hp_contact_inquiry_type" required>
+							<option value="">Bitte wählen</option>
+							<?php foreach ( $hp_inquiry_options as $hp_option_value => $hp_option_label ) : ?>
+								<option value="<?php echo esc_attr( $hp_option_value ); ?>"<?php selected( $hp_inquiry_value, $hp_option_value ); ?>><?php echo esc_html( $hp_option_label ); ?></option>
+							<?php endforeach; ?>
+						</select>
+					</p>
+
+					<p class="hp-contact__field">
+						<label for="hp-contact-timeframe">Zeitraum / Terminbezug <span class="hp-contact__field-optional">optional</span></label>
+						<input id="hp-contact-timeframe" name="hp_contact_timeframe" type="text" maxlength="190" value="<?php echo esc_attr( $hp_timeframe_value ); ?>">
 					</p>
 
 					<p class="hp-contact__field hp-contact__field--full">
-						<label for="hp-contact-message">Nachricht</label>
+						<label for="hp-contact-message">Kurze Beschreibung des Anliegens</label>
 						<textarea id="hp-contact-message" name="hp_contact_message" rows="10" maxlength="8000" required><?php echo esc_textarea( $hp_message_value ); ?></textarea>
 					</p>
 
 					<p class="hp-contact__privacy">
-						Mit dem Absenden wird deine Nachricht ausschließlich zur Bearbeitung deiner Anfrage verarbeitet.
+						Mit dem Absenden wird Ihre Nachricht ausschließlich zur Bearbeitung Ihrer Anfrage verarbeitet.
 						<?php if ( $hp_privacy_url ) : ?>
 							Mehr in der <a href="<?php echo esc_url( $hp_privacy_url ); ?>">Datenschutzerklärung</a>.
 						<?php endif; ?>
@@ -127,9 +185,11 @@ $hp_render_token         = hp_get_contact_form_render_token( $hp_rendered_at );
 
 					<div class="hp-contact__actions">
 						<button class="hp-contact__submit" type="submit">Nachricht senden</button>
-						<a class="hp-contact__mail-link" href="<?php echo esc_url( $hp_contact_mailto ); ?>">Lieber direkt mailen</a>
+						<a class="hp-contact__mail-link" href="<?php echo esc_url( $hp_contact_mailto ); ?>">Direkt per E-Mail schreiben</a>
 					</div>
 				</form>
+
+				<p class="hp-contact__closing">Wenn Sie denken, dass meine Perspektive, Sprache oder thematische Arbeit zu Ihrem Format passt, freue ich mich über eine Nachricht.</p>
 			</section>
 		</div>
 	</div>

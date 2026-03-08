@@ -28,6 +28,78 @@ function hp_get_contact_email(): string {
 }
 
 /**
+ * Öffentlicher Titel der Kontaktseite.
+ */
+function hp_get_contact_page_title(): string {
+	return 'Anfragen & Zusammenarbeit';
+}
+
+/**
+ * Auswahloptionen für die Art der Anfrage.
+ *
+ * @return array<string, string>
+ */
+function hp_get_contact_inquiry_type_options(): array {
+	return [
+		'editorial'   => 'Redaktionelle Anfrage',
+		'essay'       => 'Gastbeitrag / Essay',
+		'interview'   => 'Interview / Gespräch / Vortrag',
+		'cooperation' => 'Kooperation',
+		'writing'     => 'Schreibprojekt / Textanfrage',
+		'other'       => 'Sonstiges',
+	];
+}
+
+/**
+ * Liefert die lesbare Bezeichnung eines Anfragetyps.
+ */
+function hp_get_contact_inquiry_type_label( string $inquiry_type ): string {
+	$options = hp_get_contact_inquiry_type_options();
+
+	if ( isset( $options[ $inquiry_type ] ) ) {
+		return $options[ $inquiry_type ];
+	}
+
+	return $options['other'];
+}
+
+/**
+ * Normalisiert eingegebene Websites oder Links.
+ */
+function hp_normalize_contact_website_url( string $url ): string {
+	$url = trim( $url );
+
+	if ( '' === $url ) {
+		return '';
+	}
+
+	if ( ! preg_match( '#^[a-z][a-z0-9+\-.]*://#i', $url ) ) {
+		$url = 'https://' . ltrim( $url, '/' );
+	}
+
+	return esc_url_raw( $url, [ 'http', 'https' ] );
+}
+
+/**
+ * Baut eine knappe interne Betreffzeile für neue Anfragen.
+ *
+ * @param array<string, string> $fields Validierte Formularfelder.
+ */
+function hp_get_contact_submission_subject( array $fields ): string {
+	$subject = hp_get_contact_inquiry_type_label( (string) ( $fields['inquiry_type'] ?? '' ) );
+
+	if ( ! empty( $fields['organization'] ) ) {
+		$subject .= ' - ' . trim( (string) $fields['organization'] );
+	}
+
+	if ( function_exists( 'mb_substr' ) ) {
+		return (string) mb_substr( $subject, 0, 190 );
+	}
+
+	return substr( $subject, 0, 190 );
+}
+
+/**
  * Liefert den optionalen Brevo API-Key.
  */
 function hp_get_brevo_api_key(): string {
@@ -134,6 +206,17 @@ function hp_assign_contact_page_template( int $page_id ): void {
 	if ( 'page-kontakt.php' !== get_page_template_slug( $page_id ) ) {
 		update_post_meta( $page_id, '_wp_page_template', 'page-kontakt.php' );
 	}
+
+	$page = get_post( $page_id );
+
+	if ( $page instanceof WP_Post && in_array( $page->post_title, [ '', 'Kontakt' ], true ) ) {
+		wp_update_post(
+			[
+				'ID'         => $page_id,
+				'post_title' => hp_get_contact_page_title(),
+			]
+		);
+	}
 }
 
 /**
@@ -183,7 +266,7 @@ function hp_bootstrap_contact_page(): void {
 	$page_id = wp_insert_post( [
 		'post_type'      => 'page',
 		'post_status'    => 'publish',
-		'post_title'     => 'Kontakt',
+		'post_title'     => hp_get_contact_page_title(),
 		'post_name'      => 'kontakt',
 		'post_content'   => '',
 		'comment_status' => 'closed',
@@ -310,8 +393,16 @@ function hp_get_contact_autoreply_html( array $fields ): string {
 	$site_url       = home_url( '/' );
 	$imprint_url    = home_url( '/impressum/' );
 	$privacy_url    = home_url( '/datenschutz/' );
-	$subject_line   = '' !== $fields['subject'] ? esc_html( $fields['subject'] ) : 'Nicht angegeben';
 	$name_line      = '' !== $fields['name'] ? esc_html( $fields['name'] ) : 'Guten Tag';
+	$inquiry_line   = esc_html( hp_get_contact_inquiry_type_label( (string) ( $fields['inquiry_type'] ?? '' ) ) );
+	$organization   = '' !== (string) ( $fields['organization'] ?? '' ) ? esc_html( (string) $fields['organization'] ) : 'Nicht angegeben';
+	$timeframe      = '' !== (string) ( $fields['timeframe'] ?? '' ) ? esc_html( (string) $fields['timeframe'] ) : 'Nicht angegeben';
+	$website_line   = 'Nicht angegeben';
+
+	if ( ! empty( $fields['website_url'] ) ) {
+		$website_url  = (string) $fields['website_url'];
+		$website_line = '<a href="' . esc_url( $website_url ) . '" style="color:#b12a2a;text-decoration:none;">' . esc_html( $website_url ) . '</a>';
+	}
 
 	return '<!doctype html>
 <html lang="de">
@@ -343,7 +434,10 @@ function hp_get_contact_autoreply_html( array $fields ): string {
 								<tr>
 									<td style="padding:16px 18px;">
 										<p style="margin:0 0 8px;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:1.4;letter-spacing:1.5px;text-transform:uppercase;color:#696969;">Zusammenfassung</p>
-										<p style="margin:0 0 6px;font-family:Georgia,Times New Roman,serif;font-size:15px;line-height:1.6;color:#222222;"><strong>Betreff:</strong> ' . $subject_line . '</p>
+										<p style="margin:0 0 6px;font-family:Georgia,Times New Roman,serif;font-size:15px;line-height:1.6;color:#222222;"><strong>Art der Anfrage:</strong> ' . $inquiry_line . '</p>
+										<p style="margin:0 0 6px;font-family:Georgia,Times New Roman,serif;font-size:15px;line-height:1.6;color:#222222;"><strong>Organisation / Medium / Projekt:</strong> ' . $organization . '</p>
+										<p style="margin:0 0 6px;font-family:Georgia,Times New Roman,serif;font-size:15px;line-height:1.6;color:#222222;"><strong>Website oder Link:</strong> ' . $website_line . '</p>
+										<p style="margin:0 0 6px;font-family:Georgia,Times New Roman,serif;font-size:15px;line-height:1.6;color:#222222;"><strong>Zeitraum / Terminbezug:</strong> ' . $timeframe . '</p>
 										<p style="margin:0;font-family:Georgia,Times New Roman,serif;font-size:15px;line-height:1.6;color:#222222;"><strong>Antwortadresse:</strong> <a href="' . esc_url( $contact_mailto ) . '" style="color:#b12a2a;text-decoration:none;">' . esc_html( $contact_email ) . '</a></p>
 									</td>
 								</tr>
@@ -384,8 +478,11 @@ function hp_get_contact_autoreply_text( array $fields ): string {
 	$site_url      = home_url( '/' );
 	$imprint_url   = home_url( '/impressum/' );
 	$privacy_url   = home_url( '/datenschutz/' );
-	$subject_line  = '' !== $fields['subject'] ? $fields['subject'] : 'Nicht angegeben';
 	$name_line     = '' !== $fields['name'] ? $fields['name'] : 'Guten Tag';
+	$inquiry_line  = hp_get_contact_inquiry_type_label( (string) ( $fields['inquiry_type'] ?? '' ) );
+	$organization  = '' !== (string) ( $fields['organization'] ?? '' ) ? (string) $fields['organization'] : 'Nicht angegeben';
+	$website_url   = '' !== (string) ( $fields['website_url'] ?? '' ) ? (string) $fields['website_url'] : 'Nicht angegeben';
+	$timeframe     = '' !== (string) ( $fields['timeframe'] ?? '' ) ? (string) $fields['timeframe'] : 'Nicht angegeben';
 
 	return implode(
 		"\n\n",
@@ -394,7 +491,7 @@ function hp_get_contact_autoreply_text( array $fields ): string {
 			$name_line . ', vielen Dank für Ihre Nachricht über hasimuener.org. Sie wurde direkt weitergeleitet.',
 			'Ich melde mich, sobald ich inhaltlich antworten kann. Wenn Sie in der Zwischenzeit etwas ergänzen möchten, können Sie direkt auf diese E-Mail antworten.',
 			'Zusammenfassung',
-			'Betreff: ' . $subject_line . "\n" . 'Antwortadresse: ' . $contact_email,
+			'Art der Anfrage: ' . $inquiry_line . "\n" . 'Organisation / Medium / Projekt: ' . $organization . "\n" . 'Website oder Link: ' . $website_url . "\n" . 'Zeitraum / Terminbezug: ' . $timeframe . "\n" . 'Antwortadresse: ' . $contact_email,
 			'Mit freundlichen Grüßen' . "\n" . 'Haşim Üner',
 			'Kontakt: ' . $contact_email . "\n" . 'Website: ' . $site_url . "\n" . 'Impressum: ' . $imprint_url . "\n" . 'Datenschutz: ' . $privacy_url,
 			'Diese E-Mail wurde automatisch nach dem Absenden des Kontaktformulars erzeugt.',
@@ -479,14 +576,23 @@ function hp_send_contact_autoreply( array $fields ): bool {
  * @param array<string, string> $fields Validierte Formularfelder.
  */
 function hp_get_contact_notification_text( array $fields ): string {
+	$organization = '' !== (string) ( $fields['organization'] ?? '' ) ? (string) $fields['organization'] : 'Nicht angegeben';
+	$website_url  = '' !== (string) ( $fields['website_url'] ?? '' ) ? (string) $fields['website_url'] : 'Nicht angegeben';
+	$timeframe    = '' !== (string) ( $fields['timeframe'] ?? '' ) ? (string) $fields['timeframe'] : 'Nicht angegeben';
+	$inquiry_type = hp_get_contact_inquiry_type_label( (string) ( $fields['inquiry_type'] ?? '' ) );
+
 	return implode(
 		"\n\n",
 		[
 			'Neue Nachricht über das Kontaktformular von hasimuener.org',
 			'Name: ' . $fields['name'],
 			'E-Mail: ' . $fields['email'],
-			'Betreff: ' . ( '' !== $fields['subject'] ? $fields['subject'] : 'Nicht angegeben' ),
-			'Nachricht:',
+			'Art der Anfrage: ' . $inquiry_type,
+			'Organisation / Medium / Projekt: ' . $organization,
+			'Website oder Link: ' . $website_url,
+			'Zeitraum / Terminbezug: ' . $timeframe,
+			'Interner Betreff: ' . ( '' !== $fields['subject'] ? $fields['subject'] : 'Nicht angegeben' ),
+			'Beschreibung des Anliegens:',
 			$fields['message'],
 		]
 	);
@@ -685,11 +791,17 @@ function hp_handle_contact_form_submission(): void {
 		exit;
 	}
 
+	$website_input = isset( $_POST['hp_contact_website_url'] ) ? sanitize_text_field( (string) wp_unslash( $_POST['hp_contact_website_url'] ) ) : '';
+
 	$fields = [
-		'name'    => isset( $_POST['hp_contact_name'] ) ? sanitize_text_field( (string) wp_unslash( $_POST['hp_contact_name'] ) ) : '',
-		'email'   => isset( $_POST['hp_contact_email'] ) ? sanitize_email( (string) wp_unslash( $_POST['hp_contact_email'] ) ) : '',
-		'subject' => isset( $_POST['hp_contact_subject'] ) ? sanitize_text_field( (string) wp_unslash( $_POST['hp_contact_subject'] ) ) : '',
-		'message' => isset( $_POST['hp_contact_message'] ) ? trim( sanitize_textarea_field( (string) wp_unslash( $_POST['hp_contact_message'] ) ) ) : '',
+		'name'         => isset( $_POST['hp_contact_name'] ) ? sanitize_text_field( (string) wp_unslash( $_POST['hp_contact_name'] ) ) : '',
+		'email'        => isset( $_POST['hp_contact_email'] ) ? sanitize_email( (string) wp_unslash( $_POST['hp_contact_email'] ) ) : '',
+		'organization' => isset( $_POST['hp_contact_organization'] ) ? sanitize_text_field( (string) wp_unslash( $_POST['hp_contact_organization'] ) ) : '',
+		'website_url'  => $website_input,
+		'inquiry_type' => isset( $_POST['hp_contact_inquiry_type'] ) ? sanitize_key( (string) wp_unslash( $_POST['hp_contact_inquiry_type'] ) ) : '',
+		'timeframe'    => isset( $_POST['hp_contact_timeframe'] ) ? sanitize_text_field( (string) wp_unslash( $_POST['hp_contact_timeframe'] ) ) : '',
+		'subject'      => '',
+		'message'      => isset( $_POST['hp_contact_message'] ) ? trim( sanitize_textarea_field( (string) wp_unslash( $_POST['hp_contact_message'] ) ) ) : '',
 	];
 
 	$flash = [
@@ -700,14 +812,14 @@ function hp_handle_contact_form_submission(): void {
 	$nonce = isset( $_POST['hp_contact_nonce'] ) ? (string) wp_unslash( $_POST['hp_contact_nonce'] ) : '';
 
 	if ( ! wp_verify_nonce( $nonce, 'hp_contact_submit' ) ) {
-		$flash['message'] = 'Das Formular ist nicht mehr gültig. Bitte lade die Seite neu und versuche es erneut.';
+		$flash['message'] = 'Das Formular ist nicht mehr gültig. Bitte laden Sie die Seite neu und versuchen Sie es erneut.';
 		hp_redirect_contact_form( $flash );
 	}
 
 	$honeypot = isset( $_POST['hp_contact_website'] ) ? trim( (string) wp_unslash( $_POST['hp_contact_website'] ) ) : '';
 
 	if ( '' !== $honeypot ) {
-		$flash['message'] = 'Die Nachricht konnte nicht gesendet werden. Bitte versuche es erneut.';
+		$flash['message'] = 'Die Nachricht konnte nicht gesendet werden. Bitte versuchen Sie es erneut.';
 		hp_redirect_contact_form( $flash );
 	}
 
@@ -716,26 +828,26 @@ function hp_handle_contact_form_submission(): void {
 	$token       = isset( $_POST['hp_contact_render_token'] ) ? (string) wp_unslash( $_POST['hp_contact_render_token'] ) : '';
 
 	if ( $rendered_at <= 0 || '' === $token || ! hash_equals( hp_get_contact_form_render_token( $rendered_at ), $token ) ) {
-		$flash['message'] = 'Das Formular ist abgelaufen. Bitte lade die Seite neu und versuche es erneut.';
+		$flash['message'] = 'Das Formular ist abgelaufen. Bitte laden Sie die Seite neu und versuchen Sie es erneut.';
 		hp_redirect_contact_form( $flash );
 	}
 
 	$elapsed = time() - $rendered_at;
 
 	if ( $elapsed < $settings['min_seconds'] ) {
-		$flash['message'] = 'Bitte nimm dir einen kurzen Moment Zeit und sende die Nachricht dann erneut.';
+		$flash['message'] = 'Bitte nehmen Sie sich einen kurzen Moment Zeit und senden Sie die Nachricht dann erneut.';
 		hp_redirect_contact_form( $flash );
 	}
 
 	if ( $elapsed > $settings['max_age'] ) {
-		$flash['message'] = 'Das Formular ist abgelaufen. Bitte lade die Seite neu und versuche es erneut.';
+		$flash['message'] = 'Das Formular ist abgelaufen. Bitte laden Sie die Seite neu und versuchen Sie es erneut.';
 		hp_redirect_contact_form( $flash );
 	}
 
 	$link_count = preg_match_all( '/(?:https?:\/\/|www\.|<a\s)/iu', $fields['message'] );
 
 	if ( false !== $link_count && $link_count > $settings['max_links'] ) {
-		$flash['message'] = 'Bitte reduziere die Zahl der Links in deiner Nachricht.';
+		$flash['message'] = 'Bitte reduzieren Sie die Zahl der Links in Ihrer Nachricht.';
 		hp_redirect_contact_form( $flash );
 	}
 
@@ -743,24 +855,40 @@ function hp_handle_contact_form_submission(): void {
 	$last_sent_at = (int) get_transient( $rate_key );
 
 	if ( $last_sent_at > 0 && ( time() - $last_sent_at ) < $settings['rate_window'] ) {
-		$flash['message'] = 'Bitte warte einen kurzen Moment, bevor du eine weitere Nachricht sendest.';
+		$flash['message'] = 'Bitte warten Sie einen kurzen Moment, bevor Sie eine weitere Nachricht senden.';
 		hp_redirect_contact_form( $flash );
 	}
 
 	if ( '' === $fields['name'] ) {
-		$flash['message'] = 'Bitte gib deinen Namen an.';
+		$flash['message'] = 'Bitte geben Sie Ihren Namen an.';
 		hp_redirect_contact_form( $flash );
 	}
 
 	if ( '' === $fields['email'] || ! is_email( $fields['email'] ) ) {
-		$flash['message'] = 'Bitte gib eine gültige E-Mail-Adresse an.';
+		$flash['message'] = 'Bitte geben Sie eine gültige E-Mail-Adresse an.';
+		hp_redirect_contact_form( $flash );
+	}
+
+	if ( '' !== $website_input ) {
+		$fields['website_url'] = hp_normalize_contact_website_url( $website_input );
+
+		if ( '' === $fields['website_url'] ) {
+			$flash['message'] = 'Bitte geben Sie eine gültige Website oder einen gültigen Link an.';
+			hp_redirect_contact_form( $flash );
+		}
+	}
+
+	if ( ! array_key_exists( $fields['inquiry_type'], hp_get_contact_inquiry_type_options() ) ) {
+		$flash['message'] = 'Bitte wählen Sie die Art Ihrer Anfrage aus.';
 		hp_redirect_contact_form( $flash );
 	}
 
 	if ( '' === $fields['message'] ) {
-		$flash['message'] = 'Bitte schreibe eine Nachricht.';
+		$flash['message'] = 'Bitte beschreiben Sie Ihr Anliegen kurz.';
 		hp_redirect_contact_form( $flash );
 	}
+
+	$fields['subject'] = hp_get_contact_submission_subject( $fields );
 
 	$mail_sent = hp_send_contact_notification( $fields );
 
@@ -775,7 +903,7 @@ function hp_handle_contact_form_submission(): void {
 	}
 
 	if ( ! $mail_sent ) {
-		$flash['message'] = 'Die Nachricht konnte technisch nicht versendet werden. Du kannst alternativ direkt an ' . hp_get_contact_email() . ' schreiben.';
+		$flash['message'] = 'Die Nachricht konnte technisch nicht versendet werden. Sie können alternativ direkt an ' . hp_get_contact_email() . ' schreiben.';
 		hp_redirect_contact_form( $flash );
 	}
 
@@ -784,8 +912,8 @@ function hp_handle_contact_form_submission(): void {
 	hp_redirect_contact_form( [
 		'status'  => 'success',
 		'message' => $autoresponse_sent
-			? 'Danke. Deine Nachricht wurde versendet. Eine kurze Bestätigung ist per E-Mail unterwegs.'
-			: 'Danke. Deine Nachricht wurde versendet.',
+			? 'Vielen Dank. Ihre Nachricht wurde versendet. Eine kurze Bestätigung ist per E-Mail unterwegs.'
+			: 'Vielen Dank. Ihre Nachricht wurde versendet.',
 	] );
 }
 add_action( 'admin_post_nopriv_hp_send_contact', 'hp_handle_contact_form_submission' );
