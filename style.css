@@ -923,6 +923,9 @@ a.footnote-backref:hover {
 }
 
 .editorial-hero--atmospheric {
+    display: flex;
+    align-items: flex-end;
+    min-height: clamp(18rem, 48vw, 29rem);
     padding: clamp(2rem, 5vw, 3.35rem);
     border: 1px solid rgba(17, 17, 17, 0.08);
     border-radius: 30px;
@@ -930,17 +933,37 @@ a.footnote-backref:hover {
     box-shadow: 0 20px 44px rgba(17, 17, 17, 0.05);
 }
 
+.editorial-hero__media {
+    position: absolute;
+    inset: 0;
+    z-index: -3;
+    pointer-events: none;
+}
+
+.editorial-hero__image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(0.92) contrast(0.95);
+    transform: scale(1.01);
+}
+
 .editorial-hero--atmospheric::before {
     content: "";
     position: absolute;
     inset: 0;
     z-index: -2;
-    background-image:
-        linear-gradient(90deg, rgba(246, 242, 235, 0.94) 0%, rgba(246, 242, 235, 0.88) 42%, rgba(246, 242, 235, 0.8) 100%),
-        url("https://hasimuener.org/wp-content/uploads/2026/03/ChatGPT-Image-8.-Maerz-2026-01_35_30.png");
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
+    background:
+        radial-gradient(circle at 78% 18%, rgba(255, 255, 255, 0.48), transparent 24%),
+        linear-gradient(90deg, rgba(246, 242, 235, 0.95) 0%, rgba(246, 242, 235, 0.88) 38%, rgba(246, 242, 235, 0.74) 100%);
+}
+
+.editorial-hero--atmospheric:not(.editorial-hero--has-image)::before {
+    background:
+        radial-gradient(circle at 78% 18%, rgba(255, 255, 255, 0.58), transparent 24%),
+        radial-gradient(circle at right bottom, rgba(177, 42, 42, 0.08), transparent 30%),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.94) 0%, rgba(248, 244, 236, 0.88) 58%, rgba(238, 233, 228, 0.94) 100%);
 }
 
 .editorial-hero--atmospheric::after {
@@ -955,6 +978,8 @@ a.footnote-backref:hover {
 }
 
 .editorial-hero__grid {
+    position: relative;
+    z-index: 1;
     display: grid;
     grid-template-columns: 1fr;
     gap: 0;

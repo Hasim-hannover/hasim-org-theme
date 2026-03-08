@@ -11,7 +11,7 @@
 
 get_header(); ?>
 
-<main id="journal-front" class="journal-front" role="main">
+<main id="main-content" class="journal-front" role="main">
 
     <!-- ==========================================
          1. EDITORIAL HERO — Neuester Essay
@@ -24,9 +24,35 @@ get_header(); ?>
     ] );
 
     if ( $hp_hero->have_posts() ) :
-        while ( $hp_hero->have_posts() ) : $hp_hero->the_post(); ?>
+        while ( $hp_hero->have_posts() ) : $hp_hero->the_post();
+            $hp_hero_has_image = has_post_thumbnail();
+            $hp_hero_classes   = 'editorial-hero editorial-hero--atmospheric';
 
-    <section class="editorial-hero editorial-hero--atmospheric" aria-label="Aktueller Essay">
+            if ( $hp_hero_has_image ) {
+                $hp_hero_classes .= ' editorial-hero--has-image';
+            }
+            ?>
+
+    <section class="<?php echo esc_attr( $hp_hero_classes ); ?>" aria-label="Aktueller Essay">
+        <?php if ( $hp_hero_has_image ) : ?>
+            <div class="editorial-hero__media" aria-hidden="true">
+                <?php
+                echo wp_get_attachment_image(
+                    get_post_thumbnail_id(),
+                    'large',
+                    false,
+                    [
+                        'class'         => 'editorial-hero__image',
+                        'loading'       => 'eager',
+                        'fetchpriority' => 'high',
+                        'decoding'      => 'async',
+                        'sizes'         => '(min-width: 1140px) 1080px, calc(100vw - 2.4rem)',
+                        'alt'           => '',
+                    ]
+                );
+                ?>
+            </div>
+        <?php endif; ?>
         <div class="editorial-hero__grid">
 
             <div class="editorial-hero__meta hp-overline">
