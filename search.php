@@ -43,18 +43,28 @@ get_header(); ?>
         <div class="hp-search__results">
 
             <?php while ( have_posts() ) : the_post(); ?>
-            <article class="hp-search__item">
-                <div class="hp-meta">
-                    <?php
-                    $hp_type_label = match ( get_post_type() ) {
-                        'essay'   => 'Essay',
-                        'note'    => 'Notiz',
-                        'glossar' => 'Glossar',
-                        'page'    => 'Seite',
-                        default   => 'Beitrag',
-                    };
-                    ?>
-                    <span class="hp-search__type"><?php echo esc_html( $hp_type_label ); ?></span>
+	            <article class="hp-search__item">
+	                <div class="hp-meta">
+	                    <?php
+	                    switch ( get_post_type() ) {
+	                        case 'essay':
+	                            $hp_type_label = 'Essay';
+	                            break;
+	                        case 'note':
+	                            $hp_type_label = 'Notiz';
+	                            break;
+	                        case 'glossar':
+	                            $hp_type_label = 'Glossar';
+	                            break;
+	                        case 'page':
+	                            $hp_type_label = 'Seite';
+	                            break;
+	                        default:
+	                            $hp_type_label = 'Beitrag';
+	                            break;
+	                    }
+	                    ?>
+	                    <span class="hp-search__type"><?php echo esc_html( $hp_type_label ); ?></span>
                     <span class="hp-meta__separator"></span>
                     <time datetime="<?php echo esc_attr( get_the_date( 'c' ) ); ?>">
                         <?php echo esc_html( get_the_date( 'j. F Y' ) ); ?>

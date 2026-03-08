@@ -34,7 +34,9 @@ function hp_register_social_meta(): void {
 		'type'              => 'string',
 		'single'            => true,
 		'sanitize_callback' => 'sanitize_textarea_field',
-		'auth_callback'     => static fn(): bool => current_user_can( 'edit_posts' ),
+		'auth_callback'     => static function(): bool {
+			return current_user_can( 'edit_posts' );
+		},
 		'show_in_rest'      => true,
 		'default'           => '',
 	] );

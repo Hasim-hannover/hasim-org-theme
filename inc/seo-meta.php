@@ -38,7 +38,9 @@ function hp_register_seo_meta(): void {
 		'type'              => 'string',
 		'single'            => true,
 		'sanitize_callback' => 'sanitize_text_field',
-		'auth_callback'     => static fn(): bool => current_user_can( 'edit_posts' ),
+		'auth_callback'     => static function(): bool {
+			return current_user_can( 'edit_posts' );
+		},
 		'show_in_rest'      => true,
 		'default'           => '',
 	];
