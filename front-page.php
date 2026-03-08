@@ -26,7 +26,7 @@ get_header(); ?>
     if ( $hp_hero->have_posts() ) :
         while ( $hp_hero->have_posts() ) : $hp_hero->the_post(); ?>
 
-    <section class="editorial-hero" aria-label="Aktueller Essay">
+    <section class="editorial-hero editorial-hero--atmospheric" aria-label="Aktueller Essay">
         <div class="editorial-hero__grid">
 
             <div class="editorial-hero__meta hp-overline">
@@ -55,7 +55,7 @@ get_header(); ?>
     else : ?>
 
     <!-- Fallback: Kein Essay vorhanden -->
-    <section class="editorial-hero editorial-hero--empty" aria-label="Aktueller Essay">
+    <section class="editorial-hero editorial-hero--atmospheric editorial-hero--empty" aria-label="Aktueller Essay">
         <div class="editorial-hero__grid">
             <div class="editorial-hero__meta hp-overline"><span>Hasim Üner</span></div>
             <h1 class="editorial-hero__title">Macht. Medien. Gesellschaft.</h1>
