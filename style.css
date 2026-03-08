@@ -949,6 +949,10 @@ a.footnote-backref:hover {
     transform: scale(1.01);
 }
 
+.editorial-hero--has-image .editorial-hero__image {
+    filter: saturate(0.98) contrast(1.02) brightness(1.01);
+}
+
 .editorial-hero--atmospheric::before {
     content: "";
     position: absolute;
@@ -957,6 +961,12 @@ a.footnote-backref:hover {
     background:
         radial-gradient(circle at 78% 18%, rgba(255, 255, 255, 0.48), transparent 24%),
         linear-gradient(90deg, rgba(246, 242, 235, 0.95) 0%, rgba(246, 242, 235, 0.88) 38%, rgba(246, 242, 235, 0.74) 100%);
+}
+
+.editorial-hero--has-image::before {
+    background:
+        radial-gradient(circle at 78% 18%, rgba(255, 255, 255, 0.34), transparent 24%),
+        linear-gradient(90deg, rgba(246, 242, 235, 0.84) 0%, rgba(246, 242, 235, 0.72) 38%, rgba(246, 242, 235, 0.48) 100%);
 }
 
 .editorial-hero--atmospheric:not(.editorial-hero--has-image)::before {
@@ -975,6 +985,12 @@ a.footnote-backref:hover {
         radial-gradient(circle at 78% 18%, rgba(255, 255, 255, 0.48), transparent 24%),
         linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.22));
     pointer-events: none;
+}
+
+.editorial-hero--has-image::after {
+    background:
+        radial-gradient(circle at 78% 18%, rgba(255, 255, 255, 0.34), transparent 24%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.12));
 }
 
 .editorial-hero__grid {
