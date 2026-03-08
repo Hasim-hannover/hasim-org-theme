@@ -91,7 +91,8 @@ get_header(); ?>
                 sondern direkt per E-Mail weitergeleitet und zusätzlich in der internen
                 WordPress-Verwaltung dokumentiert. Sie werden nur so lange gespeichert, wie es für
                 die Bearbeitung, eine mögliche Anschlusskorrespondenz und die nachvollziehbare
-                Dokumentation der Anfrage erforderlich ist.
+                Dokumentation der Anfrage erforderlich ist. Die in der Website-Verwaltung gespeicherten
+                Kontaktanfragen werden spätestens nach <?php echo esc_html( (string) hp_get_contact_submission_retention_days() ); ?> Tagen gelöscht.
             </p>
 
             <p>
@@ -121,9 +122,12 @@ get_header(); ?>
                 Die Versandzustellung der Bestätigungs- und späteren Hinweismails erfolgt über
                 <strong>Brevo</strong> als technischen E-Mail-Dienstleister. Auf der Website selbst
                 wird dafür kein Brevo-Tracking eingebunden. Du kannst deine Einwilligung jederzeit über
-                den Abmeldelink in jeder entsprechenden E-Mail widerrufen. Nach einer Abmeldung wird die
-                Adresse nicht weiter für den Versand genutzt; eine Sperrnotiz kann gespeichert bleiben,
-                um erneute ungewollte Zusendungen zu verhindern.
+                den Abmeldelink in jeder entsprechenden E-Mail widerrufen. Nicht bestätigte Anmeldungen
+                werden spätestens nach <?php echo esc_html( (string) hp_get_newsletter_pending_retention_days() ); ?> Tagen gelöscht. Nach einer Abmeldung
+                wird die Adresse nicht weiter für den Versand genutzt; statt des vollständigen Datensatzes
+                bleibt nur eine minimierte Sperrnotiz in gehashter Form für maximal
+                <?php echo esc_html( (string) hp_get_newsletter_suppression_retention_days() ); ?> Tage gespeichert, um erneute ungewollte Zusendungen
+                zu vermeiden.
             </p>
 
             <h2>5. Cookies</h2>

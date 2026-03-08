@@ -55,6 +55,15 @@ function hp_get_newsletter_x_url(): string {
 }
 
 /**
+ * Tabellenname für minimierte Sperrnotizen nach Austragung.
+ */
+function hp_get_newsletter_suppression_table_name(): string {
+	global $wpdb;
+
+	return $wpdb->prefix . 'hp_newsletter_suppressions';
+}
+
+/**
  * Tabellenname für lokale Newsletter-Abonnements.
  */
 function hp_get_newsletter_table_name(): string {
@@ -67,7 +76,7 @@ function hp_get_newsletter_table_name(): string {
  * Version der lokalen Newsletter-Struktur.
  */
 function hp_get_newsletter_db_version(): string {
-	return '1.0.0';
+	return '1.1.0';
 }
 
 /**
@@ -85,6 +94,44 @@ function hp_get_newsletter_consent_copy(): string {
 }
 
 /**
+ * Normalisiert E-Mail-Adressen für Speicherung und Vergleich.
+ */
+function hp_normalize_newsletter_email( string $email ): string {
+	return strtolower( trim( $email ) );
+}
+
+/**
+ * Hash einer E-Mail-Adresse für minimierte Sperrnotizen.
+ */
+function hp_hash_newsletter_email( string $email ): string {
+	$email = hp_normalize_newsletter_email( $email );
+
+	return '' !== $email ? hash( 'sha256', $email ) : '';
+}
+
+/**
+ * Maskierte Darstellung einer E-Mail-Adresse.
+ */
+function hp_mask_newsletter_email( string $email ): string {
+	$email = hp_normalize_newsletter_email( $email );
+
+	if ( '' === $email || false === strpos( $email, '@' ) ) {
+		return '';
+	}
+
+	[ $local, $domain ] = explode( '@', $email, 2 );
+	$local_length       = strlen( $local );
+
+	if ( $local_length <= 2 ) {
+		$masked_local = substr( $local, 0, 1 ) . '***';
+	} else {
+		$masked_local = substr( $local, 0, 2 ) . str_repeat( '*', max( 3, $local_length - 2 ) );
+	}
+
+	return $masked_local . '@' . $domain;
+}
+
+/**
  * Installiert oder aktualisiert die lokale Newsletter-Tabelle.
  */
 function hp_maybe_install_newsletter_table(): void {
@@ -99,6 +146,7 @@ function hp_maybe_install_newsletter_table(): void {
 	require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
 	$table_name      = hp_get_newsletter_table_name();
+	$suppression_table_name = hp_get_newsletter_suppression_table_name();
 	$charset_collate = $wpdb->get_charset_collate();
 	$sql             = "CREATE TABLE {$table_name} (
 		id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -123,6 +171,20 @@ function hp_maybe_install_newsletter_table(): void {
 		KEY status (status),
 		KEY confirm_token (confirm_token),
 		KEY unsubscribe_token (unsubscribe_token)
+	) {$charset_collate};
+
+	CREATE TABLE {$suppression_table_name} (
+		id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+		email_hash char(64) NOT NULL,
+		email_mask varchar(190) NOT NULL DEFAULT '',
+		source varchar(50) NOT NULL DEFAULT '',
+		unsubscribed_at datetime NOT NULL,
+		retain_until datetime NOT NULL,
+		created_at datetime NOT NULL,
+		updated_at datetime NOT NULL,
+		PRIMARY KEY  (id),
+		UNIQUE KEY email_hash (email_hash),
+		KEY retain_until (retain_until)
 	) {$charset_collate};";
 
 	dbDelta( $sql );
@@ -305,7 +367,7 @@ function hp_get_newsletter_subscriber_by_email( string $email ): ?array {
 	global $wpdb;
 
 	$table_name = hp_get_newsletter_table_name();
-	$email      = strtolower( trim( $email ) );
+	$email      = hp_normalize_newsletter_email( $email );
 
 	if ( '' === $email ) {
 		return null;
@@ -386,13 +448,22 @@ function hp_upsert_pending_newsletter_subscriber( string $email, string $source,
 
 	$table_name   = hp_get_newsletter_table_name();
 	$now          = current_time( 'mysql' );
-	$email        = strtolower( trim( $email ) );
+	$email        = hp_normalize_newsletter_email( $email );
 	$source       = sanitize_key( $source );
 	$source_url   = hp_get_newsletter_redirect_target( $source_url );
 	$fingerprint  = hp_get_newsletter_request_fingerprint();
 	$confirm_token = hp_generate_newsletter_token();
 	$unsubscribe_token = hp_generate_newsletter_token();
+	$email_hash   = hp_hash_newsletter_email( $email );
 	$existing     = hp_get_newsletter_subscriber_by_email( $email );
+
+	if ( '' !== $email_hash ) {
+		$wpdb->delete(
+			hp_get_newsletter_suppression_table_name(),
+			[ 'email_hash' => $email_hash ],
+			[ '%s' ]
+		);
+	}
 
 	$data = [
 		'email'             => $email,
@@ -520,6 +591,111 @@ function hp_update_newsletter_subscriber_status( int $subscriber_id, string $sta
 	);
 
 	return false !== $result;
+}
+
+/**
+ * Löscht einen Newsletter-Eintrag endgültig.
+ */
+function hp_delete_newsletter_subscriber( int $subscriber_id ): bool {
+	global $wpdb;
+
+	if ( $subscriber_id <= 0 ) {
+		return false;
+	}
+
+	$deleted = $wpdb->delete(
+		hp_get_newsletter_table_name(),
+		[ 'id' => $subscriber_id ],
+		[ '%d' ]
+	);
+
+	return false !== $deleted;
+}
+
+/**
+ * Verschiebt eine Adresse in eine minimierte Sperrnotiz.
+ *
+ * @param array<string, string> $subscriber Datensatz.
+ */
+function hp_suppress_newsletter_subscriber( array $subscriber ): bool {
+	global $wpdb;
+
+	$email_hash = hp_hash_newsletter_email( (string) ( $subscriber['email'] ?? '' ) );
+
+	if ( '' === $email_hash || empty( $subscriber['id'] ) ) {
+		return false;
+	}
+
+	$now          = current_time( 'mysql' );
+	$retain_until = gmdate( 'Y-m-d H:i:s', time() + ( DAY_IN_SECONDS * hp_get_newsletter_suppression_retention_days() ) );
+	$inserted     = $wpdb->replace(
+		hp_get_newsletter_suppression_table_name(),
+		[
+			'email_hash'      => $email_hash,
+			'email_mask'      => hp_mask_newsletter_email( (string) $subscriber['email'] ),
+			'source'          => (string) ( $subscriber['source'] ?? '' ),
+			'unsubscribed_at' => $now,
+			'retain_until'    => $retain_until,
+			'created_at'      => $now,
+			'updated_at'      => $now,
+		],
+		[
+			'%s',
+			'%s',
+			'%s',
+			'%s',
+			'%s',
+			'%s',
+			'%s',
+		]
+	);
+
+	if ( false === $inserted ) {
+		return false;
+	}
+
+	return hp_delete_newsletter_subscriber( (int) $subscriber['id'] );
+}
+
+/**
+ * Zählt minimierte Sperrnotizen.
+ */
+function hp_get_newsletter_suppression_count(): int {
+	global $wpdb;
+
+	return (int) $wpdb->get_var( "SELECT COUNT(*) FROM " . hp_get_newsletter_suppression_table_name() );
+}
+
+/**
+ * Lädt minimierte Sperrnotizen für die Verwaltung.
+ *
+ * @return array<int, array<string, string>>
+ */
+function hp_get_recent_newsletter_suppressions( int $limit = 50 ): array {
+	global $wpdb;
+
+	$limit = max( 1, min( 100, $limit ) );
+	$rows  = $wpdb->get_results(
+		$wpdb->prepare(
+			"SELECT id, email_mask, source, unsubscribed_at
+			FROM " . hp_get_newsletter_suppression_table_name() . "
+			ORDER BY unsubscribed_at DESC
+			LIMIT %d",
+			$limit
+		),
+		ARRAY_A
+	);
+
+	if ( ! is_array( $rows ) ) {
+		return [];
+	}
+
+	return array_map(
+		static function ( array $row ): array {
+			return array_map( 'strval', $row );
+		},
+		$rows
+	);
 }
 
 /**
@@ -1078,25 +1254,9 @@ function hp_handle_newsletter_unsubscribe(): void {
 		);
 	}
 
-	if ( 'unsubscribed' === $subscriber['status'] ) {
-		hp_redirect_newsletter(
-			$target_url,
-			[
-				'status'  => 'success',
-				'message' => 'Diese Adresse war bereits abgemeldet.',
-			]
-		);
-	}
+	$unsubscribed = hp_suppress_newsletter_subscriber( $subscriber );
 
-	$updated = hp_update_newsletter_subscriber_status(
-		(int) $subscriber['id'],
-		'unsubscribed',
-		[
-			'unsubscribed_at' => current_time( 'mysql' ),
-		]
-	);
-
-	if ( ! $updated ) {
+	if ( ! $unsubscribed ) {
 		hp_redirect_newsletter(
 			$target_url,
 			[
@@ -1106,11 +1266,7 @@ function hp_handle_newsletter_unsubscribe(): void {
 		);
 	}
 
-	$unsubscribed_subscriber = hp_get_newsletter_subscriber_by_id( (int) $subscriber['id'] );
-
-	if ( $unsubscribed_subscriber ) {
-		hp_send_newsletter_unsubscribed_mail( $unsubscribed_subscriber );
-	}
+	hp_send_newsletter_unsubscribed_mail( $subscriber );
 
 	hp_redirect_newsletter(
 		$target_url,
@@ -1148,20 +1304,8 @@ function hp_handle_newsletter_admin_unsubscribe(): void {
 		exit;
 	}
 
-	if ( 'unsubscribed' !== $subscriber['status'] ) {
-		hp_update_newsletter_subscriber_status(
-			$subscriber_id,
-			'unsubscribed',
-			[
-				'unsubscribed_at' => current_time( 'mysql' ),
-			]
-		);
-	}
-
-	$updated_subscriber = hp_get_newsletter_subscriber_by_id( $subscriber_id );
-
-	if ( $updated_subscriber ) {
-		hp_send_newsletter_unsubscribed_mail( $updated_subscriber );
+	if ( hp_suppress_newsletter_subscriber( $subscriber ) ) {
+		hp_send_newsletter_unsubscribed_mail( $subscriber );
 	}
 
 	wp_safe_redirect( add_query_arg( 'notice', 'manual_unsubscribed', $redirect_url ) );
@@ -1176,6 +1320,10 @@ add_action( 'admin_post_hp_admin_unsubscribe_newsletter', 'hp_handle_newsletter_
  */
 function hp_get_recent_newsletter_subscribers( int $limit = 50, string $search = '', string $status = 'all' ): array {
 	global $wpdb;
+
+	if ( 'unsubscribed' === $status ) {
+		return [];
+	}
 
 	$table_name = hp_get_newsletter_table_name();
 	$limit      = max( 1, min( 100, $limit ) );
@@ -1212,6 +1360,42 @@ function hp_get_recent_newsletter_subscribers( int $limit = 50, string $search =
 			return array_map( 'strval', $row );
 		},
 		$rows
+	);
+}
+
+/**
+ * Löscht unbestätigte Newsletter-Anmeldungen nach Ablauf der Frist.
+ */
+function hp_cleanup_newsletter_pending_subscribers(): void {
+	global $wpdb;
+
+	$cutoff = gmdate( 'Y-m-d H:i:s', time() - ( DAY_IN_SECONDS * hp_get_newsletter_pending_retention_days() ) );
+
+	$wpdb->query(
+		$wpdb->prepare(
+			"DELETE FROM " . hp_get_newsletter_table_name() . "
+			WHERE status = %s
+			AND confirm_sent_at < %s",
+			'pending',
+			$cutoff
+		)
+	);
+}
+
+/**
+ * Löscht abgelaufene minimierte Sperrnotizen.
+ */
+function hp_cleanup_newsletter_suppressions(): void {
+	global $wpdb;
+
+	$cutoff = current_time( 'mysql' );
+
+	$wpdb->query(
+		$wpdb->prepare(
+			"DELETE FROM " . hp_get_newsletter_suppression_table_name() . "
+			WHERE retain_until < %s",
+			$cutoff
+		)
 	);
 }
 
@@ -1348,6 +1532,9 @@ function hp_get_newsletter_admin_counts(): array {
 		}
 	}
 
+	$counts['unsubscribed'] = hp_get_newsletter_suppression_count();
+	$counts['total']       += $counts['unsubscribed'];
+
 	return $counts;
 }
 
@@ -1455,6 +1642,7 @@ function hp_render_newsletter_management_page(): void {
 	$notice        = isset( $_GET['notice'] ) ? sanitize_key( (string) wp_unslash( $_GET['notice'] ) ) : '';
 	$status_filter = in_array( $status_filter, [ 'all', 'active', 'pending', 'unsubscribed' ], true ) ? $status_filter : 'all';
 	$subscribers   = hp_get_recent_newsletter_subscribers( 80, $search, $status_filter );
+	$suppressions  = hp_get_recent_newsletter_suppressions( 12 );
 	$export_url  = wp_nonce_url(
 		add_query_arg(
 			[
@@ -1479,6 +1667,7 @@ function hp_render_newsletter_management_page(): void {
 	<div class="wrap">
 		<h1>Newsletter</h1>
 		<p>Lokale Double-Opt-in-Liste für Hinweise auf neue Texte. Die E-Mails selbst laufen serverseitig über denselben Versandweg wie das Kontaktformular.</p>
+		<p>Nach einer Austragung bleibt hier nicht die volle Adresse gespeichert, sondern nur eine minimierte Sperrnotiz für die begrenzte Frist.</p>
 
 		<?php if ( 'manual_unsubscribed' === $notice ) : ?>
 			<div class="notice notice-success is-dismissible"><p>Die Adresse wurde aus dem Verteiler ausgetragen. Eine Bestätigung wurde versendet.</p></div>
@@ -1569,6 +1758,29 @@ function hp_render_newsletter_management_page(): void {
 				<?php endif; ?>
 			</tbody>
 		</table>
+
+		<?php if ( $suppressions ) : ?>
+			<h2 style="margin-top:28px;">Zuletzt abgemeldet</h2>
+			<p>Aus Datenschutzgründen wird hier nur eine maskierte Darstellung gezeigt.</p>
+			<table class="widefat striped">
+				<thead>
+					<tr>
+						<th>Adresse</th>
+						<th>Quelle</th>
+						<th>Abgemeldet am</th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php foreach ( $suppressions as $entry ) : ?>
+						<tr>
+							<td><?php echo esc_html( $entry['email_mask'] ); ?></td>
+							<td><?php echo esc_html( $entry['source'] ); ?></td>
+							<td><?php echo esc_html( $entry['unsubscribed_at'] ); ?></td>
+						</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
+		<?php endif; ?>
 	</div>
 	<?php
 }

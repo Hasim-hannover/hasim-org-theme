@@ -51,4 +51,5 @@ require_once $hp_inc_dir . '/comments.php';
 require_once $hp_inc_dir . '/contacts-admin.php';
 require_once $hp_inc_dir . '/contact.php';
 require_once $hp_inc_dir . '/newsletter.php';
+require_once $hp_inc_dir . '/privacy-maintenance.php';
 require_once $hp_inc_dir . '/graph-api.php';

@@ -125,6 +125,23 @@ function hp_store_contact_submission( array $fields, bool $mail_sent, bool $auto
 }
 
 /**
+ * Löscht abgelaufene Kontaktanfragen automatisch.
+ */
+function hp_cleanup_contact_submissions(): void {
+	global $wpdb;
+
+	$cutoff = gmdate( 'Y-m-d H:i:s', time() - ( DAY_IN_SECONDS * hp_get_contact_submission_retention_days() ) );
+
+	$wpdb->query(
+		$wpdb->prepare(
+			"DELETE FROM " . hp_get_contact_submissions_table_name() . "
+			WHERE created_at < %s",
+			$cutoff
+		)
+	);
+}
+
+/**
  * Zählt Kontaktanfragen nach Status.
  *
  * @return array{new:int,read:int,total:int}
