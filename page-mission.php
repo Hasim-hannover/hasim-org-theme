@@ -104,7 +104,7 @@ $hp_newsletter_url = hp_get_newsletter_anchor_url();
 
             <section class="hp-mission__section" aria-labelledby="mission-einladung">
                 <h2 id="mission-einladung">Eine Einladung zum Mitdenken und Widersprechen</h2>
-                <p><strong>Ich sehe niemanden als Feind.</strong> Das bedeutet nicht Naivität, sondern eine Entscheidung für eine andere Haltung: genau hinsehen, klar benennen, Widerspruch aushalten und trotzdem ansprechbar bleiben.</p>
+                <p>Mich interessiert kein Lagerdenken, sondern Klärung.</p>
                 <p>Wer hier liest, ist eingeladen, mitzudenken, mitzufragen und, wenn nötig, auch zu widersprechen. Mich interessiert kein zustimmendes Publikum, sondern ein Gespräch, in dem Kritik klärt statt verhärtet.</p>
             </section>
 
