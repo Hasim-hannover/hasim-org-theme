@@ -75,7 +75,7 @@ $hp_newsletter_url = hp_get_newsletter_anchor_url();
             <section class="hp-mission__section" aria-labelledby="mission-haltung">
                 <h2 id="mission-haltung">Meine Haltung: Dialog statt Lagerdenken</h2>
                 <p><strong>Ich verstehe mich als Brückenbauer</strong> zwischen den Welten, die mir vertraut sind. Das heißt nicht, Unterschiede kleinzureden. Es heißt, sie ernst zu nehmen, ohne aus ihnen Feindbilder zu machen.</p>
-                <p>Ich schreibe nicht aus dem Wunsch heraus, Lager zu bedienen. Ich suche den Dialog, auch dort, wo er anstrengend ist: zwischen Gemeinschaften, zwischen politischen Sprachen, zwischen individueller Erfahrung und öffentlicher Ordnung, auch im Gespräch mit staatlichen Institutionen.</p>
+                <p>Ich schreibe nicht, um vorgefertigte Gewissheiten zu bedienen. Ich suche den Dialog, auch dort, wo er anstrengend ist: zwischen Gemeinschaften, zwischen politischen Sprachen, zwischen individueller Erfahrung und öffentlicher Ordnung, auch im Gespräch mit staatlichen Institutionen.</p>
                 <p>Konkret kann das bedeuten, die Sprache von Sicherheit und Ordnung mit den Erfahrungen derer zusammenzudenken, die Ohnmacht erleben; oder Konflikte zwischen Gemeinschaften so zu benennen, dass Widerspruch möglich bleibt, ohne das Gegenüber aus dem Gespräch zu drängen.</p>
                 <p>Dafür suche ich eine Sprache, die Zusammenhänge hält: eine Sprache, die Unterschiede benennt, ohne sie zu verhärten, und Kritik formuliert, ohne Menschen oder Institutionen vorschnell zu Gegnern zu erklären.</p>
             </section>
@@ -97,8 +97,8 @@ $hp_newsletter_url = hp_get_newsletter_anchor_url();
 
             <section class="hp-mission__section" aria-labelledby="mission-journal">
                 <h2 id="mission-journal">Warum dieses Journal? Ein Raum für Klärung</h2>
-                <p>Dieses Journal ist ein Ort für solche Klärungen. Kein Tribunal, keine ideologische Schule, kein moralischer Hochsitz. Eher ein Raum, in dem Erfahrungen, Begriffe und Perspektiven miteinander ins Gespräch kommen können.</p>
-                <p>Die Gedanken zu <strong>Macht</strong>, <strong>Freiheit</strong>, <strong>Erinnerung</strong> und dem <strong>Bauen von Brücken</strong> werden in den Schriften dieses Journals weiter ausgearbeitet. Diese Seite markiert den Ausgangspunkt; die Essays und Notizen gehen in die Tiefe.</p>
+                <p>Kein Tribunal, keine ideologische Schule, kein moralischer Hochsitz, sondern ein Raum, in dem Erfahrungen, Begriffe und Perspektiven miteinander ins Gespräch kommen können.</p>
+                <p>Die Gedanken zu <strong>Macht</strong>, <strong>Freiheit</strong>, <strong>Erinnerung</strong> und dem <strong>Anspruch, Brücken zu bauen</strong> werden in den Schriften dieses Journals weiter ausgearbeitet. Diese Seite markiert den Ausgangspunkt; die Essays und Notizen gehen in die Tiefe.</p>
                 <p>Kein Tracking, keine Werbung, keine Cookies. Nicht aus Technikfeindlichkeit, sondern weil Aufmerksamkeit für mich keine Ware ist. Dieser Ort soll ruhig genug sein, damit Gedanken sich entfalten können und aus Rede im besten Fall Gespräch wird.</p>
             </section>
 
