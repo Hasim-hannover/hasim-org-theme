@@ -120,11 +120,12 @@ get_header(); ?>
          ========================================== -->
     <?php
     hp_render_newsletter_form( [
-        'id'      => 'newsletter-signup',
-        'context' => 'front_page',
-        'variant' => 'home',
-        'title'   => 'Neue Texte direkt ins Postfach.',
-        'lede'    => 'Wenn ein neuer Essay erscheint oder eine Notiz einen Gedanken weiterführt, erhalten Sie eine kurze Nachricht. Nicht täglich. Nur wenn wirklich etwas erschienen ist.',
+        'id'           => 'newsletter-signup',
+        'context'      => 'front_page',
+        'variant'      => 'home',
+        'title'        => 'Neue Essays. Klare Hinweise. Kein Inbox-Lärm.',
+        'lede'         => 'Sobald ein neuer Essay erscheint oder eine Notiz einen Gedanken wirklich weiterführt, bekommen Sie eine kurze Mail. Kein täglicher Versand. Kein Füllmaterial.',
+        'submit_label' => 'Kostenlos eintragen',
     ] );
     ?>
 

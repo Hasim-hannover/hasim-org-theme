@@ -1410,14 +1410,14 @@ function hp_render_newsletter_form( array $args = [] ): void {
 		'context'      => 'site',
 		'variant'      => 'home',
 		'eyebrow'      => hp_get_newsletter_label(),
-		'title'        => 'Wenn ein neuer Essay erscheint, soll er Sie erreichen.',
+		'title'        => 'Neue Essays. Klare Hinweise. Kein Inbox-Lärm.',
 		'lede'         => 'Sie erhalten kurze Hinweise auf neue Essays und ausgewählte Notizen. Nicht täglich. Nur dann, wenn wirklich etwas veröffentlicht wurde, das weiterführt.',
 		'promises'     => [
 			'Neue Essays direkt nach Veröffentlichung',
-			'Ausgewählte Notizen nur dann, wenn sie den Gedanken vertiefen',
-			'Keine Werbung, kein Tracking in den E-Mails',
+			'Nur Notizen, die einen Gedanken wirklich vertiefen',
+			'Double-Opt-in und jederzeit widerrufbar',
 		],
-		'submit_label' => 'Eintragen',
+		'submit_label' => 'Kostenlos eintragen',
 		'show_x_link'  => true,
 		'class_name'   => '',
 		'return_url'   => hp_get_newsletter_current_url(),
@@ -1438,6 +1438,7 @@ function hp_render_newsletter_form( array $args = [] ): void {
 	$x_url              = hp_get_newsletter_x_url();
 	$form_id            = (string) $args['id'];
 	$form_context       = sanitize_key( (string) $args['context'] );
+	$consent_copy       = hp_get_newsletter_consent_copy();
 ?>
 	<section id="<?php echo esc_attr( $form_id ); ?>" class="<?php echo esc_attr( $section_classes ); ?>" aria-labelledby="<?php echo esc_attr( $form_id . '-title' ); ?>">
 		<div class="hp-newsletter__shell">
@@ -1453,9 +1454,23 @@ function hp_render_newsletter_form( array $args = [] ): void {
 						<?php endforeach; ?>
 					</ul>
 				<?php endif; ?>
+
+				<div class="hp-newsletter__signal">
+					<p class="hp-newsletter__signal-label">Kein Kampagnen-Takt</p>
+					<p class="hp-newsletter__signal-copy">Kurze Hinweise, wenn wirklich ein neuer Text online ist. Kein Verkauf, keine Serienmails, keine künstliche Frequenz.</p>
+				</div>
 			</div>
 
 			<div class="hp-newsletter__form-wrap">
+				<div class="hp-newsletter__form-head">
+					<p class="hp-newsletter__form-eyebrow">Anmeldung</p>
+					<h3 class="hp-newsletter__form-title">In weniger als zehn Sekunden eingetragen.</h3>
+					<div class="hp-newsletter__trust">
+						<span>Double-Opt-in</span>
+						<span>Jederzeit widerrufbar</span>
+					</div>
+				</div>
+
 				<?php if ( '' !== $message ) : ?>
 					<div class="hp-newsletter__notice hp-newsletter__notice--<?php echo 'success' === $status ? 'success' : 'error'; ?>" aria-live="polite">
 						<p><?php echo esc_html( $message ); ?></p>
@@ -1475,25 +1490,27 @@ function hp_render_newsletter_form( array $args = [] ): void {
 						<input id="<?php echo esc_attr( $form_id . '-website' ); ?>" type="text" name="hp_newsletter_website" value="" tabindex="-1" autocomplete="off">
 					</div>
 
-					<p class="hp-newsletter__field">
-						<label for="<?php echo esc_attr( $form_id . '-email' ); ?>">E-Mail-Adresse</label>
-						<input id="<?php echo esc_attr( $form_id . '-email' ); ?>" name="hp_newsletter_email" type="email" maxlength="190" autocomplete="email" value="<?php echo esc_attr( $email_value ); ?>" required>
-					</p>
+					<div class="hp-newsletter__primary">
+						<p class="hp-newsletter__field">
+							<label for="<?php echo esc_attr( $form_id . '-email' ); ?>">E-Mail-Adresse</label>
+							<input id="<?php echo esc_attr( $form_id . '-email' ); ?>" name="hp_newsletter_email" type="email" maxlength="190" autocomplete="email" value="<?php echo esc_attr( $email_value ); ?>" placeholder="name@beispiel.de" required>
+						</p>
+
+						<button class="hp-newsletter__submit" type="submit"><?php echo esc_html( (string) $args['submit_label'] ); ?></button>
+					</div>
 
 					<label class="hp-newsletter__consent" for="<?php echo esc_attr( $form_id . '-consent' ); ?>">
 						<input id="<?php echo esc_attr( $form_id . '-consent' ); ?>" name="hp_newsletter_consent" type="checkbox" value="1" required>
-						<span>Ich möchte per E-Mail über neue Essays und ausgewählte Notizen informiert werden. Die Einwilligung kann ich jederzeit über den Abmeldelink widerrufen.<?php if ( $privacy_url ) : ?> Mehr in der <a href="<?php echo esc_url( $privacy_url ); ?>">Datenschutzerklärung</a>.<?php endif; ?></span>
+						<span><?php echo esc_html( $consent_copy ); ?><?php if ( $privacy_url ) : ?> Mehr in der <a href="<?php echo esc_url( $privacy_url ); ?>">Datenschutzerklärung</a>.<?php endif; ?></span>
 					</label>
 
 					<div class="hp-newsletter__actions">
-						<button class="hp-newsletter__submit" type="submit"><?php echo esc_html( (string) $args['submit_label'] ); ?></button>
-
 						<?php if ( ! empty( $args['show_x_link'] ) ) : ?>
-							<a class="hp-newsletter__secondary" href="<?php echo esc_url( $x_url ); ?>" target="_blank" rel="noopener noreferrer">Oder auf X folgen</a>
+							<a class="hp-newsletter__secondary" href="<?php echo esc_url( $x_url ); ?>" target="_blank" rel="noopener noreferrer">Lieber öffentlich lesen? Auf X folgen</a>
 						<?php endif; ?>
 					</div>
 
-					<p class="hp-newsletter__footnote">Nach dem Eintragen erhalten Sie eine Bestätigungs-E-Mail. Erst danach ist die Anmeldung aktiv.</p>
+					<p class="hp-newsletter__footnote">Sie erhalten zuerst eine Bestätigungs-E-Mail. Erst nach dem Klick ist die Anmeldung aktiv.</p>
 				</form>
 			</div>
 		</div>
