@@ -1764,6 +1764,11 @@ a.footnote-backref:hover {
 .hp-newsletter {
     scroll-margin-top: 7rem;
     position: relative;
+    --hp-newsletter-ink: #223246;
+    --hp-newsletter-ink-soft: #5a6878;
+    --hp-newsletter-line: rgba(34, 50, 70, 0.15);
+    --hp-newsletter-surface: #f3f6f9;
+    --hp-newsletter-panel: rgba(255, 255, 255, 0.86);
 }
 
 .hp-newsletter--home {
@@ -1777,18 +1782,45 @@ a.footnote-backref:hover {
 
 .hp-newsletter__shell {
     position: relative;
+    isolation: isolate;
     display: grid;
     grid-template-columns: 1fr;
     gap: 1.6rem;
     padding: clamp(1.35rem, 2vw, 1.95rem);
-    border: 1px solid rgba(17, 17, 17, 0.72);
+    border: 1px solid var(--hp-newsletter-line);
     border-radius: 30px;
     overflow: hidden;
     background:
-        radial-gradient(circle at top right, rgba(255, 255, 255, 0.12), transparent 24%),
-        radial-gradient(circle at bottom left, rgba(177, 42, 42, 0.32), transparent 34%),
-        linear-gradient(135deg, #17110f 0%, #231315 52%, #7a181b 100%);
-    box-shadow: 0 26px 60px rgba(17, 17, 17, 0.18);
+        radial-gradient(circle at top right, rgba(34, 50, 70, 0.1), transparent 26%),
+        linear-gradient(135deg, #f8fafc 0%, var(--hp-newsletter-surface) 52%, #f2efeb 100%);
+    box-shadow: 0 24px 52px rgba(34, 50, 70, 0.12);
+}
+
+.hp-newsletter__shell::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: min(11rem, 38%);
+    height: 3px;
+    background: linear-gradient(90deg, rgba(177, 42, 42, 0.9), rgba(177, 42, 42, 0.35), transparent 88%);
+}
+
+.hp-newsletter__shell::after {
+    content: "";
+    position: absolute;
+    right: -5rem;
+    bottom: -5.5rem;
+    width: 15rem;
+    height: 15rem;
+    border-radius: 999px;
+    background: radial-gradient(circle, rgba(34, 50, 70, 0.11), rgba(34, 50, 70, 0) 70%);
+    pointer-events: none;
+}
+
+.hp-newsletter__intro,
+.hp-newsletter__form-wrap {
+    position: relative;
+    z-index: 1;
 }
 
 @media (min-width: 920px) {
@@ -1807,18 +1839,29 @@ a.footnote-backref:hover {
 
 .hp-newsletter__eyebrow {
     display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
     align-self: start;
     margin: 0;
     padding: 0.42rem 0.78rem;
-    border: 1px solid rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(34, 50, 70, 0.12);
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.54);
     font-family: var(--hj-sans);
     font-size: 0.72rem;
     font-weight: 700;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: #ffe3df;
+    color: var(--hp-newsletter-ink);
+}
+
+.hp-newsletter__eyebrow::before {
+    content: "";
+    width: 0.48rem;
+    height: 0.48rem;
+    border-radius: 999px;
+    background: var(--hj-accent);
+    box-shadow: 0 0 0 5px rgba(177, 42, 42, 0.1);
 }
 
 .hp-newsletter__title {
@@ -1829,7 +1872,7 @@ a.footnote-backref:hover {
     font-size: clamp(1.7rem, 3.4vw, 2.65rem);
     line-height: 1.15;
     letter-spacing: -0.03em;
-    color: #fff7ef;
+    color: var(--hp-newsletter-ink);
 }
 
 .hp-newsletter__lede {
@@ -1837,7 +1880,7 @@ a.footnote-backref:hover {
     font-family: var(--hj-serif);
     font-size: 1.05rem;
     line-height: 1.78;
-    color: rgba(255, 246, 238, 0.84);
+    color: rgba(34, 50, 70, 0.82);
 }
 
 .hp-newsletter__promises {
@@ -1853,14 +1896,14 @@ a.footnote-backref:hover {
     position: relative;
     min-height: 100%;
     padding: 1rem 1rem 1rem 2.45rem;
-    border: 1px solid rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(34, 50, 70, 0.1);
     border-radius: 18px;
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.66);
     font-family: var(--hj-sans);
     font-size: 0.94rem;
     font-weight: 400;
     line-height: 1.58;
-    color: #fff7ef;
+    color: var(--hp-newsletter-ink);
 }
 
 .hp-newsletter__promises li::before {
@@ -1881,10 +1924,12 @@ a.footnote-backref:hover {
     align-content: start;
     gap: 1rem;
     padding: clamp(1.15rem, 1.8vw, 1.5rem);
-    border: 1px solid rgba(17, 17, 17, 0.12);
+    border: 1px solid rgba(34, 50, 70, 0.09);
     border-radius: 24px;
-    background: linear-gradient(180deg, rgba(255, 252, 248, 0.98), rgba(244, 236, 231, 0.96));
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), var(--hp-newsletter-panel));
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.74),
+        0 14px 34px rgba(34, 50, 70, 0.08);
 }
 
 .hp-newsletter__notice {
@@ -1951,26 +1996,31 @@ a.footnote-backref:hover {
     font-weight: 700;
     letter-spacing: 0.15em;
     text-transform: uppercase;
-    color: #4e3c36;
+    color: var(--hp-newsletter-ink);
 }
 
 .hp-newsletter__field input {
     width: 100%;
     min-height: 3.45rem;
     padding: 0.9rem 1rem;
-    border: 1px solid rgba(24, 28, 34, 0.18);
+    border: 1px solid rgba(34, 50, 70, 0.14);
     border-radius: 18px;
-    background: #fff;
-    color: var(--hj-text);
+    background: rgba(255, 255, 255, 0.96);
+    color: var(--hp-newsletter-ink);
     font-family: var(--hj-sans);
     font-size: 1rem;
     line-height: 1.5;
     box-sizing: border-box;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
 }
 
 .hp-newsletter__field input::placeholder {
-    color: #8d7b74;
+    color: #81909e;
+}
+
+.hp-newsletter__field input:hover {
+    border-color: rgba(34, 50, 70, 0.24);
+    background: #fff;
 }
 
 .hp-newsletter__field input:focus {
@@ -1988,7 +2038,7 @@ a.footnote-backref:hover {
     font-family: var(--hj-sans);
     font-size: 0.92rem;
     line-height: 1.62;
-    color: #4f4643;
+    color: #445261;
 }
 
 .hp-newsletter__consent input {
@@ -1997,6 +2047,13 @@ a.footnote-backref:hover {
 }
 
 .hp-newsletter__consent a {
+    color: var(--hp-newsletter-ink);
+    text-decoration-color: rgba(177, 42, 42, 0.42);
+    text-underline-offset: 0.12em;
+}
+
+.hp-newsletter__consent a:hover,
+.hp-newsletter__consent a:focus-visible {
     color: var(--hj-accent-strong);
 }
 
@@ -2014,9 +2071,9 @@ a.footnote-backref:hover {
     width: 100%;
     min-height: 3.45rem;
     padding: 0.9rem 1.5rem;
-    border: 1px solid var(--hj-accent-strong);
+    border: 1px solid #8f1e22;
     border-radius: 18px;
-    background: linear-gradient(135deg, var(--hj-accent) 0%, var(--hj-accent-strong) 100%);
+    background: linear-gradient(135deg, #c63634 0%, var(--hj-accent-strong) 100%);
     color: #fff;
     font-family: var(--hj-sans);
     font-size: 0.78rem;
@@ -2038,9 +2095,9 @@ a.footnote-backref:hover {
 .hp-newsletter__submit:hover,
 .hp-newsletter__submit:focus-visible {
     transform: translateY(-1px);
-    background: var(--hj-rule);
-    border-color: var(--hj-rule);
-    box-shadow: 0 18px 34px rgba(17, 17, 17, 0.18);
+    background: linear-gradient(135deg, var(--hj-accent) 0%, #86171b 100%);
+    border-color: #86171b;
+    box-shadow: 0 18px 34px rgba(177, 42, 42, 0.26);
 }
 
 .hp-newsletter__secondary {
@@ -2052,7 +2109,7 @@ a.footnote-backref:hover {
     font-weight: 700;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--hj-accent-strong);
+    color: var(--hp-newsletter-ink);
     text-decoration: none;
 }
 
@@ -2060,11 +2117,12 @@ a.footnote-backref:hover {
     content: "\2192";
     font-size: 0.9rem;
     line-height: 1;
+    color: var(--hj-accent);
 }
 
 .hp-newsletter__secondary:hover,
 .hp-newsletter__secondary:focus-visible {
-    color: var(--hj-rule);
+    color: var(--hj-accent-strong);
     text-decoration: none;
 }
 
@@ -2073,7 +2131,7 @@ a.footnote-backref:hover {
     font-family: var(--hj-sans);
     font-size: 0.89rem;
     line-height: 1.6;
-    color: #6a5e59;
+    color: var(--hp-newsletter-ink-soft);
 }
 
 @media (max-width: 639px) {
