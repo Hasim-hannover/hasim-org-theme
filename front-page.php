@@ -123,9 +123,9 @@ get_header(); ?>
         'id'           => 'newsletter-signup',
         'context'      => 'front_page',
         'variant'      => 'home',
-        'title'        => 'Neue Essays. Klare Hinweise. Kein Inbox-Lärm.',
-        'lede'         => 'Sobald ein neuer Essay erscheint oder eine Notiz einen Gedanken wirklich weiterführt, bekommen Sie eine kurze Mail. Kein täglicher Versand. Kein Füllmaterial.',
-        'submit_label' => 'Kostenlos eintragen',
+        'title'        => 'Neue Texte per E-Mail.',
+        'lede'         => 'Eine kurze Mail, wenn ein neuer Essay oder eine relevante Notiz erscheint.',
+        'submit_label' => 'Anmelden',
     ] );
     ?>
 

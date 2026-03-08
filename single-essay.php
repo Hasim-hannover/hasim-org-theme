@@ -124,9 +124,9 @@ get_header(); ?>
                 'context'      => 'essay',
                 'variant'      => 'essay',
                 'eyebrow'      => 'Neue Texte nicht verpassen',
-                'title'        => 'Wenn dieser Text relevant war, sollten die nächsten Sie erreichen.',
-                'lede'         => 'Sie erhalten nur dann eine Mail, wenn ein neuer Essay erscheint oder eine Notiz den Gedanken dieses Journals sinnvoll weiterdreht.',
-                'submit_label' => 'Kostenlos eintragen',
+                'title'        => 'Nächste Texte per E-Mail.',
+                'lede'         => 'Eine kurze Mail, wenn hier ein neuer Essay oder eine relevante Notiz erscheint.',
+                'submit_label' => 'Anmelden',
             ] );
             ?>
 
