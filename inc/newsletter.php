@@ -953,57 +953,75 @@ function hp_get_newsletter_unsubscribed_text( array $subscriber ): string {
 /**
  * Generischer Versand für Newsletter-Mails.
  */
-function hp_send_newsletter_mail( string $to_email, string $subject, string $html_content, string $text_content, array $tags = [] ): bool {
-	$contact_email = hp_get_newsletter_contact_email();
-	$from_header   = 'From: ' . hp_get_newsletter_sender_name() . ' <' . $contact_email . '>';
-	$reply_header  = 'Reply-To: ' . hp_get_newsletter_sender_name() . ' <' . $contact_email . '>';
-	$headers       = [
-		'Content-Type: text/html; charset=UTF-8',
-		$from_header,
-		$reply_header,
+function hp_send_newsletter_mail( string $to_email, string $subject, string $html_content, string $text_content, array $tags = [], string $template_key = '', array $params = [] ): bool {
+	$response = hp_brevo_send_transactional_email(
+		[
+			'template_key'   => $template_key,
+			'to'             => [
+				[
+					'email' => $to_email,
+					'name'  => '',
+				],
+			],
+			'subject'        => $subject,
+			'html_content'   => $html_content,
+			'text_content'   => $text_content,
+			'params'         => $params,
+			'reply_to_email' => hp_get_newsletter_contact_email(),
+			'reply_to_name'  => hp_get_newsletter_sender_name(),
+			'tags'           => $tags,
+		]
+	);
+
+	return ! empty( $response['success'] );
+}
+
+/**
+ * Template-Parameter fuer DOI-Mails.
+ *
+ * @param array<string, string> $subscriber Datensatz.
+ * @return array<string, mixed>
+ */
+function hp_get_newsletter_confirmation_template_params( array $subscriber ): array {
+	return [
+		'email'         => (string) ( $subscriber['email'] ?? '' ),
+		'confirm_url'   => hp_get_newsletter_confirm_url( (string) ( $subscriber['confirm_token'] ?? '' ) ),
+		'label'         => hp_get_newsletter_label(),
+		'contact_email' => hp_get_newsletter_contact_email(),
+		'privacy_url'   => home_url( '/datenschutz/' ),
+		'imprint_url'   => home_url( '/impressum/' ),
 	];
+}
 
-	if ( function_exists( 'hp_has_brevo_smtp_config' ) && hp_has_brevo_smtp_config() && function_exists( 'hp_send_wp_mail_via_brevo_smtp' ) ) {
-		$mail_sent = hp_send_wp_mail_via_brevo_smtp(
-			$to_email,
-			$subject,
-			$html_content,
-			$headers,
-			$text_content
-		);
+/**
+ * Template-Parameter fuer die Willkommensmail.
+ *
+ * @param array<string, string> $subscriber Datensatz.
+ * @return array<string, mixed>
+ */
+function hp_get_newsletter_welcome_template_params( array $subscriber ): array {
+	return [
+		'email'           => (string) ( $subscriber['email'] ?? '' ),
+		'archive_url'     => get_post_type_archive_link( 'essay' ) ?: home_url( '/' ),
+		'unsubscribe_url' => hp_get_newsletter_unsubscribe_url( (string) ( $subscriber['unsubscribe_token'] ?? '' ) ),
+		'x_url'           => hp_get_newsletter_x_url(),
+		'label'           => hp_get_newsletter_label(),
+		'contact_email'   => hp_get_newsletter_contact_email(),
+	];
+}
 
-		if ( $mail_sent ) {
-			return true;
-		}
-	}
-
-	if ( function_exists( 'hp_has_brevo_api_key' ) && hp_has_brevo_api_key() && function_exists( 'hp_send_brevo_transactional_email' ) ) {
-		$response = hp_send_brevo_transactional_email(
-			[
-				'to_email'       => $to_email,
-				'subject'        => $subject,
-				'html_content'   => $html_content,
-				'text_content'   => $text_content,
-				'reply_to_email' => $contact_email,
-				'reply_to_name'  => hp_get_newsletter_sender_name(),
-				'tags'           => $tags,
-			]
-		);
-
-		if ( ! empty( $response['success'] ) ) {
-			return true;
-		}
-	}
-
-	$alt_body_setter = static function ( PHPMailer\PHPMailer\PHPMailer $phpmailer ) use ( $text_content ): void {
-		$phpmailer->AltBody = $text_content;
-	};
-
-	add_action( 'phpmailer_init', $alt_body_setter );
-	$mail_sent = wp_mail( $to_email, $subject, $html_content, $headers );
-	remove_action( 'phpmailer_init', $alt_body_setter );
-
-	return $mail_sent;
+/**
+ * Template-Parameter fuer die Austragungsbestaetigung.
+ *
+ * @param array<string, string> $subscriber Datensatz.
+ * @return array<string, mixed>
+ */
+function hp_get_newsletter_unsubscribed_template_params( array $subscriber ): array {
+	return [
+		'email'           => (string) ( $subscriber['email'] ?? '' ),
+		'resubscribe_url' => hp_get_newsletter_anchor_url(),
+		'contact_email'   => hp_get_newsletter_contact_email(),
+	];
 }
 
 /**
@@ -1017,7 +1035,9 @@ function hp_send_newsletter_confirmation_request( array $subscriber ): bool {
 		hp_get_newsletter_confirmation_subject(),
 		hp_get_newsletter_confirmation_html( $subscriber ),
 		hp_get_newsletter_confirmation_text( $subscriber ),
-		[ 'newsletter', 'newsletter-confirmation' ]
+		[ 'newsletter', 'newsletter-confirmation' ],
+		'newsletter_confirmation',
+		hp_get_newsletter_confirmation_template_params( $subscriber )
 	);
 }
 
@@ -1032,7 +1052,9 @@ function hp_send_newsletter_welcome_mail( array $subscriber ): bool {
 		hp_get_newsletter_welcome_subject(),
 		hp_get_newsletter_welcome_html( $subscriber ),
 		hp_get_newsletter_welcome_text( $subscriber ),
-		[ 'newsletter', 'newsletter-welcome' ]
+		[ 'newsletter', 'newsletter-welcome' ],
+		'newsletter_welcome',
+		hp_get_newsletter_welcome_template_params( $subscriber )
 	);
 }
 
@@ -1047,7 +1069,9 @@ function hp_send_newsletter_unsubscribed_mail( array $subscriber ): bool {
 		hp_get_newsletter_unsubscribed_subject(),
 		hp_get_newsletter_unsubscribed_html( $subscriber ),
 		hp_get_newsletter_unsubscribed_text( $subscriber ),
-		[ 'newsletter', 'newsletter-unsubscribed' ]
+		[ 'newsletter', 'newsletter-unsubscribed' ],
+		'newsletter_unsubscribed',
+		hp_get_newsletter_unsubscribed_template_params( $subscriber )
 	);
 }
 
@@ -1222,6 +1246,7 @@ function hp_handle_newsletter_confirmation(): void {
 	$active_subscriber = hp_get_newsletter_subscriber_by_email( $subscriber['email'] );
 
 	if ( $active_subscriber ) {
+		hp_brevo_sync_newsletter_contact( $active_subscriber );
 		hp_send_newsletter_welcome_mail( $active_subscriber );
 	}
 
@@ -1266,6 +1291,7 @@ function hp_handle_newsletter_unsubscribe(): void {
 		);
 	}
 
+	hp_brevo_unsubscribe_newsletter_contact( $subscriber['email'] );
 	hp_send_newsletter_unsubscribed_mail( $subscriber );
 
 	hp_redirect_newsletter(
@@ -1305,6 +1331,7 @@ function hp_handle_newsletter_admin_unsubscribe(): void {
 	}
 
 	if ( hp_suppress_newsletter_subscriber( $subscriber ) ) {
+		hp_brevo_unsubscribe_newsletter_contact( $subscriber['email'] );
 		hp_send_newsletter_unsubscribed_mail( $subscriber );
 	}
 

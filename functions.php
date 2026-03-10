@@ -35,8 +35,10 @@ defined( 'ABSPATH' ) || exit;
    ========================================= */
 
 $hp_inc_dir = get_stylesheet_directory() . '/inc';
+$hp_lib_dir = get_stylesheet_directory() . '/lib';
 
 require_once $hp_inc_dir . '/helpers.php';
+require_once $hp_lib_dir . '/email/brevo-email-service.php';
 require_once $hp_inc_dir . '/post-types.php';
 require_once $hp_inc_dir . '/taxonomies.php';
 require_once $hp_inc_dir . '/enqueue.php';
