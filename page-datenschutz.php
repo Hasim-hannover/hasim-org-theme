@@ -99,11 +99,7 @@ get_header(); ?>
                 Für die Zustellung dieser E-Mails wird der Dienst <strong>Brevo</strong> als
                 technischer Versanddienstleister genutzt. Die Übermittlung erfolgt ausschließlich
                 serverseitig; beim Besuch der Website werden dadurch keine zusätzlichen Cookies
-                oder Tracking-Skripte gesetzt. Soweit technisch erforderlich, können Name und
-                E-Mail-Adresse zusätzlich in Brevo als Kontakt hinterlegt werden, damit die
-                Zustellung und die dokumentierte Bearbeitung der Anfrage serverseitig sauber
-                nachvollzogen werden kann. Eine Nutzung für Newsletter oder Werbung erfolgt darüber
-                nicht ohne gesonderte Einwilligung.
+                oder Tracking-Skripte gesetzt.
             </p>
 
             <h2>4. Newsletter / Hinweise auf neue Texte</h2>
@@ -131,9 +127,7 @@ get_header(); ?>
                 wird die Adresse nicht weiter für den Versand genutzt; statt des vollständigen Datensatzes
                 bleibt nur eine minimierte Sperrnotiz in gehashter Form für maximal
                 <?php echo esc_html( (string) hp_get_newsletter_suppression_retention_days() ); ?> Tage gespeichert, um erneute ungewollte Zusendungen
-                zu vermeiden. Sofern eine Brevo-Kontaktliste konfiguriert ist, wird eine bestätigte
-                Adresse zusätzlich dort serverseitig synchronisiert; bei Abmeldung wird diese
-                Zuordnung ebenfalls serverseitig aktualisiert.
+                zu vermeiden.
             </p>
 
             <h2>5. Cookies</h2>
