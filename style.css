@@ -1128,14 +1128,13 @@ a.footnote-backref:hover {
    ========================================= */
 
 .hp-mission {
-    max-width: var(--hj-content-width);
-    margin: 0 auto;
-    padding: 0 var(--hj-gutter) var(--hj-space-2xl);
+    padding-bottom: var(--hj-space-2xl);
 }
 
 .hp-mission__hero {
-    padding: var(--hj-space-2xl) 0 var(--hj-space-lg);
-    max-width: 76ch;
+    max-width: var(--hj-content-width);
+    margin: 0 auto;
+    padding: var(--hj-space-2xl) var(--hj-gutter) var(--hj-space-lg);
 }
 
 .hp-mission__title {
@@ -1160,21 +1159,16 @@ a.footnote-backref:hover {
 }
 
 .hp-mission__frame {
-    display: grid;
-    gap: var(--hj-space-xl);
-    align-items: start;
     padding-top: var(--hj-space-lg);
     border-top: 1px solid var(--hj-rule);
 }
 
-@media (min-width: 1100px) {
-    .hp-mission__frame {
-        grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
-    }
+.hp-mission__frame.single-body--with-toc {
+    max-width: calc(var(--hj-content-width) + 260px);
 }
 
 .hp-mission__toc {
-    margin-top: 0.1rem;
+    margin-top: 0;
 }
 
 .hp-mission__content {
@@ -1294,12 +1288,7 @@ a.footnote-backref:hover {
 
 @media (max-width: 767px) {
     .hp-mission__hero {
-        padding: var(--hj-space-xl) 0 var(--hj-space-md);
-    }
-
-    .hp-mission__frame {
-        gap: var(--hj-space-lg);
-        padding-top: var(--hj-space-md);
+        padding: var(--hj-space-xl) var(--hj-gutter) var(--hj-space-md);
     }
 
     .hp-mission__section p,

@@ -26,7 +26,7 @@ $hp_contact_url = hp_get_contact_page_url();
 		<p class="hp-mission__lede">Diese Seite ist kein Ort für Lagerdenken. Sie ist ein Versuch, zwischen Sprachen, Erfahrungen und politischen Wirklichkeiten Verständigung offenzuhalten – mit Klarheit, mit Haltung und ohne Menschen aus dem Gespräch zu drängen.</p>
 	</header>
 
-	<div class="hp-mission__frame">
+	<div class="single-body single-body--with-toc hp-mission__frame">
 
 		<aside class="hp-toc hp-mission__toc" aria-label="Inhaltsverzeichnis" data-visible="true">
 			<span class="hp-toc__title">Inhalt</span>
@@ -41,7 +41,7 @@ $hp_contact_url = hp_get_contact_page_url();
 			</ol>
 		</aside>
 
-		<div class="hp-mission__content">
+		<div class="single-body__main hp-mission__content">
 
 			<section class="hp-mission__section" aria-labelledby="worum-es-hier-geht">
 				<h2 id="worum-es-hier-geht">Worum es hier geht</h2>
