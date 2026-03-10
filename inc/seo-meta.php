@@ -133,7 +133,35 @@ JS;
 add_action( 'enqueue_block_editor_assets', 'hp_seo_meta_editor_assets' );
 
 /* =========================================
-   3. DESCRIPTION RESOLVER
+   3. MISSION: TITLE + DESCRIPTION OVERRIDES
+   ========================================= */
+
+/**
+ * Prüft, ob die aktuelle Anfrage die Mission-Seite ist.
+ *
+ * @return bool
+ */
+function hp_is_mission_page(): bool {
+	return ! is_admin() && is_page( 'mission' );
+}
+
+/**
+ * Erzwingt einen stabilen Dokumenttitel für /mission/.
+ *
+ * @param string $title Vorheriger Titel.
+ * @return string
+ */
+function hp_filter_mission_document_title( string $title ): string {
+	if ( ! hp_is_mission_page() ) {
+		return $title;
+	}
+
+	return 'Mission – Haşim Üner';
+}
+add_filter( 'pre_get_document_title', 'hp_filter_mission_document_title' );
+
+/* =========================================
+   4. DESCRIPTION RESOLVER
    ========================================= */
 
 /**
@@ -146,6 +174,10 @@ add_action( 'enqueue_block_editor_assets', 'hp_seo_meta_editor_assets' );
  */
 function hp_get_meta_description(): string {
 	$desc = '';
+
+	if ( hp_is_mission_page() ) {
+		return 'Essays und Notizen über Macht, Medien, Erinnerung, Sprache und Gesellschaft – mit dem Versuch, Verständigung zwischen Perspektiven offenzuhalten.';
+	}
 
 	if ( is_singular() ) {
 		$post = get_queried_object();
@@ -184,7 +216,7 @@ function hp_get_meta_description(): string {
 }
 
 /* =========================================
-   4. HEAD-OUTPUT: META + OPEN GRAPH + TWITTER
+   5. HEAD-OUTPUT: META + OPEN GRAPH + TWITTER
    ========================================= */
 
 /**

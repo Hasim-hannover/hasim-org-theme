@@ -63,7 +63,7 @@ add_action( 'after_setup_theme', 'hp_remove_gp_header', 50 );
  * │          HAŞIM ÜNER                  │  ← Titel, zentriert
  * │   Macht. Medien. Gesellschaft.       │  ← Claim
  * ├──────────────────────────────────────┤
- * │  Essays · Notizen · Glossar · Über   │  ← Nav-Leiste
+ * │  Essays · Notizen · Glossar · Mission│  ← Nav-Leiste
  * └──────────────────────────────────────┘
  */
 function hp_render_journal_header(): void {
@@ -92,7 +92,7 @@ function hp_render_journal_header(): void {
 			'match' => [ 'page_slug' => 'wissensgraph' ],
 		],
 		[
-			'label' => 'Über',
+			'label' => 'Mission',
 			'url'   => home_url( '/mission/' ),
 			'match' => [ 'page_slug' => 'mission' ],
 		],
@@ -173,17 +173,29 @@ function hp_render_journal_header(): void {
 
 		<!-- Mobile-Menü (ausklappbar) -->
 		<div class="hp-nav-mobile" id="hp-nav-mobile" hidden>
-			<ul class="hp-nav-mobile__list">
-				<?php foreach ( $hp_nav_items as $item ) :
-					$is_active = hp_nav_is_active( $item['match'] );
+			<?php if ( has_nav_menu( 'hp-primary' ) ) : ?>
+				<?php
+				wp_nav_menu( [
+					'theme_location' => 'hp-primary',
+					'container'      => false,
+					'menu_class'     => 'hp-nav-mobile__list',
+					'depth'          => 1,
+					'fallback_cb'    => false,
+				] );
 				?>
-					<li class="hp-nav-mobile__item<?php echo $is_active ? ' hp-nav-mobile__item--active' : ''; ?>">
-						<a href="<?php echo esc_url( $item['url'] ); ?>"<?php echo $is_active ? ' aria-current="page"' : ''; ?>>
-							<?php echo esc_html( $item['label'] ); ?>
-						</a>
-					</li>
-				<?php endforeach; ?>
-			</ul>
+			<?php else : ?>
+				<ul class="hp-nav-mobile__list">
+					<?php foreach ( $hp_nav_items as $item ) :
+						$is_active = hp_nav_is_active( $item['match'] );
+					?>
+						<li class="hp-nav-mobile__item<?php echo $is_active ? ' hp-nav-mobile__item--active' : ''; ?>">
+							<a href="<?php echo esc_url( $item['url'] ); ?>"<?php echo $is_active ? ' aria-current="page"' : ''; ?>>
+								<?php echo esc_html( $item['label'] ); ?>
+							</a>
+						</li>
+					<?php endforeach; ?>
+				</ul>
+			<?php endif; ?>
 		</div>
 
 	</div>
@@ -218,3 +230,41 @@ function hp_nav_is_active( array $match ): bool {
 
 	return false;
 }
+
+/**
+ * Prüft, ob ein WP-Menüpunkt auf /mission/ zeigt.
+ *
+ * @param object $item Menüpunkt-Objekt.
+ * @return bool
+ */
+function hp_nav_item_targets_mission( $item ): bool {
+	if ( ! is_object( $item ) || empty( $item->url ) ) {
+		return false;
+	}
+
+	$mission_path = wp_parse_url( home_url( '/mission/' ), PHP_URL_PATH );
+	$item_path    = wp_parse_url( $item->url, PHP_URL_PATH );
+
+	if ( ! is_string( $mission_path ) || ! is_string( $item_path ) ) {
+		return false;
+	}
+
+	return untrailingslashit( $mission_path ) === untrailingslashit( $item_path );
+}
+
+/**
+ * Erzwingt „Mission“ als Menülabel für /mission/,
+ * auch wenn ein WP-Menü das Label überschreibt.
+ *
+ * @param string $title Menüpunkt-Titel.
+ * @param object $item  Menüpunkt-Objekt.
+ * @return string
+ */
+function hp_force_mission_nav_label( string $title, $item ): string {
+	if ( is_admin() || ! hp_nav_item_targets_mission( $item ) ) {
+		return $title;
+	}
+
+	return 'Mission';
+}
+add_filter( 'nav_menu_item_title', 'hp_force_mission_nav_label', 10, 2 );
