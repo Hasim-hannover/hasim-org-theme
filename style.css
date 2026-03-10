@@ -2288,6 +2288,33 @@ a.footnote-backref:hover {
     border-color: var(--hj-accent);
 }
 
+.hp-colophon__transparency {
+    max-width: var(--hj-content-width);
+    margin: var(--hj-space-lg) auto 0;
+    padding: 0 var(--hj-gutter);
+}
+
+.hp-colophon__transparency p {
+    margin: 0;
+    max-width: 44rem;
+    font-family: var(--hj-sans);
+    font-size: 0.82rem;
+    line-height: 1.7;
+    color: var(--hj-text-muted);
+}
+
+.hp-colophon__transparency a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.14em;
+}
+
+.hp-colophon__transparency a:hover,
+.hp-colophon__transparency a:focus-visible {
+    color: var(--hj-text);
+}
+
 .hp-colophon__closing {
     margin: var(--hj-space-md) auto 0;
     padding: 0 var(--hj-gutter);

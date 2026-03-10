@@ -62,6 +62,9 @@ $hp_year    = gmdate( 'Y' );
             </div>
 
         </div><!-- .hp-colophon__inner -->
+        <div class="hp-colophon__transparency">
+            <p>Dieses Journal ist ein eigenständiger publizistischer Ort. Meine berufliche Arbeit im Bereich digitaler Strategie und Webentwicklung findet getrennt davon auf <a href="https://hasimuener.de/">hasimuener.de</a> statt.</p>
+        </div>
         <p class="hp-colophon__closing">Zwischen Sprachen und Perspektiven beginnt Verständigung.</p>
     </footer>
 
