@@ -1167,98 +1167,14 @@ a.footnote-backref:hover {
     border-top: 1px solid var(--hj-rule);
 }
 
-@media (min-width: 980px) {
+@media (min-width: 1100px) {
     .hp-mission__frame {
         grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
     }
-
-    .hp-mission__aside {
-        position: sticky;
-        top: 7rem;
-    }
 }
 
-.hp-mission__aside {
-    display: grid;
-    gap: 1rem;
-}
-
-.hp-mission__aside-block,
 .hp-mission__toc {
-    padding: 1rem 1.1rem;
-    border: 1px solid rgba(17, 17, 17, 0.1);
-    border-radius: 18px;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(248, 245, 240, 0.88));
-    box-shadow: 0 12px 28px rgba(17, 17, 17, 0.04);
-}
-
-.hp-mission__aside-label,
-.hp-mission__toc-title {
-    margin: 0 0 0.65rem;
-    font-family: var(--hj-sans);
-    font-size: 0.72rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.16em;
-    color: var(--hj-text-muted);
-}
-
-.hp-mission__aside-copy {
-    margin: 0;
-    font-family: var(--hj-serif);
-    font-size: 1rem;
-    line-height: 1.65;
-    color: var(--hj-text-secondary);
-}
-
-.hp-mission__signal-list,
-.hp-mission__toc-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-
-.hp-mission__signal-list {
-    margin-top: 1rem;
-    border-top: 1px solid rgba(17, 17, 17, 0.08);
-}
-
-.hp-mission__signal-list li {
-    padding: 0.72rem 0;
-    border-bottom: 1px solid rgba(17, 17, 17, 0.08);
-    font-family: var(--hj-sans);
-    font-size: 0.82rem;
-    font-weight: 600;
-    line-height: 1.45;
-    color: var(--hj-rule);
-}
-
-.hp-mission__signal-list li:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
-}
-
-.hp-mission__toc-list li + li {
-    border-top: 1px solid rgba(17, 17, 17, 0.08);
-}
-
-.hp-mission__toc-list a {
-    display: block;
-    padding: 0.72rem 0;
-    font-family: var(--hj-sans);
-    font-size: 0.8rem;
-    font-weight: 700;
-    line-height: 1.45;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--hj-text);
-    text-decoration: none;
-}
-
-.hp-mission__toc-list a:hover,
-.hp-mission__toc-list a:focus-visible {
-    color: var(--hj-accent);
-    text-decoration: none;
+    margin-top: 0.1rem;
 }
 
 .hp-mission__content {
@@ -1384,16 +1300,6 @@ a.footnote-backref:hover {
     .hp-mission__frame {
         gap: var(--hj-space-lg);
         padding-top: var(--hj-space-md);
-    }
-
-    .hp-mission__aside-block,
-    .hp-mission__toc {
-        border-radius: 16px;
-    }
-
-    .hp-mission__toc-list a {
-        text-transform: none;
-        letter-spacing: 0.03em;
     }
 
     .hp-mission__section p,

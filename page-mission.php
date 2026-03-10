@@ -28,30 +28,17 @@ $hp_contact_url = hp_get_contact_page_url();
 
 	<div class="hp-mission__frame">
 
-		<aside class="hp-mission__aside" aria-label="Orientierung">
-			<div class="hp-mission__aside-block">
-				<p class="hp-mission__aside-label">Einordnung</p>
-				<p class="hp-mission__aside-copy">Kein klassisches Über mich, sondern ein öffentlicher Auftrag: Verständigung offenhalten, Kritik präzisieren, Perspektiven lesbar machen.</p>
-				<ul class="hp-mission__signal-list">
-					<li>Brücken statt Lager</li>
-					<li>Kritik ohne Entmenschlichung</li>
-					<li>Lesbarkeit zwischen Deutsch, Kurdisch und Türkisch</li>
-				</ul>
-			</div>
-
-			<nav class="hp-mission__toc" aria-label="Abschnitte dieser Seite">
-				<p class="hp-mission__toc-title">Abschnitte</p>
-				<ul class="hp-mission__toc-list">
-					<li><a href="#worum-es-hier-geht">Worum es hier geht</a></li>
-					<li><a href="#warum-ich-so-schreibe">Warum ich so schreibe</a></li>
-					<li><a href="#bruecken-statt-lager">Brücken statt Lager</a></li>
-					<li><a href="#was-bewahrt-werden-muss">Was bewahrt werden muss</a></li>
-					<li><a href="#kritik-ohne-entmenschlichung">Kritik ohne Entmenschlichung</a></li>
-					<li><a href="#technik-oeffentlichkeit-verantwortung">Technik, Öffentlichkeit, Verantwortung</a></li>
-					<li><a href="#einladung-zum-mitdenken">Einladung zum Mitdenken</a></li>
-					<li><a href="#wie-es-weitergeht">Wie es weitergeht</a></li>
-				</ul>
-			</nav>
+		<aside class="hp-toc hp-mission__toc" aria-label="Inhaltsverzeichnis" data-visible="true">
+			<span class="hp-toc__title">Inhalt</span>
+			<ol>
+				<li><a href="#worum-es-hier-geht">Worum es hier geht</a></li>
+				<li><a href="#warum-ich-so-schreibe">Warum ich so schreibe</a></li>
+				<li><a href="#bruecken-statt-lager">Brücken statt Lager</a></li>
+				<li><a href="#was-bewahrt-werden-muss">Was bewahrt werden muss</a></li>
+				<li><a href="#kritik-ohne-entmenschlichung">Kritik ohne Entmenschlichung</a></li>
+				<li><a href="#technik-oeffentlichkeit-verantwortung">Technik, Öffentlichkeit, Verantwortung</a></li>
+				<li><a href="#einladung-zum-mitdenken">Einladung zum Mitdenken</a></li>
+			</ol>
 		</aside>
 
 		<div class="hp-mission__content">
@@ -101,8 +88,7 @@ $hp_contact_url = hp_get_contact_page_url();
 				<p>Wer hier liest, ist eingeladen mitzudenken, zu widersprechen und die eigene Perspektive zu schärfen. Nicht, um am Ende alle gleich zu machen. Sondern damit Verständigung überhaupt eine Chance behält.</p>
 			</section>
 
-			<section class="hp-mission__closing" aria-labelledby="wie-es-weitergeht">
-				<h2 id="wie-es-weitergeht">Wie es weitergeht</h2>
+			<section class="hp-mission__closing" aria-label="Abschluss und nächste Schritte">
 				<p>Keine Werbung, keine Ablenkung, kein Lärm um seiner selbst willen. Dieser Ort soll ruhig genug sein, damit Gedanken sich entfalten können und aus Rede wieder Gespräch werden kann.</p>
 
 				<div class="hp-mission__cta" aria-label="Nächste Schritte">
