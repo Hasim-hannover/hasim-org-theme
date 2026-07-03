@@ -14,6 +14,27 @@ defined( 'ABSPATH' ) || exit;
    ========================================= */
 
 /**
+ * Alternative Schreibweisen des Herausgeber-Namens.
+ *
+ * Die kanonische Schreibweise ist "Haşim Üner" (türkisches ş). Suchmaschinen
+ * kennen die Entität aus den Vorjahren unter "Hasim Üner" und den
+ * ASCII-Transliterationen, daher deklarieren Person, Organization und
+ * WebSite diese als alternateName, bis der Knowledge Graph die kanonische
+ * Form neu gelernt hat. Nicht entfernen, solange Marken-Suchanfragen ohne ş
+ * noch Suchvolumen haben.
+ *
+ * @return array<int, string>
+ */
+function hp_brand_alternate_names(): array {
+	return [
+		'Hasim Üner',
+		'Hasim Uner',
+		'Hasim Uener',
+		'Haşim Uner',
+	];
+}
+
+/**
  * Gibt Organization + WebSite JSON-LD auf jeder Seite aus.
  *
  * Organization: Repräsentiert das Journal als Herausgeber.
@@ -42,6 +63,7 @@ function hp_org_website_jsonld_schema(): void {
 		'@type'    => 'Person',
 		'@id'      => $person_id,
 		'name'     => 'Haşim Üner',
+		'alternateName' => hp_brand_alternate_names(),
 		'url'      => $site_url,
 		'jobTitle' => 'Medienwissenschaftler & Publizist',
 		'identifier' => [
@@ -63,6 +85,7 @@ function hp_org_website_jsonld_schema(): void {
 		'@type'       => 'Organization',
 		'@id'         => $org_id,
 		'name'        => $site_name,
+		'alternateName' => hp_brand_alternate_names(),
 		'url'         => $site_url,
 		'description' => $site_desc ?: 'Essays und Analysen zu Macht, Medien und Perspektive. Von Haşim Üner.',
 		'founder'     => [
@@ -98,6 +121,7 @@ function hp_org_website_jsonld_schema(): void {
 		'@type'       => 'WebSite',
 		'@id'         => $site_id,
 		'name'        => $site_name,
+		'alternateName' => hp_brand_alternate_names(),
 		'url'         => $site_url,
 		'description' => $site_desc ?: '',
 		'inLanguage'  => $locale,
