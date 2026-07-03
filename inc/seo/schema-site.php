@@ -76,6 +76,9 @@ function hp_org_website_jsonld_schema(): void {
 			HP_ORCID_URL,
 			'https://x.com/_0239983326111',
 			'https://www.youtube.com/@Hasimuener',
+			'https://www.linkedin.com/in/hasim-%C3%BCner/',
+			'https://hasimuener.de/uber-mich/',
+			'https://github.com/Hasim-Uner/',
 		],
 	];
 	$graph['@graph'][] = $person;
