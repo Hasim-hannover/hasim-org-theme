@@ -29,6 +29,11 @@ get_header(); ?>
                 Deutschland
             </p>
 
+            <p>
+                Die Namensangabe folgt der Schreibweise im Ausweisdokument.
+                Die Eigenschreibweise lautet Haşim Üner.
+            </p>
+
             <h2>Kontakt</h2>
 
             <p>
