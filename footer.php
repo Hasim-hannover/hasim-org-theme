@@ -31,6 +31,10 @@ $hp_year    = gmdate( 'Y' );
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                     <span>Auf X folgen</span>
                 </a>
+                <a class="hp-colophon__social" href="https://www.instagram.com/hasimuener/" target="_blank" rel="noopener noreferrer me" aria-label="Haşim Üner auf Instagram">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.75 2h8.5A5.76 5.76 0 0122 7.75v8.5A5.76 5.76 0 0116.25 22h-8.5A5.76 5.76 0 012 16.25v-8.5A5.76 5.76 0 017.75 2zm0 2A3.75 3.75 0 004 7.75v8.5A3.75 3.75 0 007.75 20h8.5A3.75 3.75 0 0020 16.25v-8.5A3.75 3.75 0 0016.25 4h-8.5zM12 7a5 5 0 110 10 5 5 0 010-10zm0 2a3 3 0 100 6 3 3 0 000-6zm5.25-3.5a1.25 1.25 0 110 2.5 1.25 1.25 0 010-2.5z"/></svg>
+                    <span>Instagram</span>
+                </a>
                 <a class="hp-colophon__social" href="https://orcid.org/0009-0008-7500-2015" target="_blank" rel="noopener noreferrer me" aria-label="Haşim Üner auf ORCID">
                     <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="#A6CE39" d="M12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0z"/><path fill="#fff" d="M7.37 17.5H5.9V7.375h1.47V17.5zM6.635 5.957a.905.905 0 01-.904-.905c0-.497.406-.905.904-.905.497 0 .904.408.904.905 0 .5-.407.905-.904.905zM10.12 7.375h3.932c3.74 0 5.39 2.673 5.39 5.063 0 2.597-2.03 5.063-5.368 5.063H10.12V7.375zm1.47 8.806h2.29c3.268 0 4.015-2.48 4.015-3.743 0-2.058-1.31-3.743-4.09-3.743h-2.215v7.486z"/></svg>
                     <span>ORCID iD</span>
