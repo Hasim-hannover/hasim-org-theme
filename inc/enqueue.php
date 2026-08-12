@@ -86,8 +86,6 @@ function hp_journal_enqueue_assets(): void {
 			[ 'hp-journal-style' ],
 			$mission_ver
 		);
-
-		hp_enqueue_deferred_script( 'hp-audio-player', 'assets/js/audio-player.js' );
 	}
 
 	// 404 page: search fallback, area links and recent essays.

@@ -14,8 +14,6 @@ get_header(); ?>
 $hp_essay_url   = get_post_type_archive_link( 'essay' );
 $hp_note_url    = get_post_type_archive_link( 'note' );
 $hp_contact_url = hp_get_contact_page_url();
-
-$hp_mission_audio_url = 'https://hasimuener.org/wp-content/uploads/2026/06/Mission_Audio.wav';
 ?>
 
 <main id="main-content" class="hp-mission" aria-labelledby="mission-title" role="main">
@@ -23,37 +21,6 @@ $hp_mission_audio_url = 'https://hasimuener.org/wp-content/uploads/2026/06/Missi
 	<header class="hp-mission__hero">
 		<span class="hp-kicker">Über mich</span>
 		<h1 id="mission-title" class="hp-mission__title">Mission</h1>
-
-		<?php if ( $hp_mission_audio_url ) : ?>
-			<div class="hp-mission-audio" data-hp-audio aria-label="Audiofassung">
-				<div class="hp-mission-audio__top">
-					<button class="hp-mission-audio__button" type="button" data-hp-audio-toggle aria-pressed="false">
-						<span class="hp-mission-audio__icon" data-hp-audio-icon aria-hidden="true"></span>
-						<span data-hp-audio-label>Mission anhören</span>
-					</button>
-
-					<div class="hp-mission-audio__copy">
-						<span class="hp-mission-audio__eyebrow">Audiofassung</span>
-						<span class="hp-mission-audio__title">Mission</span>
-					</div>
-				</div>
-
-				<div class="hp-mission-audio__progress" role="progressbar" aria-label="Audiofortschritt" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-hp-audio-progress>
-					<span class="hp-mission-audio__progress-bar" data-hp-audio-progress-bar></span>
-				</div>
-
-				<div class="hp-mission-audio__meta">
-					<span class="hp-mission-audio__status" data-hp-audio-status>Bereit</span>
-					<span class="hp-mission-audio__time" data-hp-audio-time>0:00 / 0:00</span>
-				</div>
-
-				<audio class="hp-mission-audio__media" preload="auto" controls data-hp-audio-media>
-					<source src="<?php echo esc_url( $hp_mission_audio_url ); ?>" type="audio/wav">
-				</audio>
-
-				<a class="hp-mission-audio__direct" href="<?php echo esc_url( $hp_mission_audio_url ); ?>" target="_blank" rel="noopener noreferrer">Audio direkt öffnen</a>
-			</div>
-		<?php endif; ?>
 	</header>
 
 	<div class="single-body hp-mission__frame">
